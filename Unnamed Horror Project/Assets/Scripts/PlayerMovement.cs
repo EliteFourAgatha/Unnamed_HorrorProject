@@ -14,14 +14,18 @@ public class PlayerMovement : MonoBehaviour
     private int staminaValue;
     private Vector3 velocity;
     private Footsteps footsteps;
-    private void Awake(){
+    private void Awake()
+    {
         footsteps = gameObject.GetComponent<Footsteps>();
     }
-    private void Start(){
+    private void Start()
+    {
         staminaValue = 100;
     }
-    private void Update(){
-        if(staminaValue <= 0){
+    private void Update()
+    {
+        if(staminaValue <= 0)
+        {
             canRun = false;
         }
         if(Input.GetAxis("Horizontal") == 1 || Input.GetAxis("Horizontal") == -1){
@@ -76,5 +80,18 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = transform.right * x + transform.forward * z;
 
         controller.Move(move * speed * Time.deltaTime);
+        HandleStairs();
+    }
+    public void HandleStairs()
+    {
+        RaycastHit hit;
+        Vector3 raycastOrigin = transform.position;
+        Vector3 targetPosition;
+        targetPosition = transform.position;
+
+        //if(Physics.SphereCast(raycastOrigin, 0.2f, -Vector3.up, out hit, groundLayer))
+        //{
+
+        //}
     }
 }
