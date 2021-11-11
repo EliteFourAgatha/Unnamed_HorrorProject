@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -9,6 +10,13 @@ public class GameController : MonoBehaviour
     public static bool gameIsPaused = false;
     public GameObject player;
     public GameObject pauseMenuUI;
+    public Animator fadeAnimator;
+    public AudioClip carEndingSFX;
+    private AudioSource audioSource;
+    private void Awake()
+    {
+        audioSource = gameObject.GetComponent<AudioSource>();
+    }
     private void Start(){
         //Lock cursor to center of game window
         Cursor.lockState = CursorLockMode.Locked;
@@ -54,5 +62,28 @@ public class GameController : MonoBehaviour
     }
     public void QuitGame(){
         Application.Quit();
+    }
+
+    public void FadeOutToBlack()
+    {
+        
+    }
+    public void FadeInFromBlack()
+    {
+
+    }
+
+    public void StartCarEnding()
+    {
+        audioSource.clip = carEndingSFX;
+        audioSource.Play();
+        FadeOutToBlack();
+        //Wait for fade out to finish
+        
+        //Pause game (timescale = 0), then fade/scroll-in text for endings
+
+        SceneManager.LoadScene(0); //Load main menu
+
+        //Keep track of car ending having been found (2/4 endings found)
     }
 }

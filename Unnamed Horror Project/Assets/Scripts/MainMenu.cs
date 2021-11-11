@@ -10,7 +10,7 @@ public class MainMenu : MonoBehaviour
     public GameObject MainMenuUI;
 
     public void PlayButton(){
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+        SceneManager.LoadScene(1);
     }
 
     public void QuitButton(){

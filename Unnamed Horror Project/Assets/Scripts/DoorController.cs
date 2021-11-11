@@ -10,14 +10,25 @@ public class DoorController : MonoBehaviour
     [SerializeField] private bool closeTrigger = false;
     //private AudioSource doorAudioSource;
     private bool canChangeDoorState;
+    private bool doorClosed;
     public AudioClip doorSFXOne;
     private void Awake(){
         //doorAudioSource = gameObject.GetComponent<AudioSource>();
     }
+    private void Start(){
+        doorClosed = true;
+    }
     public void Update(){
-        if(canChangeDoorState){
-            if(Input.GetKeyDown(KeyCode.E)){
-                ChangeDoorState();
+        if(canChangeDoorState){ // If in range of door
+            if(Input.GetKeyDown(KeyCode.E)){ // If player presses E
+                if(doorClosed) // If door currently closed
+                {
+                    OpenDoor();
+                }
+                else
+                {
+                    CloseDoor();
+                }
             }
         }
     }
@@ -26,6 +37,33 @@ public class DoorController : MonoBehaviour
         if(other.tag == "Player"){
             canChangeDoorState = true;
         }
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            canChangeDoorState = false;
+        }
+    }
+
+    private void OpenDoor(){
+        myDoor.Play("DoorOpen", 0, 0.0f);
+        Debug.Log("door open");
+        canChangeDoorState = false;
+        PlayRandomDoorSFX();
+
+        //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
+        doorClosed = false;
+    }
+
+    private void CloseDoor(){
+        myDoor.Play("DoorClose", 0, 0.0f);
+        Debug.Log("door close");
+        canChangeDoorState = false;
+        PlayRandomDoorSFX();
+
+        //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
+        doorClosed = true;
     }
 
     private void ChangeDoorState(){
