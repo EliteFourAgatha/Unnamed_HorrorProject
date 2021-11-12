@@ -73,6 +73,14 @@ public class GameController : MonoBehaviour
 
     }
 
+
+    //Ending 1. Available from very start of game from first
+    //  eerie SFX/music/long shot of dark corridor you have to go down.
+    //   No longer available after xxxx. You go outside and find the tires have been slashed.
+    //     "This can't be happening...."
+
+    //  "No job is worth this shit"
+
     public void StartCarEnding()
     {
         audioSource.clip = carEndingSFX;
@@ -86,4 +94,5 @@ public class GameController : MonoBehaviour
 
         //Keep track of car ending having been found (2/4 endings found)
     }
+
 }

@@ -11,7 +11,8 @@ public class DoorController : MonoBehaviour
     //private AudioSource doorAudioSource;
     private bool canChangeDoorState;
     private bool doorClosed;
-    public AudioClip doorSFXOne;
+    public AudioClip doorOpenOne;
+    public AudioClip doorCloseOne;
     private void Awake(){
         //doorAudioSource = gameObject.GetComponent<AudioSource>();
     }
@@ -50,7 +51,7 @@ public class DoorController : MonoBehaviour
         myDoor.Play("DoorOpen", 0, 0.0f);
         Debug.Log("door open");
         canChangeDoorState = false;
-        PlayRandomDoorSFX();
+        PlayRandomOpenSFX();
 
         //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
         doorClosed = false;
@@ -60,34 +61,19 @@ public class DoorController : MonoBehaviour
         myDoor.Play("DoorClose", 0, 0.0f);
         Debug.Log("door close");
         canChangeDoorState = false;
-        PlayRandomDoorSFX();
+        PlayRandomCloseSFX();
 
         //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
         doorClosed = true;
     }
-
-    private void ChangeDoorState(){
-        if(openTrigger){
-            //Animation name, stateNameHash, normalized time
-            myDoor.Play("DoorOpen", 0, 0.0f);
-            Debug.Log("door open");
-            PlayRandomDoorSFX();
-            canChangeDoorState = false;
-            gameObject.SetActive(false);
-        }
-        else if(closeTrigger){
-            myDoor.Play("DoorClose", 0, 0.0f);
-            Debug.Log("door close");
-            PlayRandomDoorSFX();
-            canChangeDoorState = false;
-            gameObject.SetActive(false);
-        }
-    }
     //
     //Need to randomize this, currently only playing same sfx (polish)
     //
-    public void PlayRandomDoorSFX(){
+    public void PlayRandomOpenSFX(){
         //if(!doorAudioSource.isPlaying)
-        AudioSource.PlayClipAtPoint(doorSFXOne, transform.position, 0.5f);
+        AudioSource.PlayClipAtPoint(doorOpenOne, transform.position, 0.5f);
+    }
+    public void PlayRandomCloseSFX(){
+        AudioSource.PlayClipAtPoint(doorCloseOne, transform.position, 0.5f);
     }
 }

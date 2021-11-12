@@ -13,7 +13,7 @@ public class Highlights : MonoBehaviour
             originalMaterial = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
             gameObject.GetComponent<MeshRenderer>().sharedMaterial = highlightMaterial;
             lastHighlightedObject = gameObject;
-        } 
+        }
     } 
     void ClearHighlighted(){
         if (lastHighlightedObject != null){
