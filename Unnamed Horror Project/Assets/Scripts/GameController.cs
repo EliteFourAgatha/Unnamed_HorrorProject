@@ -1,21 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
     DoorController doorScript;
-    //Static allows you to keep track of variable status regardless
     public static bool gameIsPaused = false;
     public GameObject player;
     public GameObject pauseMenuUI;
-    public Animator fadeAnimator;
+    public Text popupText;
     public AudioClip carEndingSFX;
     private AudioSource audioSource;
+    private LevelController levelController;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
+        levelController = gameObject.GetComponent<LevelController>();
     }
     private void Start(){
         //Lock cursor to center of game window
@@ -35,11 +36,6 @@ public class GameController : MonoBehaviour
             }
         }
     }
-    /*
-    public void LoadOptions(){
-        Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
-    }*/
     public void ResumeGame(){
         pauseMenuUI.SetActive(false);
         player.GetComponent<CharacterController>().enabled = true;
@@ -62,37 +58,12 @@ public class GameController : MonoBehaviour
     }
     public void QuitGame(){
         Application.Quit();
-    }
-
-    public void FadeOutToBlack()
+    }    
+    public IEnumerator ShowMessage(string message, float delay)
     {
-        
+        popupText.text = message;
+        popupText.text.enabled = true;
+        yield return new WaitForSeconds(delay);
+        popupText.text.enabled = false;
     }
-    public void FadeInFromBlack()
-    {
-
-    }
-
-
-    //Ending 1. Available from very start of game from first
-    //  eerie SFX/music/long shot of dark corridor you have to go down.
-    //   No longer available after xxxx. You go outside and find the tires have been slashed.
-    //     "This can't be happening...."
-
-    //  "No job is worth this shit"
-
-    public void StartCarEnding()
-    {
-        audioSource.clip = carEndingSFX;
-        audioSource.Play();
-        FadeOutToBlack();
-        //Wait for fade out to finish
-        
-        //Pause game (timescale = 0), then fade/scroll-in text for endings
-
-        SceneManager.LoadScene(0); //Load main menu
-
-        //Keep track of car ending having been found (2/4 endings found)
-    }
-
 }
