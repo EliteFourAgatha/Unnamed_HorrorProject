@@ -38,29 +38,32 @@ public class CarInteractions : MonoBehaviour
     }
     public void Update()
     {
-        //If car ending possible (between checkpoint 1 and X)
-        if(carEndingPossible)
+        if(canInteractWithCar)
         {
-            //Prompt to ensure player wants to quit by car
-            if(Input.GetKeyDown(KeyCode.E))
+            //If car ending possible (between checkpoint 1 and X)
+            if(carEndingPossible)
             {
-                carEndingUI.SetActive(true);
-                Time.timeScale = 0;
-                //cursor.lockState = CursorLockMode.Locked;
-                //cursor.visible = false;
-            }
-        }
-        else
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                if(carBatteryDead)
+                //Prompt to ensure player wants to quit by car
+                if(Input.GetKeyDown(KeyCode.E))
                 {
-                    StartCoroutine(gameController.ShowPopupMessage(batteryDeadString, 2));
+                    carEndingUI.SetActive(true);
+                    Time.timeScale = 0;
+                    //cursor.lockState = CursorLockMode.Locked;
+                    //cursor.visible = false;
                 }
-                else
+            }
+            else
+            {
+                if(Input.GetKeyDown(KeyCode.E))
                 {
-                    StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
+                    if(carBatteryDead)
+                    {
+                        StartCoroutine(gameController.ShowPopupMessage(batteryDeadString, 2));
+                    }
+                    else
+                    {
+                        StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
+                    }
                 }
             }
         }
