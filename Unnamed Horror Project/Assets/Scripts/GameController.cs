@@ -18,12 +18,14 @@ public class GameController : MonoBehaviour
         audioSource = gameObject.GetComponent<AudioSource>();
         levelController = gameObject.GetComponent<LevelController>();
     }
-    private void Start(){
+    private void Start()
+    {
         //Lock cursor to center of game window
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update(){
+    private void Update()
+    {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (gameIsPaused)
@@ -36,7 +38,8 @@ public class GameController : MonoBehaviour
             }
         }
     }
-    public void ResumeGame(){
+    public void ResumeGame()
+    {
         pauseMenuUI.SetActive(false);
         player.GetComponent<CharacterController>().enabled = true;
         AudioListener.volume = 1f;
@@ -46,7 +49,8 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         gameIsPaused = false;
     }
-    void PauseGame(){
+    void PauseGame()
+    {
         pauseMenuUI.SetActive(true);
         player.GetComponent<CharacterController>().enabled = false;
         AudioListener.volume = 0;
@@ -56,14 +60,15 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0f;
         gameIsPaused = true;
     }
-    public void QuitGame(){
+    public void QuitGame()
+    {
         Application.Quit();
     }    
-    public IEnumerator ShowMessage(string message, float delay)
+    public IEnumerator ShowPopupMessage(string message, float delay)
     {
         popupText.text = message;
-        popupText.text.enabled = true;
+        popupText.enabled = true;
         yield return new WaitForSeconds(delay);
-        popupText.text.enabled = false;
+        popupText.enabled = false;
     }
 }

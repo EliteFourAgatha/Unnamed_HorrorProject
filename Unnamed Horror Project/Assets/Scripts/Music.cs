@@ -5,20 +5,25 @@ using UnityEngine;
 public class Music : MonoBehaviour
 {
     AudioSource musicAudioSource;
-    void Awake(){
+    void Awake()
+    {
         musicAudioSource = gameObject.GetComponent<AudioSource>();
     }
-    void Start(){
+    void Start()
+    {
         PlayMusic();
     }
 
-    public void PlayMusic(){
+    public void PlayMusic()
+    {
         musicAudioSource.Play();
     }
-    public void StopMusic(){
+    public void StopMusic()
+    {
         musicAudioSource.Stop();
     }
-    public void PauseMusic(){
+    public void PauseMusic()
+    {
         musicAudioSource.Pause();
     }
     public void ChangeMusicSelection(){

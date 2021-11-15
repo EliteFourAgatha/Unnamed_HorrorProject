@@ -9,9 +9,14 @@ public class CarInteractions : MonoBehaviour
     public LevelController levelController;
     private GameController gameController;
     public GameObject carEndingUI;
-    private bool canDoCarEnding;
+    //The car ending still being possible. Available after checkpoint 1 (first scare)
+    //  but must be done before checkpoint X (xxxxx)
+    private bool carEndingPossible;
+    //Car ending opportunity missed or not. True once checkpoint X (xxxx) is reached
+    public static bool carBatteryDead;
     private bool canInteractWithCar;
     private string batteryDeadString = "The battery's dead... This can't be happening..";
+    private string cantLeaveYetString = "I should at least see what the job's about first...";
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -28,17 +33,17 @@ public class CarInteractions : MonoBehaviour
     {
         canInteractWithCar = false;
         //Disable car ending at start
-        canDoCarEnding = false;
+        carEndingPossible = false;
+        carBatteryDead = false;
     }
     public void Update()
     {
-        if(canDoCarEnding)
+        //If car ending possible (between checkpoint 1 and X)
+        if(carEndingPossible)
         {
+            //Prompt to ensure player wants to quit by car
             if(Input.GetKeyDown(KeyCode.E))
             {
-                //Enable popup UI (semi-transparent, freezes game behind it)
-                // "Are you sure you want to quit/exit now?"
-
                 carEndingUI.SetActive(true);
                 Time.timeScale = 0;
                 //cursor.lockState = CursorLockMode.Locked;
@@ -49,7 +54,14 @@ public class CarInteractions : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                StartCoroutine(gameController.ShowMessage(batteryDeadString, 2));
+                if(carBatteryDead)
+                {
+                    StartCoroutine(gameController.ShowPopupMessage(batteryDeadString, 2));
+                }
+                else
+                {
+                    StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
+                }
             }
         }
     }
@@ -79,11 +91,14 @@ public class CarInteractions : MonoBehaviour
     public void StartCarEnding()
     {
         audioSource.Play();
+        carEndingUI.SetActive(false);
+        Time.timeScale = 1;
         //
         //Keep track of car ending having been found (2/4 endings found)
         //
         //
         //Fade in to "game over screen / stats / endings" screen
+        
         levelController.FadeInToLevel(0);
     }
 }

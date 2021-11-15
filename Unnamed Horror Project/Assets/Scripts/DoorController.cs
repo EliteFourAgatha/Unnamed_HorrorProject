@@ -13,16 +13,22 @@ public class DoorController : MonoBehaviour
     private bool doorClosed;
     public AudioClip doorOpenOne;
     public AudioClip doorCloseOne;
-    private void Awake(){
+    private void Awake()
+    {
         //doorAudioSource = gameObject.GetComponent<AudioSource>();
     }
-    private void Start(){
+    private void Start()
+    {
         doorClosed = true;
     }
-    public void Update(){
-        if(canChangeDoorState){ // If in range of door
-            if(Input.GetKeyDown(KeyCode.E)){ // If player presses E
-                if(doorClosed) // If door currently closed
+    public void Update()
+    {
+        //If in range of door
+        if(canChangeDoorState)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                if(doorClosed)
                 {
                     OpenDoor();
                 }
@@ -47,7 +53,8 @@ public class DoorController : MonoBehaviour
         }
     }
 
-    private void OpenDoor(){
+    private void OpenDoor()
+    {
         myDoor.Play("DoorOpen", 0, 0.0f);
         Debug.Log("door open");
         canChangeDoorState = false;
@@ -57,7 +64,8 @@ public class DoorController : MonoBehaviour
         doorClosed = false;
     }
 
-    private void CloseDoor(){
+    private void CloseDoor()
+    {
         myDoor.Play("DoorClose", 0, 0.0f);
         Debug.Log("door close");
         canChangeDoorState = false;
@@ -69,11 +77,13 @@ public class DoorController : MonoBehaviour
     //
     //Need to randomize this, currently only playing same sfx (polish)
     //
-    public void PlayRandomOpenSFX(){
+    public void PlayRandomOpenSFX()
+    {
         //if(!doorAudioSource.isPlaying)
         AudioSource.PlayClipAtPoint(doorOpenOne, transform.position, 0.5f);
     }
-    public void PlayRandomCloseSFX(){
+    public void PlayRandomCloseSFX()
+    {
         AudioSource.PlayClipAtPoint(doorCloseOne, transform.position, 0.5f);
     }
 }

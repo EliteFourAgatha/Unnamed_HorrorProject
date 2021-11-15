@@ -7,14 +7,17 @@ public class Footsteps : MonoBehaviour
     private AudioSource audioSource;
     public AudioClip walkAudio;
     public AudioClip runAudio;
-    private void Awake() {
+    private void Awake()
+    {
         audioSource = gameObject.GetComponent<AudioSource>();
     }
 
-    public void PlayFootstepAudio(){
+    public void PlayFootstepAudio()
+    {
 
     }
-    public void PauseFootstepAudio(){
+    public void PauseFootstepAudio()
+    {
 
     }
 
