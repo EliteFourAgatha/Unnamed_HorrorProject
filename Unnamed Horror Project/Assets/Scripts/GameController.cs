@@ -12,11 +12,14 @@ public class GameController : MonoBehaviour
     public Text popupText;
     public AudioClip carEndingSFX;
     private AudioSource audioSource;
-    private LevelController levelController;
+    public LevelController levelController;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
-        levelController = gameObject.GetComponent<LevelController>();
+        if(levelController == null)
+        {
+            levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
+        }
     }
     private void Start()
     {
@@ -26,6 +29,11 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            levelController.FadeInToLevel(0);
+            Debug.Log("fade to main menu");
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (gameIsPaused)

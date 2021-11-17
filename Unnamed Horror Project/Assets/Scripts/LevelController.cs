@@ -15,6 +15,7 @@ public class LevelController : MonoBehaviour
     public void FadeInToLevel(int levelNumber)
     {
         levelToLoad = levelNumber;
+        animator.SetTrigger("FadeIn");
         animator.SetTrigger("FadeOut");
     }
 

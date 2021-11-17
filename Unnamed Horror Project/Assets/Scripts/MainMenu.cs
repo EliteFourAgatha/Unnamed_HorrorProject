@@ -9,6 +9,12 @@ public class MainMenu : MonoBehaviour
     public GameObject OptionsMenuUI;
     public GameObject MainMenuUI;
 
+    public void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public void PlayButton(){
         SceneManager.LoadScene(1);
     }
