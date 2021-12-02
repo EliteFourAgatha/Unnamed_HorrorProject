@@ -24,7 +24,7 @@ public class CarInteractions : MonoBehaviour
         {
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         }
-        if(gameController == null)
+        if(levelController == null)
         {
             levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
         }
@@ -70,7 +70,8 @@ public class CarInteractions : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player"){
+        if(other.tag == "Player")
+        {
             canInteractWithCar = true;
         }
     }
