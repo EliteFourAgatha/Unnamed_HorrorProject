@@ -31,6 +31,7 @@ public class LockedDoor : MonoBehaviour
 
                 //  Then just check if E is pressed here, SFX + "Locked" popup UI etc.
                 audioSource.Play();
+                Debug.Log("Door locked!");
             }
         }
     }
