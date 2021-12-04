@@ -10,28 +10,33 @@ public class PlayerController : MonoBehaviour
     public AudioClip sprintAudio;
     public CharacterController controller;
     public Camera mainCamera;
+    private Rigidbody playerRB;
     private float moveForward;
     private float moveSide;
+    public float fallingVelocity = 5f;
     private float currentSpeed;
     public float walkSpeed = 5f;
     public float sprintSpeed = 10f;
     private bool canRun = true;
-    public int maxStamina = 100;
-    private int staminaValue;
-    private Rigidbody rigidbody;
+    public float maxStamina = 100f;
+    private float currentStamina;
+    private bool isGrounded;
+    public LayerMask groundLayer;
+
     private void Awake()
     {
-        rigidbody = gameObject.GetComponent<Rigidbody>();
+        playerRB = gameObject.GetComponent<Rigidbody>();
         footstepAudioSource = gameObject.GetComponent<AudioSource>();
     }
     private void Start()
     {
-        staminaValue = 100;
+        currentStamina = maxStamina;
+        isGrounded = true;
     }
     private void Update()
     {
         //Player winded, play SFX
-        if(staminaValue <= 0)
+        if(currentStamina <= 0)
         {
             canRun = false;
         }
@@ -41,27 +46,31 @@ public class PlayerController : MonoBehaviour
             if(canRun)
             {
                 currentSpeed = sprintSpeed;
-                staminaValue --;
             }
         }
         else
         {
             currentSpeed = walkSpeed;
-            if(staminaValue != maxStamina)
-            {
-                staminaValue ++;
-            }
         }
         moveSide = Input.GetAxis("Horizontal") * currentSpeed;
         moveForward = Input.GetAxis("Vertical") * currentSpeed;
-        Debug.Log(staminaValue);
+        
+        //Debug.Log(currentStamina);
         
         //If player not moving
-        if(rigidbody.velocity.z == 0 && rigidbody.velocity.x == 0)
+        if(playerRB.velocity.z == 0 && playerRB.velocity.x == 0)
         {
             Debug.Log("player not moving");
             PauseFootstepAudio();
-            staminaValue++;
+            if(currentStamina <= maxStamina)
+            {
+                currentStamina += 1 * Time.deltaTime;
+            }
+        }
+
+        if(isGrounded)
+        {
+            Debug.Log("Player grounded");
         }
     }
 
@@ -72,8 +81,20 @@ public class PlayerController : MonoBehaviour
     
     public void MovePlayer()
     {
-        rigidbody.velocity = (transform.forward * moveForward) + (transform.right * moveSide);
+        playerRB.velocity = (moveForward * transform.forward) + (transform.right * moveSide);
         PlayFootstepAudio();
+        if(currentSpeed == sprintSpeed)
+        {
+            currentStamina -= 1 * Time.deltaTime;
+        }
+        else
+        {
+            if(currentStamina >= maxStamina)
+            {
+                currentStamina += 1 * Time.deltaTime;
+            }
+        }
+        HandleStairs();
         //Vector3 move = transform.right * x + transform.forward * z;
         //controller.Move(move * speed * Time.deltaTime);
 
@@ -84,11 +105,36 @@ public class PlayerController : MonoBehaviour
         Vector3 raycastOrigin = transform.position;
         Vector3 targetPosition;
         targetPosition = transform.position;
+        /*
 
-        //if(Physics.SphereCast(raycastOrigin, 0.2f, -Vector3.up, out hit, groundLayer))
-        //{
+        if(Physics.SphereCast(raycastOrigin, 0.2f, -Vector3.up, out hit, groundLayer))
+        {
+            Vector3 raycastHitpoint = hit.point;
+            targetPosition.y = raycastHitpoint.y;
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
 
-        //}
+        if(isGrounded)
+        {
+            if(playerRB.velocity.z != 0 || playerRB.velocity.x != 0)
+            {
+                transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
+            }
+        }
+        else
+        {
+            transform.position = targetPosition;
+        }
+        */
+        if(!isGrounded)
+        {
+            playerRB.AddForce(-Vector3.up * fallingVelocity);
+            Debug.Log("Dropping player via gravity");
+        }
     }    
     public void PlayFootstepAudio()
     {

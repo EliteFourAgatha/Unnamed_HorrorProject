@@ -8,6 +8,7 @@ public class LockedDoor : MonoBehaviour
 {
     private AudioSource audioSource;
     private bool canCheckLockedDoor;
+    public Cursor handCursor;
     
     private void Awake()
     {
@@ -27,11 +28,14 @@ public class LockedDoor : MonoBehaviour
                 // Maybe OnMouseEnter on door itself. If so, change cursor.
                 // (Then use OnMouseExit to change cursor back when not hovering)
                 
-                //Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
+                //Cursor.SetCursor(handCursor, Vector2.zero, CursorMode.Auto);
 
                 //  Then just check if E is pressed here, SFX + "Locked" popup UI etc.
-                audioSource.Play();
-                Debug.Log("Door locked!");
+                if(!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                    Debug.Log("Door locked!");
+                }
             }
         }
     }

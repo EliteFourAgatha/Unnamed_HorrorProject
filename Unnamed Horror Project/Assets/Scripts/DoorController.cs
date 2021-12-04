@@ -6,8 +6,6 @@ public class DoorController : MonoBehaviour
 {
     //Serialize field allows you to edit in inspector while keeping private
     [SerializeField] private Animator myDoor;
-    [SerializeField] private bool openTrigger = false;
-    [SerializeField] private bool closeTrigger = false;
     //private AudioSource doorAudioSource;
     private bool canChangeDoorState;
     private bool doorClosed;

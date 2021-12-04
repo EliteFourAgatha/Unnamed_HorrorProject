@@ -11,7 +11,7 @@ public class WallClock : MonoBehaviour
     }
     private void Update()
     {
-        if(!audioSource.isPlaying())
+        if(!audioSource.isPlaying)
         {
             audioSource.Play();
         }
