@@ -10,10 +10,12 @@ public class PlayerController : MonoBehaviour
     public AudioClip sprintAudio;
     public CharacterController controller;
     public Camera mainCamera;
-    private Rigidbody playerRB;
+    //private Rigidbody playerRB;
     private float moveForward;
     private float moveSide;
-    public float fallingVelocity = 5f;
+    public float fallingVelocity = 100f;
+    private float gravityValue = 9.8f;
+    private float verticalSpeed;
     private float currentSpeed;
     public float walkSpeed = 5f;
     public float sprintSpeed = 10f;
@@ -22,10 +24,11 @@ public class PlayerController : MonoBehaviour
     private float currentStamina;
     private bool isGrounded;
     public LayerMask groundLayer;
+    private Vector3 lastPosition;
 
     private void Awake()
     {
-        playerRB = gameObject.GetComponent<Rigidbody>();
+        //playerRB = gameObject.GetComponent<Rigidbody>();
         footstepAudioSource = gameObject.GetComponent<AudioSource>();
     }
     private void Start()
@@ -35,6 +38,8 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        lastPosition = new Vector3(0f, 0f, 0f);
+        gameObject.transform.position = lastPosition;
         //Player winded, play SFX
         if(currentStamina <= 0)
         {
@@ -54,11 +59,17 @@ public class PlayerController : MonoBehaviour
         }
         moveSide = Input.GetAxis("Horizontal") * currentSpeed;
         moveForward = Input.GetAxis("Vertical") * currentSpeed;
-        
-        //Debug.Log(currentStamina);
+
+        if(Time.timeScale == 1)
+        {
+            MovePlayer();
+        }
+
+
         
         //If player not moving
-        if(playerRB.velocity.z == 0 && playerRB.velocity.x == 0)
+        
+        if(lastPosition != gameObject.transform.position)
         {
             Debug.Log("player not moving");
             PauseFootstepAudio();
@@ -67,21 +78,19 @@ public class PlayerController : MonoBehaviour
                 currentStamina += 1 * Time.deltaTime;
             }
         }
-
         if(isGrounded)
         {
             Debug.Log("Player grounded");
         }
-    }
-
-    private void FixedUpdate()
-    {
-        MovePlayer();
-    }
-    
+    }    
     public void MovePlayer()
     {
-        playerRB.velocity = (moveForward * transform.forward) + (transform.right * moveSide);
+        //playerRB.velocity = (moveForward * transform.forward) + (transform.right * moveSide);
+        Vector3 move = transform.right * moveSide + transform.forward * moveForward;
+        verticalSpeed -= gravityValue * Time.deltaTime;
+        move.y = verticalSpeed;
+        
+        controller.Move(move * Time.deltaTime);
         PlayFootstepAudio();
         if(currentSpeed == sprintSpeed)
         {
@@ -94,14 +103,12 @@ public class PlayerController : MonoBehaviour
                 currentStamina += 1 * Time.deltaTime;
             }
         }
-        HandleStairs();
-        //Vector3 move = transform.right * x + transform.forward * z;
-        //controller.Move(move * speed * Time.deltaTime);
 
+        //HandleStairs();
     }
     public void HandleStairs()
     {
-        RaycastHit hit;
+        //RaycastHit hit;
         Vector3 raycastOrigin = transform.position;
         Vector3 targetPosition;
         targetPosition = transform.position;
@@ -130,23 +137,24 @@ public class PlayerController : MonoBehaviour
             transform.position = targetPosition;
         }
         */
-        if(!isGrounded)
-        {
-            playerRB.AddForce(-Vector3.up * fallingVelocity);
-            Debug.Log("Dropping player via gravity");
-        }
     }    
     public void PlayFootstepAudio()
     {
         if(currentSpeed == sprintSpeed)
         {
             footstepAudioSource.clip = sprintAudio;
-            footstepAudioSource.Play();
+            if(!footstepAudioSource.isPlaying)
+            {
+                footstepAudioSource.Play();
+            }
         }
         else
         {
             footstepAudioSource.clip = walkAudio;
-            footstepAudioSource.Play();
+            if(!footstepAudioSource.isPlaying)
+            {
+                footstepAudioSource.Play();
+            }
         }
     }
     public void PauseFootstepAudio()

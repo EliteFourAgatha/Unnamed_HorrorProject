@@ -6,6 +6,7 @@ public class HeadBobEffect : MonoBehaviour
 {
     public CharacterController playerController;
     public Animation anim;
+    public Animator headBobAnimator;
     private bool isMoving;
     private bool left;
     private bool right;
@@ -17,8 +18,8 @@ public class HeadBobEffect : MonoBehaviour
 
     // Update is called once per frame
     private void Update(){
-        CheckForMovementInput();
-        EnableHeadBobEffect();
+        //CheckForMovementInput();
+        //EnableHeadBobEffect();
     }
     public void EnableHeadBobEffect(){
         if(playerController.isGrounded == true){
@@ -46,6 +47,10 @@ public class HeadBobEffect : MonoBehaviour
         float inputY = Input.GetAxis("Vertical");
         if(inputX != 0 || inputY != 0){
             isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
         }
     }
 }
