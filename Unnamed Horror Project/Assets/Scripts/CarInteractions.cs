@@ -12,10 +12,7 @@ public class CarInteractions : MonoBehaviour
     //The car ending still being possible. Available after checkpoint 1 (first scare)
     //  but must be done before checkpoint X (xxxxx)
     private bool carEndingPossible;
-    //Car ending opportunity missed or not. True once checkpoint X (xxxx) is reached
-    public static bool carBatteryDead;
     private bool canInteractWithCar;
-    private string batteryDeadString = "The battery's dead... This can't be happening..";
     private string cantLeaveYetString = "I should at least see what the job's about first...";
     private void Awake()
     {
@@ -34,10 +31,17 @@ public class CarInteractions : MonoBehaviour
         canInteractWithCar = false;
         //Disable car ending at start
         carEndingPossible = false;
-        carBatteryDead = false;
     }
     public void Update()
     {
+        if(gameController.currentCheckpoint == 2)
+        {
+            carEndingPossible = true;
+        }
+        else
+        {
+            carEndingPossible = false;
+        }
         if(canInteractWithCar)
         {
             //If car ending possible (between checkpoint 1 and X)
@@ -56,14 +60,7 @@ public class CarInteractions : MonoBehaviour
             {
                 if(Input.GetKeyDown(KeyCode.E))
                 {
-                    if(carBatteryDead)
-                    {
-                        StartCoroutine(gameController.ShowPopupMessage(batteryDeadString, 2));
-                    }
-                    else
-                    {
-                        StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
-                    }
+                    StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
                 }
             }
         }

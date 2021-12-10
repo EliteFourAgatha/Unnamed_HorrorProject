@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class Highlights : MonoBehaviour
 {
-    public Material highlightMaterial;
-    Material originalMaterial;
+    public Material highlightMat;
+    Material originalMat;
     GameObject lastHighlightedObject;
     void HighlightObject(GameObject gameObject){
         if (lastHighlightedObject != gameObject){
             ClearHighlighted();
-            originalMaterial = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
-            gameObject.GetComponent<MeshRenderer>().sharedMaterial = highlightMaterial;
+            originalMat = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+            gameObject.GetComponent<MeshRenderer>().sharedMaterial = highlightMat;
             lastHighlightedObject = gameObject;
         }
     } 
     void ClearHighlighted(){
         if (lastHighlightedObject != null){
-            lastHighlightedObject.GetComponent<MeshRenderer>().sharedMaterial = originalMaterial;
+            lastHighlightedObject.GetComponent<MeshRenderer>().sharedMaterial = originalMat;
             lastHighlightedObject = null;
         }
     } 
@@ -36,7 +36,7 @@ public class Highlights : MonoBehaviour
             else{
                 ClearHighlighted();
             }
-        } 
+        }
         else{
             ClearHighlighted();
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Class for locked door SFX and cursor change
-// Placed on trigger cube on locked door prefab
+// Placed on locked door child object
 public class LockedDoor : MonoBehaviour
 {
     private AudioSource audioSource;

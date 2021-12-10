@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public AudioClip carEndingSFX;
     private AudioSource audioSource;
     public LevelController levelController;
+    public int currentCheckpoint;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -25,6 +26,7 @@ public class GameController : MonoBehaviour
     {
         //Lock cursor to center of game window
         Cursor.lockState = CursorLockMode.Locked;
+        currentCheckpoint = 0;
     }
 
     private void Update()
@@ -49,7 +51,6 @@ public class GameController : MonoBehaviour
     public void ResumeGame()
     {
         pauseMenuUI.SetActive(false);
-        player.GetComponent<CharacterController>().enabled = true;
         AudioListener.volume = 1f;
         //AudioListener.pause = false; //Unpause all current audio
         Cursor.lockState = CursorLockMode.Locked; //Lock cursor
@@ -60,7 +61,6 @@ public class GameController : MonoBehaviour
     void PauseGame()
     {
         pauseMenuUI.SetActive(true);
-        player.GetComponent<CharacterController>().enabled = false;
         AudioListener.volume = 0;
         //AudioListener.pause = true; //Pause all current audio
         Cursor.lockState = CursorLockMode.None; //Unlock cursor
