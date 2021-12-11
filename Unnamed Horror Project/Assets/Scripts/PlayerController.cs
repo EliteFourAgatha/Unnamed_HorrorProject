@@ -87,6 +87,7 @@ public class PlayerController : MonoBehaviour
     {
         //playerRB.velocity = (moveForward * transform.forward) + (transform.right * moveSide);
         Vector3 move = transform.right * moveSide + transform.forward * moveForward;
+        //Apply gravity to handle stairs and not float
         verticalSpeed -= gravityValue * Time.deltaTime;
         move.y = verticalSpeed;
         
@@ -103,41 +104,7 @@ public class PlayerController : MonoBehaviour
                 currentStamina += 1 * Time.deltaTime;
             }
         }
-
-        //HandleStairs();
     }
-    public void HandleStairs()
-    {
-        //RaycastHit hit;
-        Vector3 raycastOrigin = transform.position;
-        Vector3 targetPosition;
-        targetPosition = transform.position;
-        /*
-
-        if(Physics.SphereCast(raycastOrigin, 0.2f, -Vector3.up, out hit, groundLayer))
-        {
-            Vector3 raycastHitpoint = hit.point;
-            targetPosition.y = raycastHitpoint.y;
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-        }
-
-        if(isGrounded)
-        {
-            if(playerRB.velocity.z != 0 || playerRB.velocity.x != 0)
-            {
-                transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
-            }
-        }
-        else
-        {
-            transform.position = targetPosition;
-        }
-        */
-    }    
     public void PlayFootstepAudio()
     {
         if(currentSpeed == sprintSpeed)
