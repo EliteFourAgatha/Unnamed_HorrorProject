@@ -8,15 +8,25 @@ public class MainMenu : MonoBehaviour
 {
     public GameObject OptionsMenuUI;
     public GameObject MainMenuUI;
+    public GameController gameController;
+    public LevelController levelController;
 
-    public void Start()
+    void Awake()
+    {
+        if (gameController == null)
+        {
+            levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
+        }
+    }
+
+    void Start()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void PlayButton(){
-        SceneManager.LoadScene(1);
+        levelController.FadeInToLevel(1);
     }
 
     public void QuitButton(){

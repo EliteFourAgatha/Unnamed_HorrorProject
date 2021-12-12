@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Triggers : MonoBehaviour
 {
     public GameController gameController;
+    public LevelController levelController;
     public GameObject darknessWall;
     public GameObject closetLightBulb;
     public GameObject fakeCloset;
@@ -13,7 +15,9 @@ public class Triggers : MonoBehaviour
     public GameObject mainPaper;
     public Image mainPaperImage;
     public Sprite mainPaperSprite;
-    private bool canGrabPaper;
+    private bool canGrabPaper = false;
+    private bool canOpenDungeonDoor = false;
+    public AudioSource triggerAudio;
 
     private string paperInstructionString = "Press [Esc] to view objectives";
 
@@ -22,6 +26,14 @@ public class Triggers : MonoBehaviour
         if (gameController == null)
         {
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        }
+        if (gameController == null)
+        {
+            levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
+        }
+        if(triggerAudio == null)
+        {
+            triggerAudio = gameObject.GetComponent<AudioSource>();
         }
     }
     void Start()
@@ -37,6 +49,13 @@ public class Triggers : MonoBehaviour
                 ExecuteMainPaperTrigger();
             }
         }
+        if(canOpenDungeonDoor)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                ExecuteDungeonTrigger();
+            }
+        }
     }
     public void OnTriggerEnter(Collider other)
     {
@@ -50,6 +69,10 @@ public class Triggers : MonoBehaviour
             {
                 canGrabPaper = true;
             }
+            else if(gameObject.tag == "DungeonTrigger")
+            {
+                canOpenDungeonDoor = true;
+            }
         }
     }
     public void OnTriggerExit(Collider other)
@@ -59,6 +82,10 @@ public class Triggers : MonoBehaviour
             if(gameObject.tag == "MainPaperTrigger")
             {
                 canGrabPaper = false;
+            }
+            else if(gameObject.tag == "DungeonTrigger")
+            {
+                canOpenDungeonDoor = false;
             }
         }
     }
@@ -86,5 +113,17 @@ public class Triggers : MonoBehaviour
         gameController.currentCheckpoint = 1;
         gameController.ShowPopupMessage(paperInstructionString, 2);
         mainPaper.SetActive(false);
+    }
+    //Trigger to enter final dungeon scene
+    public void ExecuteDungeonTrigger()
+    {
+        triggerAudio.Play();
+        levelController.FadeInToLevel(2);
+        //StartCoroutine(DelayFadeToLevel(2f, 2));
+    }
+    IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
+    {
+        yield return new WaitForSeconds(delayTime);
+        levelController.FadeInToLevel(levelNumber);
     }
 }
