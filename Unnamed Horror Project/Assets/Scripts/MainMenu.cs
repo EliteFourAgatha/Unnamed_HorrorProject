@@ -8,12 +8,15 @@ public class MainMenu : MonoBehaviour
 {
     public GameObject OptionsMenuUI;
     public GameObject MainMenuUI;
-    public GameController gameController;
+    public GameObject rulesMenuUI;
+    public GameObject pressEnterInstructions;
     public LevelController levelController;
+    private bool rulesMenuActive = false;
+    private bool pressEnterEnabled = false;
 
     void Awake()
     {
-        if (gameController == null)
+        if (levelController == null)
         {
             levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
         }
@@ -24,9 +27,29 @@ public class MainMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+    void Update()
+    {
+        if(rulesMenuActive)
+        {
+            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                pressEnterInstructions.SetActive(true);
+                pressEnterEnabled = true;
+            }
+        }
+        if(pressEnterEnabled)
+        {
+            if(Input.GetKeyDown(KeyCode.Return))
+            {
+                rulesMenuActive = false;
+                rulesMenuUI.SetActive(false);
+                levelController.FadeInToLevel(1);
+            }
+        }
+    }
 
     public void PlayButton(){
-        levelController.FadeInToLevel(1);
+        EnableRulesMenu();
     }
 
     public void QuitButton(){
@@ -40,6 +63,16 @@ public class MainMenu : MonoBehaviour
     public void DisableOptionsMenu(){
         OptionsMenuUI.SetActive(false);
         MainMenuUI.SetActive(true);
+    }
+    public void EnableRulesMenu()
+    {
+        rulesMenuUI.SetActive(true);
+        MainMenuUI.SetActive(false);
+        rulesMenuActive = true;
+    }
+    public void ScrollInRulesText()
+    {
+        
     }
 
 }

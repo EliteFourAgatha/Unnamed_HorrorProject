@@ -8,17 +8,31 @@ public class Triggers : MonoBehaviour
 {
     public GameController gameController;
     public LevelController levelController;
+    public AudioSource triggerAudio;
+
+    //Darkness
     public GameObject darknessWall;
     public GameObject closetLightBulb;
     public GameObject fakeCloset;
     public GameObject dungeonDoor;
+
+    //Main Paper
     public GameObject mainPaper;
     public Image mainPaperImage;
     public Sprite mainPaperSprite;
-    private bool canGrabPaper = false;
-    private bool canOpenDungeonDoor = false;
-    public AudioSource triggerAudio;
 
+
+    //Lights
+    public Light[] controlledLights;
+    public GameObject lightSwitch;
+
+    private bool canGrabPaper = false;
+    private bool darknessTriggerActive = true;
+    private bool canOpenDungeonDoor = false;
+    private bool canUseSnackMachine = false;
+    private bool canUseLightSwitch = false;
+    private bool canUseLockedDoor = false;
+    private bool lightsOff = true;
     private string paperInstructionString = "Press [Esc] to view objectives";
 
     void Awake()
@@ -36,14 +50,12 @@ public class Triggers : MonoBehaviour
             triggerAudio = gameObject.GetComponent<AudioSource>();
         }
     }
-    void Start()
-    {
-        canGrabPaper = false;
-    }
     void Update()
     {
         if(canGrabPaper)
         {
+            //If object material is currently highlighted, means player is looking at it
+            // Check for that before E input
             if(Input.GetKeyDown(KeyCode.E))
             {
                 ExecuteMainPaperTrigger();
@@ -56,6 +68,27 @@ public class Triggers : MonoBehaviour
                 ExecuteDungeonTrigger();
             }
         }
+        if(canUseSnackMachine)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                ExecuteAudioOnlyTrigger();
+            }
+        }
+        if(canUseLightSwitch)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                ExecuteLightSwitchTrigger();
+            }
+        }
+        if(canUseLockedDoor)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                ExecuteAudioOnlyTrigger();
+            }
+        }
     }
     public void OnTriggerEnter(Collider other)
     {
@@ -63,7 +96,10 @@ public class Triggers : MonoBehaviour
         {
             if(gameObject.tag == "DarknessTrigger")
             {
-                ExecuteDarknessTrigger();
+                if(darknessTriggerActive)
+                {
+                    ExecuteDarknessTrigger();
+                }
             }
             else if(gameObject.tag == "MainPaperTrigger")
             {
@@ -72,6 +108,18 @@ public class Triggers : MonoBehaviour
             else if(gameObject.tag == "DungeonTrigger")
             {
                 canOpenDungeonDoor = true;
+            }
+            else if(gameObject.tag == "SnackTrigger")
+            {
+                canUseSnackMachine = true;
+            }
+            else if(gameObject.tag == "LightSwitchTrigger")
+            {
+                canUseLightSwitch = true;
+            }
+            else if(gameObject.tag == "DoorLockedTrigger")
+            {
+                canUseLockedDoor = true;
             }
         }
     }
@@ -87,32 +135,42 @@ public class Triggers : MonoBehaviour
             {
                 canOpenDungeonDoor = false;
             }
+            else if(gameObject.tag == "SnackTrigger")
+            {
+                canUseSnackMachine = false;
+            }
+            else if(gameObject.tag == "LightSwitchTrigger")
+            {
+                canUseLightSwitch = false;
+            }
+            else if(gameObject.tag == "DoorLockedTrigger")
+            {
+                canUseLockedDoor = false;
+            }
         }
     }
-    //If player enters darkness trigger, 4 things happen
-    //1. darkness wall spawns behind player so they can't leave
-    //2. light bulb light goes out
-    //3. loud / spooky noise or ominouse tone to show that shit is going down
-
-
-    //4. dungeon door spawns and fades into view (Or player can do reverse alpha fade
-    // as they get closer to door?)
     public void ExecuteDarknessTrigger()
     {
+        //Set darkness wall active behind player, block escape backwards
         darknessWall.SetActive(true);
+        //Lights go out
         closetLightBulb.SetActive(false);
         fakeCloset.SetActive(false);
+        //Enable dungeon door
         dungeonDoor.SetActive(true);
-        Debug.Log("Darkness activated!");
+        //Spooky audio plays, need better SFX
+        triggerAudio.Play();
+        darknessTriggerActive = false;
     }
     //Trigger for main paper in head office
     public void ExecuteMainPaperTrigger()
     {
         mainPaperImage.sprite = mainPaperSprite;
         mainPaperImage.enabled = true;
+        triggerAudio.Play();
         gameController.currentCheckpoint = 1;
-        gameController.ShowPopupMessage(paperInstructionString, 2);
-        mainPaper.SetActive(false);
+        StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 2));
+        //mainPaper.SetActive(false);
     }
     //Trigger to enter final dungeon scene
     public void ExecuteDungeonTrigger()
@@ -120,6 +178,42 @@ public class Triggers : MonoBehaviour
         triggerAudio.Play();
         levelController.FadeInToLevel(2);
         //StartCoroutine(DelayFadeToLevel(2f, 2));
+    }
+    public void ExecuteAudioOnlyTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+    }
+    public void ExecuteLightSwitchTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        //Turn lights on
+        if(lightsOff)
+        {
+            lightsOff = false;
+            //Rotate lightswitch to "on"
+            lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
+            foreach(Light light in controlledLights)
+            {
+                light.enabled = true;
+            }
+        }
+        //Turn lights off
+        else
+        {
+            lightsOff = true;
+            //Rotate lightswitch to "off"
+            lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
+            foreach(Light light in controlledLights)
+            {
+                light.enabled = false;
+            }
+        }
     }
     IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
     {

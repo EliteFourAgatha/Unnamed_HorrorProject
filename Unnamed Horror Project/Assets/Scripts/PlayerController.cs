@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
         move.y = verticalSpeed;
         
         controller.Move(move * Time.deltaTime);
-        PlayFootstepAudio();
+        //PlayFootstepAudio();
         if(currentSpeed == sprintSpeed)
         {
             currentStamina -= 1 * Time.deltaTime;

@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
     {
         //Lock cursor to center of game window
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         currentCheckpoint = 0;
     }
 
@@ -77,6 +78,22 @@ public class GameController : MonoBehaviour
         popupText.text = message;
         popupText.enabled = true;
         yield return new WaitForSeconds(delay);
-        popupText.enabled = false;
+        StartCoroutine(FadeOutPopupText(popupText, 2f));
+    }
+    private IEnumerator FadeOutPopupText(Text popupText, float fadeTime)
+    {
+        float elapsedTime = 0.0f;
+        Color textColor = popupText.color;
+        while (elapsedTime < fadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            textColor.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeTime);
+            popupText.color = textColor;
+        }
+        if(popupText.color.a == 0)
+        {
+            popupText.enabled = false;
+        }
+        yield return null;
     }
 }
