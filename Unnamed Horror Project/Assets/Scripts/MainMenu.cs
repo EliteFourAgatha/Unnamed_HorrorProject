@@ -6,12 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public GameObject OptionsMenuUI;
-    public GameObject MainMenuUI;
-    public GameObject rulesMenuUI;
+    public GameObject optionsMenuUI;
+    public GameObject mainMenuUI;
+    public GameObject expositionUI;
     public GameObject pressEnterInstructions;
     public LevelController levelController;
-    private bool rulesMenuActive = false;
+    private bool expositionActive = false;
     private bool pressEnterEnabled = false;
 
     void Awake()
@@ -29,7 +29,7 @@ public class MainMenu : MonoBehaviour
     }
     void Update()
     {
-        if(rulesMenuActive)
+        if(expositionActive)
         {
             if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
             {
@@ -41,34 +41,38 @@ public class MainMenu : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.Return))
             {
-                rulesMenuActive = false;
-                rulesMenuUI.SetActive(false);
+                expositionActive = false;
+                expositionUI.SetActive(false);
                 levelController.FadeInToLevel(1);
             }
         }
     }
 
-    public void PlayButton(){
+    public void PlayButton()
+    {
         EnableRulesMenu();
     }
 
-    public void QuitButton(){
+    public void QuitButton()
+    {
         Application.Quit();
     }
 
-    public void EnableOptionsMenu(){
-        MainMenuUI.SetActive(false);
-        OptionsMenuUI.SetActive(true);
+    public void EnableOptionsMenu()
+    {
+        mainMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(true);
     }
-    public void DisableOptionsMenu(){
-        OptionsMenuUI.SetActive(false);
-        MainMenuUI.SetActive(true);
+    public void DisableOptionsMenu()
+    {
+        optionsMenuUI.SetActive(false);
+        mainMenuUI.SetActive(true);
     }
     public void EnableRulesMenu()
     {
-        rulesMenuUI.SetActive(true);
-        MainMenuUI.SetActive(false);
-        rulesMenuActive = true;
+        expositionUI.SetActive(true);
+        mainMenuUI.SetActive(false);
+        expositionActive = true;
     }
     public void ScrollInRulesText()
     {
