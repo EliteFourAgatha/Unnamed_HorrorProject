@@ -12,6 +12,7 @@ public class Triggers : MonoBehaviour
 
     //Darkness
     public GameObject darknessWall;
+    public GameObject closetDarkBackdrop;
     public GameObject closetLightBulb;
     public GameObject fakeCloset;
     public GameObject dungeonDoor;
@@ -158,6 +159,8 @@ public class Triggers : MonoBehaviour
         fakeCloset.SetActive(false);
         //Enable dungeon door
         dungeonDoor.SetActive(true);
+        //Disable darkness backdrop
+        closetDarkBackdrop.SetActive(false);
         //Spooky audio plays, need better SFX
         triggerAudio.Play();
         darknessTriggerActive = false;
