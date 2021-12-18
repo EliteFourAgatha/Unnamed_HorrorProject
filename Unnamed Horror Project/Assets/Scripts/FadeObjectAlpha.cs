@@ -25,7 +25,7 @@ public class FadeObjectAlpha : MonoBehaviour
     {
         playerPosition = player.transform.position;
         absDistance = Vector3.Distance(playerPosition, fakeCloset.transform.position);
-        Debug.Log("abs dist: " + absDistance);
+        //Debug.Log("abs dist: " + absDistance);
         DetermineAlphaByDistance();
         if(Vector3.Distance(playerPosition, fakeCloset.transform.position) <= 1)
         {
@@ -38,7 +38,6 @@ public class FadeObjectAlpha : MonoBehaviour
         //Do 1 - the alpha value to get the inverse, so that it fades out instead of in
         tempColor.a = 1 - (Mathf.InverseLerp (proximity, 0.1f,
         Vector3.Distance (playerPosition, fakeCloset.transform.position)));
-        Debug.Log("alpha:" + tempColor.a);
         FadeMultipleObjects(tempColor);
     }
     //Change all mesh renderer object alphas at once

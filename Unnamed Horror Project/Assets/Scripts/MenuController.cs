@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class MenuController : MonoBehaviour
 {
     public GameObject optionsMenuUI;
     public GameObject mainMenuUI;
     public GameObject expositionUI;
+    public GameObject controlMenuUI;
+    public GameObject quitGameOptionUI;
     public GameObject pressEnterInstructions;
     public LevelController levelController;
     private bool expositionActive = false;
@@ -29,6 +31,7 @@ public class MainMenu : MonoBehaviour
     }
     void Update()
     {
+        //clean up out of update
         if(expositionActive)
         {
             if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
@@ -47,17 +50,28 @@ public class MainMenu : MonoBehaviour
             }
         }
     }
-
-    public void PlayButton()
+    //Main Menu: Play Button
+    public void MenuPlayButton()
     {
-        EnableRulesMenu();
+        EnableExpositionScreen();
     }
-
-    public void QuitButton()
+    //Pause Menu: Quit Button
+    public void EnableQuitGameOption()
+    {
+        quitGameOptionUI.SetActive(true);
+    }
+    //Quit option: No Button
+    public void DeclineQuitGame()
+    {
+        quitGameOptionUI.SetActive(false);
+    }
+    //Quit option: Yes Button
+    // -also-
+    //Main menu: Quit Button
+    public void ConfirmQuitGame()
     {
         Application.Quit();
     }
-
     public void EnableOptionsMenu()
     {
         mainMenuUI.SetActive(false);
@@ -68,11 +82,29 @@ public class MainMenu : MonoBehaviour
         optionsMenuUI.SetActive(false);
         mainMenuUI.SetActive(true);
     }
-    public void EnableRulesMenu()
+    public void EnableExpositionScreen()
     {
         expositionUI.SetActive(true);
         mainMenuUI.SetActive(false);
         expositionActive = true;
+    }
+    public void StartGameFromExposition()
+    {
+        expositionUI.SetActive(false);
+        expositionActive = false;
+        levelController.FadeInToLevel(1);
+    }
+    public void EnableControlMenu()
+    {
+        //Necessary??
+        //
+        //
+        //mainMenuUI.SetActive(false);
+        controlMenuUI.SetActive(true);
+    }
+    public void DisableControlMenu()
+    {
+        controlMenuUI.SetActive(false);
     }
     public void ScrollInRulesText()
     {

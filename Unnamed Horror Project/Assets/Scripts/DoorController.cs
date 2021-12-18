@@ -8,16 +8,16 @@ public class DoorController : MonoBehaviour
     [SerializeField] private Animator myDoor;
     //private AudioSource doorAudioSource;
     private bool canChangeDoorState;
-    private bool doorClosed;
+    private bool doorClosed = true;
     public AudioClip doorOpenOne;
     public AudioClip doorCloseOne;
+    //Normal door is most doors
+    // Apartment door is main entrance, opens to different angle
+    public enum DoorType {normalDoor, apartmentDoor};
+    public DoorType doorType;
     private void Awake()
     {
         //doorAudioSource = gameObject.GetComponent<AudioSource>();
-    }
-    private void Start()
-    {
-        doorClosed = true;
     }
     public void Update()
     {
@@ -53,22 +53,32 @@ public class DoorController : MonoBehaviour
 
     private void OpenDoor()
     {
-        myDoor.Play("DoorOpen", 0, 0.0f);
-        Debug.Log("door open");
+        if(doorType == DoorType.normalDoor)
+        {
+            myDoor.Play("DoorOpen", 0, 0.0f);
+        }
+        else if(doorType == DoorType.apartmentDoor)
+        {
+            myDoor.Play("FrontDoorOpen", 0, 0.0f);
+        }
         canChangeDoorState = false;
         PlayRandomOpenSFX();
-
         //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
         doorClosed = false;
     }
 
     private void CloseDoor()
     {
-        myDoor.Play("DoorClose", 0, 0.0f);
-        Debug.Log("door close");
+        if(doorType == DoorType.normalDoor)
+        {
+            myDoor.Play("DoorClose", 0, 0.0f);
+        }
+        else if(doorType == DoorType.apartmentDoor)
+        {
+            myDoor.Play("FrontDoorClose", 0, 0.0f);
+        }
         canChangeDoorState = false;
         PlayRandomCloseSFX();
-
         //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
         doorClosed = true;
     }

@@ -19,8 +19,6 @@ public class Triggers : MonoBehaviour
 
     //Main Paper
     public GameObject mainPaper;
-    public Image mainPaperImage;
-    public Sprite mainPaperSprite;
 
 
     //Lights
@@ -168,8 +166,6 @@ public class Triggers : MonoBehaviour
     //Trigger for main paper in head office
     public void ExecuteMainPaperTrigger()
     {
-        mainPaperImage.sprite = mainPaperSprite;
-        mainPaperImage.enabled = true;
         triggerAudio.Play();
         gameController.currentCheckpoint = 1;
         StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 2));

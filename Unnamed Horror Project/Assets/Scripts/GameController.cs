@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public GameObject player;
     public GameObject pauseMenuUI;
     public Text popupText;
+    public Text objectiveText;
     public AudioClip carEndingSFX;
     private AudioSource audioSource;
     public LevelController levelController;
@@ -32,6 +33,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        DetermineObjectiveText();
         if (Input.GetKeyDown(KeyCode.J))
         {
             levelController.FadeInToLevel(0);
@@ -53,7 +55,6 @@ public class GameController : MonoBehaviour
     {
         pauseMenuUI.SetActive(false);
         AudioListener.volume = 1f;
-        //AudioListener.pause = false; //Unpause all current audio
         Cursor.lockState = CursorLockMode.Locked; //Lock cursor
         Cursor.visible = false;
         Time.timeScale = 1f;
@@ -63,16 +64,22 @@ public class GameController : MonoBehaviour
     {
         pauseMenuUI.SetActive(true);
         AudioListener.volume = 0;
-        //AudioListener.pause = true; //Pause all current audio
         Cursor.lockState = CursorLockMode.None; //Unlock cursor
         Cursor.visible = true;
         Time.timeScale = 0f;
         gameIsPaused = true;
     }
-    public void QuitGame()
+    public void DetermineObjectiveText()
     {
-        Application.Quit();
-    }    
+        if(currentCheckpoint == 0)
+        {
+            objectiveText.text = "Get task list from head office";
+        }
+        else if(currentCheckpoint == 1)
+        {
+            objectiveText.text = "Fix light or whatever task 1 is";
+        }
+    }
     public IEnumerator ShowPopupMessage(string message, float delay)
     {
         popupText.text = message;
