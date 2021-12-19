@@ -16,10 +16,11 @@ public class Triggers : MonoBehaviour
     public GameObject closetLightBulb;
     public GameObject fakeCloset;
     public GameObject dungeonDoor;
+    //Spawn Maze
+    public GameObject spawnedMaze;
 
     //Main Paper
     public GameObject mainPaper;
-
 
     //Lights
     public Light[] controlledLights;
