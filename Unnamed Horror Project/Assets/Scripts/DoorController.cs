@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//
+//
+//Consider moving this to trigger class as well, now that it's just 1 trigger
+//
+//
 public class DoorController : MonoBehaviour
 {
     //Serialize field allows you to edit in inspector while keeping private
@@ -38,8 +42,10 @@ public class DoorController : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider other){
-        if(other.tag == "Player"){
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Player")
+        {
             canChangeDoorState = true;
         }
     }
