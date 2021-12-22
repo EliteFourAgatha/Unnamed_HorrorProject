@@ -22,9 +22,16 @@ public class Triggers : MonoBehaviour
     //Main Paper
     public GameObject mainPaper;
 
-    //Lights
+    //Light switches
     public Light[] controlledLights;
     public GameObject lightSwitch;
+    public MeshRenderer[] lightFoundations;
+    private Material[] lightFoundationMaterials;
+    private Color normalEmissionColor;
+
+    //Fuse box
+    public Light[] breakerLights;
+    public GameObject fuseSwitch;
 
     private bool canGrabPaper = false;
     private bool darknessTriggerActive = true;
@@ -32,9 +39,13 @@ public class Triggers : MonoBehaviour
     private bool canUseSnackMachine = false;
     private bool canUseLightSwitch = false;
     private bool canUseLockedDoor = false;
+    private bool canUseFuseBox = false;
     private bool lightsOff = true;
-    private string paperInstructionString = "Press [Esc] to view objectives";
+    private bool breakerOff = false;
 
+    private string paperInstructionString = "Press [Esc] to view objectives";
+    public enum TriggerType {Darkness, Maze, Paper, Light, FuseBox, AudiOnly, DungeonDoor, LockedDoor}
+    public TriggerType triggerType;
     void Awake()
     {
         if (gameController == null)
@@ -48,6 +59,16 @@ public class Triggers : MonoBehaviour
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
+        }
+        if(triggerType == TriggerType.Light || triggerType == TriggerType.FuseBox)
+        {
+            //Create array of materials from all used lights
+            for(int i = 0; i < lightFoundations.Length; i++)
+            {
+                lightFoundationMaterials[i] = lightFoundations[i].material;
+            }
+            //Set reference to normal color of emission map, for turning lights on
+            normalEmissionColor = lightFoundationMaterials[0].color;
         }
     }
     void Update()
@@ -89,6 +110,13 @@ public class Triggers : MonoBehaviour
                 ExecuteAudioOnlyTrigger();
             }
         }
+        if(canUseFuseBox)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                ExecuteFuseBoxTrigger();
+            }
+        }
     }
     public void OnTriggerEnter(Collider other)
     {
@@ -121,6 +149,10 @@ public class Triggers : MonoBehaviour
             {
                 canUseLockedDoor = true;
             }
+            else if(gameObject.tag == "FuseBoxTrigger")
+            {
+                canUseFuseBox = true;
+            }
         }
     }
     public void OnTriggerExit(Collider other)
@@ -146,6 +178,10 @@ public class Triggers : MonoBehaviour
             else if(gameObject.tag == "DoorLockedTrigger")
             {
                 canUseLockedDoor = false;
+            }
+            else if(gameObject.tag == "FuseBoxTrigger")
+            {
+                canUseFuseBox = false;
             }
         }
     }
@@ -202,6 +238,11 @@ public class Triggers : MonoBehaviour
             {
                 light.enabled = true;
             }
+            //Enable emission maps when lights turned on
+            foreach(Material mat in lightFoundationMaterials)
+            {
+                mat.SetColor("_EmissionColor", normalEmissionColor);
+            }
         }
         //Turn lights off
         else
@@ -212,6 +253,50 @@ public class Triggers : MonoBehaviour
             foreach(Light light in controlledLights)
             {
                 light.enabled = false;
+            }
+            //Disable emission maps when lights turned off
+            foreach(Material mat in lightFoundationMaterials)
+            {
+                mat.SetColor("_EmissionColor", Color.black);
+            }
+        }
+    }
+    public void ExecuteFuseBoxTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        //Turn lights on
+        if(breakerOff)
+        {
+            breakerOff = false;
+            //Switch breaker "on"
+            fuseSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
+            foreach(Light light in breakerLights)
+            {
+                light.enabled = true;
+            }
+            //Enable emission maps when lights turned on
+            foreach(Material mat in lightFoundationMaterials)
+            {
+                mat.SetColor("_EmissionColor", normalEmissionColor);
+            }
+        }
+        //Turn lights off
+        else
+        {
+            breakerOff = true;
+            //Switch breaker "off"
+            fuseSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
+            foreach(Light light in breakerLights)
+            {
+                light.enabled = false;
+            }
+            //Disable emission maps when lights turned off
+            foreach(Material mat in lightFoundationMaterials)
+            {
+                mat.SetColor("_EmissionColor", Color.black);
             }
         }
     }

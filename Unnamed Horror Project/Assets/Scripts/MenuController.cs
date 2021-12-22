@@ -11,7 +11,8 @@ public class MenuController : MonoBehaviour
     public GameObject expositionUI;
     public GameObject controlMenuUI;
     public GameObject quitGameOptionUI;
-    public GameObject pressEnterInstructions;
+    public GameObject pressEnterButton;
+    public GameObject expositionText;
     public LevelController levelController;
     private bool expositionActive = false;
     private bool pressEnterEnabled = false;
@@ -36,7 +37,7 @@ public class MenuController : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
             {
-                pressEnterInstructions.SetActive(true);
+                pressEnterButton.SetActive(true);
                 pressEnterEnabled = true;
             }
         }
@@ -96,19 +97,16 @@ public class MenuController : MonoBehaviour
     }
     public void EnableControlMenu()
     {
-        //Necessary??
-        //
-        //
-        //mainMenuUI.SetActive(false);
+        mainMenuUI.SetActive(false);
         controlMenuUI.SetActive(true);
     }
     public void DisableControlMenu()
     {
         controlMenuUI.SetActive(false);
+        mainMenuUI.SetActive(true);
     }
     public void ScrollInRulesText()
     {
         
     }
-
 }

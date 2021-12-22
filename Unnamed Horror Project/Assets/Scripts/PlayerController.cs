@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetKey("space"))
+        if(Input.GetKey(KeyCode.LeftShift))
         {
             if(canRun)
             {

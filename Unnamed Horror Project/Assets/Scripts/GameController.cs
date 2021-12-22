@@ -77,7 +77,11 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 1)
         {
-            objectiveText.text = "Fix light or whatever task 1 is";
+            objectiveText.text = "Turn off power breaker to storage area";
+        }
+        else if(currentCheckpoint == 2)
+        {
+            objectiveText.text = "Fix faulty light in storage room 4";
         }
     }
     public IEnumerator ShowPopupMessage(string message, float delay)
@@ -85,22 +89,17 @@ public class GameController : MonoBehaviour
         popupText.text = message;
         popupText.enabled = true;
         yield return new WaitForSeconds(delay);
-        StartCoroutine(FadeOutPopupText(popupText, 2f));
+        StartCoroutine(FadeOutPopupText(popupText, 4f));
     }
     private IEnumerator FadeOutPopupText(Text popupText, float fadeTime)
     {
-        float elapsedTime = 0.0f;
-        Color textColor = popupText.color;
-        while (elapsedTime < fadeTime)
+        Color originalColor = popupText.color;
+        for(float t = 0.01f; t < fadeTime; t += Time.deltaTime) //Per second, use deltaTime
         {
-            elapsedTime += Time.deltaTime;
-            textColor.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeTime);
-            popupText.color = textColor;
+            popupText.color = Color.Lerp(originalColor, new Color(1, 1, 1, 0), 
+                                            Mathf.Min(1, t/fadeTime));
         }
-        if(popupText.color.a == 0)
-        {
-            popupText.enabled = false;
-        }
+        popupText.enabled = false;
         yield return null;
     }
 }

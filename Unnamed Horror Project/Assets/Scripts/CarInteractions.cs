@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//
+//
+//Put into trigger script??
+//
 public class CarInteractions : MonoBehaviour
 {
     private AudioSource audioSource;
+    public AudioClip carEndingAudioClip;
     public LevelController levelController;
     private GameController gameController;
     public GameObject carEndingUI;
@@ -13,7 +18,7 @@ public class CarInteractions : MonoBehaviour
     //  but must be done before checkpoint X (xxxxx)
     private bool carEndingPossible;
     private bool canInteractWithCar;
-    private string cantLeaveYetString = "I should at least see what the job's about first...";
+    private string cantLeaveYetString = "I should see what the job's about first...";
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -37,6 +42,7 @@ public class CarInteractions : MonoBehaviour
         if(gameController.currentCheckpoint == 2)
         {
             carEndingPossible = true;
+            audioSource.clip = carEndingAudioClip;
         }
         else
         {
@@ -60,6 +66,10 @@ public class CarInteractions : MonoBehaviour
             {
                 if(Input.GetKeyDown(KeyCode.E))
                 {
+                    if(!audioSource.isPlaying)
+                    {
+                        audioSource.Play();
+                    }
                     StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
                 }
             }
@@ -98,8 +108,7 @@ public class CarInteractions : MonoBehaviour
         //Keep track of car ending having been found (2/4 endings found)
         //
         //
-        //Fade in to "game over screen / stats / endings" screen
-        
-        levelController.FadeInToLevel(0);
+        //Fade in to "game over screen / stats / endings" screen        
+        levelController.FadeInToLevel(3);
     }
 }
