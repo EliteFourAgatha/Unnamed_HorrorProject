@@ -11,7 +11,7 @@ public class FadeObjectAlpha : MonoBehaviour
     public MeshRenderer[] meshRenderers;
     public MeshRenderer testRenderer;
  
-    public float proximity = 10;
+    public float proximity = 15;
     private float absDistance;
     private float alpha;
     private Vector3 playerPosition;
@@ -25,7 +25,7 @@ public class FadeObjectAlpha : MonoBehaviour
     {
         playerPosition = player.transform.position;
         absDistance = Vector3.Distance(playerPosition, fakeCloset.transform.position);
-        //Debug.Log("abs dist: " + absDistance);
+        Debug.Log("abs dist: " + absDistance);
         DetermineAlphaByDistance();
         if(Vector3.Distance(playerPosition, fakeCloset.transform.position) <= 1)
         {

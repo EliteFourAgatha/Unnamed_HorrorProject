@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     public GameObject optionsMenuUI;
+    public GameObject pauseMenuUI;
     public GameObject mainMenuUI;
     public GameObject expositionUI;
     public GameObject controlMenuUI;
@@ -97,16 +98,28 @@ public class MenuController : MonoBehaviour
     }
     public void EnableControlMenu()
     {
-        mainMenuUI.SetActive(false);
+        Scene scene = SceneManager.GetActiveScene();
+        if(scene.name == "MainMenu")
+        {
+            mainMenuUI.SetActive(false);
+        }
+        else
+        {
+            pauseMenuUI.SetActive(false);
+        }
         controlMenuUI.SetActive(true);
     }
     public void DisableControlMenu()
     {
+        Scene scene = SceneManager.GetActiveScene();
         controlMenuUI.SetActive(false);
-        mainMenuUI.SetActive(true);
-    }
-    public void ScrollInRulesText()
-    {
-        
+        if(scene.name == "MainMenu")
+        {
+            mainMenuUI.SetActive(true);
+        }
+        else
+        {
+            pauseMenuUI.SetActive(true);
+        }
     }
 }

@@ -51,6 +51,11 @@ public class GameController : MonoBehaviour
             }
         }
     }
+    //
+    //
+    //MOVE TO MENU CONTROLLER
+    //
+    //
     public void ResumeGame()
     {
         pauseMenuUI.SetActive(false);
@@ -60,6 +65,11 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         gameIsPaused = false;
     }
+    //
+    //
+    //MOVE TO MENU CONTROLLER
+    //
+    //
     void PauseGame()
     {
         pauseMenuUI.SetActive(true);
