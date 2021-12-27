@@ -27,6 +27,7 @@ public class Triggers : MonoBehaviour
     //Main Paper
     public GameObject mainPaper;    
     private bool canGrabPaper = false;
+    public AudioClip mainPaperSFX;
 
 
     //Light switches
@@ -61,10 +62,10 @@ public class Triggers : MonoBehaviour
     private bool canUseLockedDoor = false;
     private bool playerSafe = false;
     private string paperInstructionString = "Press [Esc] to view objectives";
-    public enum TriggerType {Darkness, Maze, Paper, Light, FuseBox, AudiOnly, DungeonDoor, LockedDoor,
+    public enum TriggerType {Darkness, SpawnMaze, MainPaper, Lightswitch, FuseBox, Snacks, DungeonDoor, LockedDoor,
                                 Closet, Safety}
     public TriggerType triggerType;
-    void Awake()
+    void Start()
     {
         if (gameController == null)
         {
@@ -78,7 +79,7 @@ public class Triggers : MonoBehaviour
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
         }
-        if(triggerType == TriggerType.Light || triggerType == TriggerType.FuseBox)
+        if(triggerType == TriggerType.Lightswitch || triggerType == TriggerType.FuseBox)
         {
             //Create array of materials from all used lights
             for(int i = 0; i < lightFoundations.Length; i++)
@@ -150,45 +151,45 @@ public class Triggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(gameObject.tag == "DarknessTrigger")
+            if(triggerType == TriggerType.Darkness)
             {
                 if(darknessTriggerActive)
                 {
                     ExecuteDarknessTrigger();
                 }
             }
-            else if(gameObject.tag == "ClosetTrigger")
+            else if(triggerType == TriggerType.Closet)
             {
                 if(closetTriggerActive)
                 {
                     ExecuteClosetTrigger();
                 }
             }
-            else if(gameObject.tag == "MainPaperTrigger")
+            else if(triggerType == TriggerType.MainPaper)
             {
                 canGrabPaper = true;
             }
-            else if(gameObject.tag == "DungeonTrigger")
+            else if(triggerType == TriggerType.DungeonDoor)
             {
                 canOpenDungeonDoor = true;
             }
-            else if(gameObject.tag == "SnackTrigger")
+            else if(triggerType == TriggerType.Snacks)
             {
                 canUseSnackMachine = true;
             }
-            else if(gameObject.tag == "LightSwitchTrigger")
+            else if(triggerType == TriggerType.Lightswitch)
             {
                 canUseLightSwitch = true;
             }
-            else if(gameObject.tag == "DoorLockedTrigger")
+            else if(triggerType == TriggerType.LockedDoor)
             {
                 canUseLockedDoor = true;
             }
-            else if(gameObject.tag == "FuseBoxTrigger")
+            else if(triggerType == TriggerType.FuseBox)
             {
                 canUseFuseBox = true;
             }
-            else if(gameObject.tag == "SafetyTrigger")
+            else if(triggerType == TriggerType.Safety)
             {
                 playerSafe = true;
             }
@@ -198,96 +199,56 @@ public class Triggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(gameObject.tag == "MainPaperTrigger")
+            // -- MAIN GAME EVENTS --
+            if(triggerType == TriggerType.MainPaper)
             {
                 canGrabPaper = false;
             }
-            else if(gameObject.tag == "DungeonTrigger")
+            else if(triggerType == TriggerType.DungeonDoor)
             {
                 canOpenDungeonDoor = false;
             }
-            else if(gameObject.tag == "SnackTrigger")
-            {
-                canUseSnackMachine = false;
-            }
-            else if(gameObject.tag == "LightSwitchTrigger")
-            {
-                canUseLightSwitch = false;
-            }
-            else if(gameObject.tag == "DoorLockedTrigger")
-            {
-                canUseLockedDoor = false;
-            }
-            else if(gameObject.tag == "FuseBoxTrigger")
+            else if(triggerType == TriggerType.FuseBox)
             {
                 canUseFuseBox = false;
             }
-            else if(gameObject.tag == "SafetyTrigger")
+            else if(triggerType == TriggerType.Safety)
             {
                 playerSafe = false;
+            }// -- END MAIN GAME EVENTS --
+
+            // -- MISC. TRIGGERS --
+            else if(triggerType == TriggerType.Snacks)
+            {
+                canUseSnackMachine = false;
             }
+            else if(triggerType == TriggerType.Lightswitch)
+            {
+                canUseLightSwitch = false;
+            }
+            else if(triggerType == TriggerType.LockedDoor)
+            {
+                canUseLockedDoor = false;
+            }// -- END MISC. TRIGGERS --
+
         }
     }
+
+    //-- MAIN EVENT TRIGGERS --
     //Trigger for main paper in head office
     public void ExecuteMainPaperTrigger()
     {
-        triggerAudio.Play();
+        //Play clip even if object deactivated
+        AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
         gameController.currentCheckpoint = 1;
         StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 2));
-        //mainPaper.SetActive(false);
+        mainPaper.SetActive(false);
     }
     //Trigger to enter final dungeon scene
     public void ExecuteDungeonTrigger()
     {
         triggerAudio.Play();
         levelController.FadeInToLevel(2);
-        //StartCoroutine(DelayFadeToLevel(2f, 2));
-    }
-    public void ExecuteAudioOnlyTrigger()
-    {
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
-    }
-    public void ExecuteLightSwitchTrigger()
-    {
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
-        //Turn lights on
-        if(lightsOff)
-        {
-            lightsOff = false;
-            //Rotate lightswitch to "on"
-            lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
-            foreach(Light light in controlledLights)
-            {
-                light.enabled = true;
-            }
-            //Enable emission maps when lights turned on
-            foreach(Material mat in lightFoundationMaterials)
-            {
-                mat.SetColor("_EmissionColor", normalEmissionColor);
-            }
-        }
-        //Turn lights off
-        else
-        {
-            lightsOff = true;
-            //Rotate lightswitch to "off"
-            lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
-            foreach(Light light in controlledLights)
-            {
-                light.enabled = false;
-            }
-            //Disable emission maps when lights turned off
-            foreach(Material mat in lightFoundationMaterials)
-            {
-                mat.SetColor("_EmissionColor", Color.black);
-            }
-        }
     }
     public void ExecuteFuseBoxTrigger()
     {
@@ -361,7 +322,55 @@ public class Triggers : MonoBehaviour
         //
         //
         closetTriggerActive = false;
+    } // -- END MAIN EVENT TRIGGERS --
+
+    // -- MISC. TRIGGERS --
+        public void ExecuteAudioOnlyTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
     }
+    public void ExecuteLightSwitchTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        //Turn lights on
+        if(lightsOff)
+        {
+            lightsOff = false;
+            //Rotate lightswitch to "on"
+            lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
+            foreach(Light light in controlledLights)
+            {
+                light.enabled = true;
+            }
+            //Enable emission maps when lights turned on
+            foreach(Material mat in lightFoundationMaterials)
+            {
+                mat.SetColor("_EmissionColor", normalEmissionColor);
+            }
+        }
+        //Turn lights off
+        else
+        {
+            lightsOff = true;
+            //Rotate lightswitch to "off"
+            lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
+            foreach(Light light in controlledLights)
+            {
+                light.enabled = false;
+            }
+            //Disable emission maps when lights turned off
+            foreach(Material mat in lightFoundationMaterials)
+            {
+                mat.SetColor("_EmissionColor", Color.black);
+            }
+        }
+    } // -- END MISC. TRIGGERS --
     IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
     {
         yield return new WaitForSeconds(delayTime);
