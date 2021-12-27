@@ -15,6 +15,7 @@ public class MenuController : MonoBehaviour
     public GameObject pressEnterButton;
     public GameObject expositionText;
     public LevelController levelController;
+    public static bool gamePaused = false;
     private bool expositionActive = false;
     private bool pressEnterEnabled = false;
 
@@ -33,7 +34,52 @@ public class MenuController : MonoBehaviour
     }
     void Update()
     {
-        //clean up out of update
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(gamePaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
+        }
+
+    }
+    // -- MAIN MENU BUTTONS --
+    //Main Menu: Play Button
+    public void MenuPlayButton()
+    {
+        EnableExpositionScreen();
+    }
+    public void EnableOptionsMenu()
+    {
+        mainMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(true);
+    }
+    public void DisableOptionsMenu()
+    {
+        optionsMenuUI.SetActive(false);
+        mainMenuUI.SetActive(true);
+    }
+    // -- END MAIN MENU --
+
+    // -- EXPOSITION SCREEN, AFTER 'PLAY' IN MAIN MENU --
+    public void EnableExpositionScreen()
+    {
+        expositionUI.SetActive(true);
+        mainMenuUI.SetActive(false);
+        expositionActive = true;
+    }
+    public void StartGameFromExposition()
+    {
+        expositionUI.SetActive(false);
+        expositionActive = false;
+        levelController.FadeInToLevel(1);
+    }
+    public void CheckExpositionScreenInput()
+    {
         if(expositionActive)
         {
             if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
@@ -52,50 +98,9 @@ public class MenuController : MonoBehaviour
             }
         }
     }
-    //Main Menu: Play Button
-    public void MenuPlayButton()
-    {
-        EnableExpositionScreen();
-    }
-    //Pause Menu: Quit Button
-    public void EnableQuitGameOption()
-    {
-        quitGameOptionUI.SetActive(true);
-    }
-    //Quit option: No Button
-    public void DeclineQuitGame()
-    {
-        quitGameOptionUI.SetActive(false);
-    }
-    //Quit option: Yes Button
-    // -also-
-    //Main menu: Quit Button
-    public void ConfirmQuitGame()
-    {
-        Application.Quit();
-    }
-    public void EnableOptionsMenu()
-    {
-        mainMenuUI.SetActive(false);
-        optionsMenuUI.SetActive(true);
-    }
-    public void DisableOptionsMenu()
-    {
-        optionsMenuUI.SetActive(false);
-        mainMenuUI.SetActive(true);
-    }
-    public void EnableExpositionScreen()
-    {
-        expositionUI.SetActive(true);
-        mainMenuUI.SetActive(false);
-        expositionActive = true;
-    }
-    public void StartGameFromExposition()
-    {
-        expositionUI.SetActive(false);
-        expositionActive = false;
-        levelController.FadeInToLevel(1);
-    }
+    // -- END EXPOSITION --
+
+    // -- CONTROL MENU, FROM MAIN / PAUSE MENUS --
     public void EnableControlMenu()
     {
         Scene scene = SceneManager.GetActiveScene();
@@ -122,4 +127,41 @@ public class MenuController : MonoBehaviour
             pauseMenuUI.SetActive(true);
         }
     }
+    // -- END CONTROL MENU --
+
+    // -- PAUSE MENU --
+    public void ResumeGame()
+    {
+        pauseMenuUI.SetActive(false);
+        AudioListener.volume = 1f;
+        Cursor.lockState = CursorLockMode.Locked; //Lock cursor
+        Cursor.visible = false;
+        Time.timeScale = 1f;
+        gamePaused = false;
+    }
+    void PauseGame()
+    {
+        pauseMenuUI.SetActive(true);
+        AudioListener.volume = 0;
+        Cursor.lockState = CursorLockMode.None; //Unlock cursor
+        Cursor.visible = true;
+        Time.timeScale = 0f;
+        gamePaused = true;
+    }
+    //Pause Menu: Quit Button
+    public void EnableQuitGameOption()
+    {
+        quitGameOptionUI.SetActive(true);
+    }    
+    //Quit option: No
+    public void DeclineQuitGame()
+    {
+        quitGameOptionUI.SetActive(false);
+    }
+    //Quit option: Yes
+    public void ConfirmQuitGame()
+    {
+        Application.Quit();
+    }
+    // -- END PAUSE MENU --
 }

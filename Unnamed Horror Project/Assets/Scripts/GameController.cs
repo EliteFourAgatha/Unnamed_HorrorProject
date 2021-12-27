@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    DoorController doorScript;
-    public static bool gameIsPaused = false;
-    public GameObject player;
-    public GameObject pauseMenuUI;
     public Text popupText;
     public Text objectiveText;
     public AudioClip carEndingSFX;
@@ -30,54 +26,9 @@ public class GameController : MonoBehaviour
         Cursor.visible = false;
         currentCheckpoint = 0;
     }
-
     private void Update()
     {
         DetermineObjectiveText();
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            levelController.FadeInToLevel(0);
-            Debug.Log("fade to main menu");
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (gameIsPaused)
-            {
-                ResumeGame();
-            }
-            else
-            {
-                PauseGame();
-            }
-        }
-    }
-    //
-    //
-    //MOVE TO MENU CONTROLLER
-    //
-    //
-    public void ResumeGame()
-    {
-        pauseMenuUI.SetActive(false);
-        AudioListener.volume = 1f;
-        Cursor.lockState = CursorLockMode.Locked; //Lock cursor
-        Cursor.visible = false;
-        Time.timeScale = 1f;
-        gameIsPaused = false;
-    }
-    //
-    //
-    //MOVE TO MENU CONTROLLER
-    //
-    //
-    void PauseGame()
-    {
-        pauseMenuUI.SetActive(true);
-        AudioListener.volume = 0;
-        Cursor.lockState = CursorLockMode.None; //Unlock cursor
-        Cursor.visible = true;
-        Time.timeScale = 0f;
-        gameIsPaused = true;
     }
     public void DetermineObjectiveText()
     {
