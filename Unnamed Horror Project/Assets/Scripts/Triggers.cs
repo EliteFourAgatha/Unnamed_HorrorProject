@@ -20,8 +20,9 @@ public class Triggers : MonoBehaviour
     private bool darknessTriggerActive = true;
 
     
-    //Spawn Maze
-    public GameObject spawnedMaze;
+    //Spawn Ghost
+    public GameObject spawnedGhost;
+    private bool spawnGhostTriggerActive = true;
 
 
     //Main Paper
@@ -62,7 +63,7 @@ public class Triggers : MonoBehaviour
     private bool canUseLockedDoor = false;
     private bool playerSafe = false;
     private string paperInstructionString = "Press [Esc] to view objectives";
-    public enum TriggerType {Darkness, SpawnMaze, MainPaper, Lightswitch, FuseBox, Snacks, DungeonDoor, LockedDoor,
+    public enum TriggerType {Darkness, SpawnGhost, MainPaper, Lightswitch, FuseBox, Snacks, DungeonDoor, LockedDoor,
                                 Closet, Safety}
     public TriggerType triggerType;
     void Start()
@@ -163,6 +164,13 @@ public class Triggers : MonoBehaviour
                 if(closetTriggerActive)
                 {
                     ExecuteClosetTrigger();
+                }
+            }
+            else if(triggerType == TriggerType.SpawnGhost)
+            {
+                if(spawnGhostTriggerActive)
+                {
+                    ExecuteSpawnGhostTrigger();
                 }
             }
             else if(triggerType == TriggerType.MainPaper)
@@ -322,7 +330,25 @@ public class Triggers : MonoBehaviour
         //
         //
         closetTriggerActive = false;
-    } // -- END MAIN EVENT TRIGGERS --
+    }
+
+    public void ExecuteSpawnGhostTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        //Rock wall crumbles behind player
+        //sound of rocks tumbling to ground
+        //wisp of wind, short.
+        //all 'entrance lights' go out at once.
+        //hearbeat sfx + unsettilng music or ambience
+        //Ghost spawn animation, maybe cutscene if necessary
+        //Otherwise, ghost slowly starts to patrol and try to find player
+        // Activate ghost AI.
+        spawnGhostTriggerActive = false;
+
+    }// -- END MAIN EVENT TRIGGERS --
 
     // -- MISC. TRIGGERS --
         public void ExecuteAudioOnlyTrigger()
