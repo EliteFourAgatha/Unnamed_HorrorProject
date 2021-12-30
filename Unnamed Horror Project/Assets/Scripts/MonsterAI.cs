@@ -5,10 +5,12 @@ using UnityEngine;
 public class MonsterAI : MonoBehaviour
 {
     public GameObject player;
+    public LevelController levelController;
     public float moveSpeed = 5f;
     float maxDist = 10f;
     float minDist = 10f;
     public float teleportRange = 25f;
+    public float catchRange = 2f;
     float distance;
     void Start()
     {
@@ -48,6 +50,10 @@ public class MonsterAI : MonoBehaviour
     {
         if(distance <= catchRange)
         {
+            levelController.FadeInToLevel(2);
+
+
+
             //send player to main menu? (tedious, have to replay all previous sections)
             //send player to beginning of level 2? (low stakes, getting caught needs to be scarier)
             //some sort of web? player is caught first time, lose sanity / loses vision / crippled / can no longer run?

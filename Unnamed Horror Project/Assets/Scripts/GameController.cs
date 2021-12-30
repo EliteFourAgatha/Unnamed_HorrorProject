@@ -50,8 +50,10 @@ public class GameController : MonoBehaviour
         popupText.text = message;
         popupText.enabled = true;
         yield return new WaitForSeconds(delay);
-        StartCoroutine(FadeOutPopupText(popupText, 4f));
+        popupText.enabled = false;
+        //StartCoroutine(FadeOutPopupText(popupText, 4f));
     }
+    /*
     private IEnumerator FadeOutPopupText(Text popupText, float fadeTime)
     {
         Color originalColor = popupText.color;
@@ -63,4 +65,5 @@ public class GameController : MonoBehaviour
         popupText.enabled = false;
         yield return null;
     }
+    */
 }
