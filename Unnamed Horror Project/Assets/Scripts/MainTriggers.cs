@@ -73,6 +73,11 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
         }
+        if(triggerType == TriggerType.Closet)
+        {
+            brokenWindowMat = brokenWindowMesh.material;
+            bathroomLightMat = bathroomLightMesh.material;
+        }
     }
     void Update()
     {
