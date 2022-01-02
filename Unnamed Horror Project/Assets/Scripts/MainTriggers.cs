@@ -41,6 +41,15 @@ public class MainTriggers : MonoBehaviour
     public Material _storageLightMat;
 
 
+    //Shadow scare
+    public GameObject shadow;
+    private bool shadowTriggerActive = true;
+    public GameObject shadowHideTimer;
+    public GameObject shadowHideTriggers;
+    private bool canHideFromShadow = false;
+    private bool hideTimerTicking = false;
+
+
 
     //Open closet
     public MeshRenderer bathroomLightMesh;
@@ -57,7 +66,8 @@ public class MainTriggers : MonoBehaviour
     private string fuseboxString = "Fix the faulty light in storage room 4";
     private string spawnGhostString = "Find safety in the light";
 
-    public enum TriggerType {Darkness, SpawnGhost, MainPaper, FuseBox, DungeonDoor, Closet, StorageLight}
+    public enum TriggerType {Darkness, SpawnGhost, MainPaper, FuseBox, DungeonDoor, Closet, StorageLight,
+                                ShadowScare, ShadowHide}
     public TriggerType triggerType;
     void Start()
     {
@@ -102,8 +112,23 @@ public class MainTriggers : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.E))
             {
                 ExecuteFuseBoxTrigger();
-                Debug.Log("fuse box");
             }
+        }
+        //If the timer is still going...
+        if(hideTimerTicking)
+        {
+            //If player enters "hide" collider on wall...
+            if(canHideFromShadow)
+            {
+                if(Input.GetKeyDown(KeyCode.E))
+                {
+                    ExecuteHideTrigger();
+                    canHideFromShadow = false;
+                    hideTimerTicking = false;
+                    shadowHideTimer.SetActive(false); // Turn off timer UI
+                }
+            }
+
         }
     }
     public void OnTriggerEnter(Collider other)
@@ -124,11 +149,20 @@ public class MainTriggers : MonoBehaviour
                     ExecuteClosetTrigger();
                 }
             }
+            //Spawn ghost in final maze
             else if(triggerType == TriggerType.SpawnGhost)
             {
                 if(spawnGhostTriggerActive)
                 {
                     ExecuteSpawnGhostTrigger();
+                }
+            }
+            //Shadow scare after fixing light
+            else if(triggerType == TriggerType.ShadowScare)
+            {
+                if(shadowTriggerActive)
+                {
+                    ExecuteShadowScareTrigger();
                 }
             }
             else if(triggerType == TriggerType.MainPaper)
@@ -142,6 +176,10 @@ public class MainTriggers : MonoBehaviour
             else if(triggerType == TriggerType.FuseBox)
             {
                 canUseFuseBox = true;
+            }
+            else if(triggerType == TriggerType.ShadowHide)
+            {
+                canHideFromShadow = true;
             }
         }
     }
@@ -160,6 +198,10 @@ public class MainTriggers : MonoBehaviour
             else if(triggerType == TriggerType.FuseBox)
             {
                 canUseFuseBox = false;
+            }
+            else if(triggerType == TriggerType.ShadowHide)
+            {
+                canHideFromShadow = false;
             }
         }
     }
@@ -261,6 +303,31 @@ public class MainTriggers : MonoBehaviour
         // Activate ghost AI.
         spawnGhostTriggerActive = false; //single use, deactivate after
 
+    }
+    public void ExecuteShadowScareTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        //Get distance away from storage lights and fade them
+        //  based on range. As shadow moves down hallway, it appears to bend light around it.
+        // Maybe player can't move in this moment? frozen in fear?
+        //  (disable movement / ability to turn camera away)
+        shadow.SetActive(true);
+        shadowHideTimer.SetActive(true);
+        hideTimerTicking = true;
+        shadowHideTriggers.SetActive(true);
+        shadowTriggerActive = false; // single use, deactivate after
+    }
+    public void ExecuteHideTrigger()
+    {
+        //Rotate player towards fixed point in center of hallway (player's back to wall)
+        //Lock 'manual' player movement / rotation
+        //Move player until their back is touching wall
+        //Big breaths of air? heavy breathing?
+        //Shadow stops, looks down hall, then keeps moving
+        Debug.Log("successfuly hid!");
     }
     IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
     {
