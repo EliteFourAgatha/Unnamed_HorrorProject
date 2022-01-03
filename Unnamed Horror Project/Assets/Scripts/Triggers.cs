@@ -16,6 +16,7 @@ public class Triggers : MonoBehaviour
     public Material _storageLightMat;
     public Material _bathroomLightMat;
     public Material _officeLightMat;
+    public Material _laundryLightMat;
     private Color normalEmissionColor;
     private bool lightsOff = true;
     private bool canUseLightSwitch = false;
@@ -24,7 +25,8 @@ public class Triggers : MonoBehaviour
     private bool canUseSnackMachine = false;
     private bool canUseLockedDoor = false;
     private bool playerSafe = false;
-    public enum TriggerType {Snacks, LockedDoor, Safety, StorageLight, BackroomLight, BathroomLight, OfficeLight}
+    public enum TriggerType {Snacks, LockedDoor, Safety, StorageLight, BackroomLight, BathroomLight,
+                                 OfficeLight, LaundryLight}
     public TriggerType triggerType;
     void Start()
     {
@@ -102,6 +104,10 @@ public class Triggers : MonoBehaviour
             {
                 canUseLightSwitch = true;
             }
+            else if(triggerType == TriggerType.LaundryLight)
+            {
+                canUseLightSwitch = true;
+            }
             else if(triggerType == TriggerType.LockedDoor)
             {
                 canUseLockedDoor = true;
@@ -133,6 +139,10 @@ public class Triggers : MonoBehaviour
                 canUseLightSwitch = false;
             }
             else if(triggerType == TriggerType.BathroomLight)
+            {
+                canUseLightSwitch = false;
+            }
+            else if(triggerType == TriggerType.LaundryLight)
             {
                 canUseLightSwitch = false;
             }
@@ -192,6 +202,10 @@ public class Triggers : MonoBehaviour
             {
                 _officeLightMat.SetColor("_EmissionColor", normalEmissionColor);                
             }
+            else if(triggerType == TriggerType.LaundryLight)
+            {
+                _laundryLightMat.SetColor("_EmissionColor", normalEmissionColor);                
+            }
         }
         //Turn lights off
         else
@@ -225,6 +239,10 @@ public class Triggers : MonoBehaviour
             else if(triggerType == TriggerType.OfficeLight)
             {
                 _officeLightMat.SetColor("_EmissionColor", Color.black);                
+            }
+            else if(triggerType == TriggerType.LaundryLight)
+            {
+                _laundryLightMat.SetColor("_EmissionColor", Color.black);                
             }
         }
     }

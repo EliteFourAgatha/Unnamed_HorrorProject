@@ -7,17 +7,11 @@ public class GameController : MonoBehaviour
 {
     public Text popupText;
     public Text objectiveText;
-    public AudioClip carEndingSFX;
     private AudioSource audioSource;
-    public LevelController levelController;
     public int currentCheckpoint;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
-        if(levelController == null)
-        {
-            levelController = GameObject.FindGameObjectWithTag("LevelController").GetComponent<LevelController>();
-        }
     }
     private void Start()
     {

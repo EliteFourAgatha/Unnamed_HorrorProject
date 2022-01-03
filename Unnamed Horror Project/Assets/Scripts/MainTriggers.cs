@@ -47,7 +47,7 @@ public class MainTriggers : MonoBehaviour
     public GameObject shadowHideTimer;
     public GameObject shadowHideTriggers;
     private bool canHideFromShadow = false;
-    private bool hideTimerTicking = false;
+    
 
 
 
@@ -114,21 +114,16 @@ public class MainTriggers : MonoBehaviour
                 ExecuteFuseBoxTrigger();
             }
         }
-        //If the timer is still going...
-        if(hideTimerTicking)
+        //If player enters "hide" collider on wall...
+        if(canHideFromShadow)
         {
-            //If player enters "hide" collider on wall...
-            if(canHideFromShadow)
+            if(Input.GetKeyDown(KeyCode.E))
             {
-                if(Input.GetKeyDown(KeyCode.E))
-                {
-                    ExecuteHideTrigger();
-                    canHideFromShadow = false;
-                    hideTimerTicking = false;
-                    shadowHideTimer.SetActive(false); // Turn off timer UI
-                }
+                ExecuteHideTrigger();
+                canHideFromShadow = false;
+                shadowHideTimer.SetActive(false); // Turn off timer UI
+                shadowHideTriggers.SetActive(false); // Turn off hide triggers
             }
-
         }
     }
     public void OnTriggerEnter(Collider other)
@@ -316,7 +311,6 @@ public class MainTriggers : MonoBehaviour
         //  (disable movement / ability to turn camera away)
         shadow.SetActive(true);
         shadowHideTimer.SetActive(true);
-        hideTimerTicking = true;
         shadowHideTriggers.SetActive(true);
         shadowTriggerActive = false; // single use, deactivate after
     }

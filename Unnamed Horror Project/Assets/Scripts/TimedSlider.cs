@@ -6,25 +6,30 @@ using UnityEngine.UI;
 public class TimedSlider : MonoBehaviour
 {
     public GameObject timeSlider;
-    Image sliderImage;
+    public LevelController levelController;
+    Image timerBar;
     public float maxTime = 5f;
     float timeRemaining;
     void Start()
     {
+        if(levelController == null)
+        {
+            levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
+        }
         timeRemaining = maxTime;
-        sliderImage = timeSlider.GetComponent<Image>();
+        timerBar = timeSlider.GetComponent<Image>();
     }
     void Update()
     {
         if(timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;
-            sliderImage.fillAmount = timeRemaining / maxTime;
-            Debug.Log(timeRemaining);
+            timerBar.fillAmount = timeRemaining / maxTime;
         }
         else
         {
             //player caught animation? game over screen?
+            levelController.EnableRetryScreen(1);
             Debug.Log("hiding failed.");
         }
     }

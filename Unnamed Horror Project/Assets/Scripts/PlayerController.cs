@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
             PauseFootstepAudio();
         }
         UpdateStamina();
-        Debug.Log(currentStamina);
+        Debug.Log("Stamina: " + currentStamina);
     }    
     public void MovePlayer()
     {
@@ -113,12 +113,12 @@ public class PlayerController : MonoBehaviour
                 //Sprinting, lose stamina
                 if(currentSpeed == sprintSpeed)
                 {
-                    currentStamina -= 3 * Time.deltaTime;
+                    currentStamina -= Time.deltaTime;
                 }
                 //Walking, repair stamina
                 else
                 {
-                    currentStamina += 3 * Time.deltaTime;
+                    currentStamina += Time.deltaTime;
                 }
             }
         }
