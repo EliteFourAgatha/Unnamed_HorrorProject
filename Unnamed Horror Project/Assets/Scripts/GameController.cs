@@ -32,9 +32,13 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 1)
         {
-            objectiveText.text = "Turn off power breaker to storage area";
+            objectiveText.text = "Close window in laundry room";
         }
         else if(currentCheckpoint == 2)
+        {
+            objectiveText.text = "Turn off power breaker to storage area";
+        }
+        else if(currentCheckpoint == 3)
         {
             objectiveText.text = "Fix faulty light in storage room 4";
         }

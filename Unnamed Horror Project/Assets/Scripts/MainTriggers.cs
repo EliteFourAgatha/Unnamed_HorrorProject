@@ -31,6 +31,14 @@ public class MainTriggers : MonoBehaviour
     public AudioClip mainPaperSFX;
 
 
+    //Laundry Window
+    public Animator laundryWindowAnim;
+    private bool canUseLaundryWindow = false;
+    private bool laundryWindowOpen = true;
+    public AudioClip openWindowSFX;
+    public AudioClip closeWindowSFX;
+
+
     //Fuse box
     public Light[] breakerLights;
     public GameObject fuseSwitch;
@@ -63,10 +71,11 @@ public class MainTriggers : MonoBehaviour
 
     private bool canOpenDungeonDoor = false;
     private string paperInstructionString = "Press [Esc] to view objectives";
+    private string laundryWindowString = "Turn off breaker to storage area";
     private string fuseboxString = "Fix the faulty light in storage room 4";
     private string spawnGhostString = "Find safety in the light";
 
-    public enum TriggerType {Darkness, SpawnGhost, MainPaper, FuseBox, DungeonDoor, Closet, StorageLight,
+    public enum TriggerType {Darkness, SpawnGhost, MainPaper, LaundryWindow, FuseBox, DungeonDoor, Closet, StorageLight,
                                 ShadowScare, ShadowHide}
     public TriggerType triggerType;
     void Start()
@@ -105,6 +114,13 @@ public class MainTriggers : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.E))
             {
                 ExecuteDungeonTrigger();
+            }
+        }
+        if(canUseLaundryWindow)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                ExecuteLaundryWindowTrigger();
             }
         }
         if(canUseFuseBox)
@@ -176,6 +192,10 @@ public class MainTriggers : MonoBehaviour
             {
                 canHideFromShadow = true;
             }
+            else if(triggerType == TriggerType.LaundryWindow)
+            {
+                canUseLaundryWindow = true;
+            }
         }
     }
     public void OnTriggerExit(Collider other)
@@ -198,6 +218,10 @@ public class MainTriggers : MonoBehaviour
             {
                 canHideFromShadow = false;
             }
+            else if(triggerType == TriggerType.LaundryWindow)
+            {
+                canUseLaundryWindow = false;
+            }
         }
     }
     //Trigger for main paper in head office
@@ -215,15 +239,39 @@ public class MainTriggers : MonoBehaviour
         triggerAudio.Play();
         levelController.FadeInToLevel(2);
     }
+    public void ExecuteLaundryWindowTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        if(laundryWindowOpen)
+        {
+            triggerAudio.clip = openWindowSFX;
+            laundryWindowAnim.SetTrigger("CloseWindow");
+            laundryWindowOpen = false;
+        }
+        else
+        {
+            triggerAudio.clip = closeWindowSFX;
+            laundryWindowAnim.SetTrigger("OpenWindow");
+            laundryWindowOpen = true;
+        }
+        if(gameController.currentCheckpoint == 1)
+        {
+            gameController.currentCheckpoint = 2;
+            StartCoroutine(gameController.ShowPopupMessage(laundryWindowString, 2));
+        }
+    }
     public void ExecuteFuseBoxTrigger()
     {
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
         }
-        if(gameController.currentCheckpoint == 1)
+        if(gameController.currentCheckpoint == 2)
         {
-            gameController.currentCheckpoint = 2;
+            gameController.currentCheckpoint = 3;
             StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
         }
         //Turn lights on

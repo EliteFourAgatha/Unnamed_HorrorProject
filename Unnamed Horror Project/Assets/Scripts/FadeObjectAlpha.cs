@@ -25,7 +25,7 @@ public class FadeObjectAlpha : MonoBehaviour
     {
         playerPosition = player.transform.position;
         absDistance = Vector3.Distance(playerPosition, fakeCloset.transform.position);
-        Debug.Log("abs dist: " + absDistance);
+        //Debug.Log("abs dist: " + absDistance);
         DetermineAlphaByDistance();
         if(Vector3.Distance(playerPosition, fakeCloset.transform.position) <= 1)
         {
