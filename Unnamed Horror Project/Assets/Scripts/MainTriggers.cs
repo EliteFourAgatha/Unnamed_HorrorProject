@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+//Consider creating scare trigger script and one for simple item interactions.
+
 public class MainTriggers : MonoBehaviour
 {
     public GameController gameController;

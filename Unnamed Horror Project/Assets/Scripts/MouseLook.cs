@@ -10,8 +10,8 @@ public class MouseLook : MonoBehaviour
 
     float xRotation = 0f;
 
-
-    private void Update(){
+    private void Update()
+    {
         //If player hits escape key, unlock cursor from game window
         // *Will also trigger UI pause menu*
         /*
@@ -19,7 +19,10 @@ public class MouseLook : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
         */
-
+        LookWithMouse();
+    }
+    private void LookWithMouse()
+    {
         //Mouse Input on X and Y axes, * mouse sensitivity, * delta time so that
         // you will rotate at the same speed regardless of frame rate (deltaTime = 
         // time between frames)
