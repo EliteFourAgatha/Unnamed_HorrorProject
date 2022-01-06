@@ -21,12 +21,14 @@ public class Triggers : MonoBehaviour
     private bool lightsOff = true;
     private bool canUseLightSwitch = false;
 
+    private bool chamberLightTriggerActive = true;
+    public GameObject affectedChamberLights;
+
 
     private bool canUseSnackMachine = false;
     private bool canUseLockedDoor = false;
-    private bool playerSafe = false;
-    public enum TriggerType {Snacks, LockedDoor, Safety, StorageLight, BackroomLight, BathroomLight,
-                                 OfficeLight, LaundryLight}
+    public enum TriggerType {Snacks, LockedDoor, StorageLight, BackroomLight, BathroomLight,
+                                 OfficeLight, LaundryLight, ChamberLight}
     public TriggerType triggerType;
     void Start()
     {
@@ -54,10 +56,6 @@ public class Triggers : MonoBehaviour
     }
     void Update()
     {
-        if(playerSafe)
-        {
-            Debug.Log("Player safe!");
-        }
         if(canUseSnackMachine)
         {
             if(Input.GetKeyDown(KeyCode.E))
@@ -112,9 +110,12 @@ public class Triggers : MonoBehaviour
             {
                 canUseLockedDoor = true;
             }
-            else if(triggerType == TriggerType.Safety)
+            else if(triggerType == TriggerType.ChamberLight)
             {
-                playerSafe = true;
+                if(chamberLightTriggerActive)
+                {
+                    ExecuteChamberLightsTrigger();
+                }
             }
         }
     }
@@ -150,10 +151,6 @@ public class Triggers : MonoBehaviour
             {
                 canUseLockedDoor = false;
             }
-            if(triggerType == TriggerType.Safety)
-            {
-                playerSafe = false;
-            }
         }
     }
     public void ExecuteAudioOnlyTrigger()
@@ -162,6 +159,15 @@ public class Triggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
+    }
+    public void ExecuteChamberLightsTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        affectedChamberLights.SetActive(true);
+        chamberLightTriggerActive = false;
     }
     public void ExecuteLightSwitchTrigger()
     {
