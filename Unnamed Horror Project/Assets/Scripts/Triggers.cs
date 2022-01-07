@@ -23,12 +23,14 @@ public class Triggers : MonoBehaviour
 
     private bool chamberLightTriggerActive = true;
     public GameObject affectedChamberLights;
+    private bool fireScareTriggerActive = true;
+    public GameObject fireScareObject;
 
 
     private bool canUseSnackMachine = false;
     private bool canUseLockedDoor = false;
     public enum TriggerType {Snacks, LockedDoor, StorageLight, BackroomLight, BathroomLight,
-                                 OfficeLight, LaundryLight, ChamberLight}
+                                 OfficeLight, LaundryLight, ChamberLight, FireScare}
     public TriggerType triggerType;
     void Start()
     {
@@ -117,6 +119,13 @@ public class Triggers : MonoBehaviour
                     ExecuteChamberLightsTrigger();
                 }
             }
+            else if(triggerType == TriggerType.FireScare)
+            {
+                if(fireScareTriggerActive)
+                {
+                    ExecuteFireScareTrigger();
+                }
+            }
         }
     }
     public void OnTriggerExit(Collider other)
@@ -168,6 +177,16 @@ public class Triggers : MonoBehaviour
         }
         affectedChamberLights.SetActive(true);
         chamberLightTriggerActive = false;
+    }
+    public void ExecuteFireScareTrigger()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        affectedChamberLights.SetActive(true);
+        StartCoroutine(FlashFireScareObject());
+        fireScareTriggerActive = false;
     }
     public void ExecuteLightSwitchTrigger()
     {
@@ -251,5 +270,11 @@ public class Triggers : MonoBehaviour
                 _laundryLightMat.SetColor("_EmissionColor", Color.black);                
             }
         }
+    }
+    private IEnumerator FlashFireScareObject()
+    {
+        fireScareObject.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        fireScareObject.SetActive(false);
     }
 }
