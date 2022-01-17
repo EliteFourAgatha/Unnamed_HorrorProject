@@ -16,8 +16,10 @@ public class MenuController : MonoBehaviour
     public GameObject expositionText;
     public LevelController levelController;
     public static bool gamePaused = false;
+    private bool canPauseGame = false;
     private bool expositionActive = false;
     private bool pressEnterEnabled = false;
+    private AudioSource playButtonAudioSource;
 
     void Awake()
     {
@@ -25,27 +27,39 @@ public class MenuController : MonoBehaviour
         {
             levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
         }
+        playButtonAudioSource = gameObject.GetComponent<AudioSource>();
     }
-
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        Scene currentScene = SceneManager.GetActiveScene();
+        int buildIndex = currentScene.buildIndex;
+        if(buildIndex == 0)
         {
-            if(gamePaused)
+            canPauseGame = false;
+        }
+        else
+        {
+            canPauseGame = true;
+        }
+        if(canPauseGame)
+        {
+            if(Input.GetKeyDown(KeyCode.Escape))
             {
-                ResumeGame();
-            }
-            else
-            {
-                PauseGame();
+                if(gamePaused)
+                {
+                    ResumeGame();
+                }
+                else
+                {
+                    PauseGame();
+                }
             }
         }
-
+        CheckExpositionScreenInput();
     }
     // -- MAIN MENU BUTTONS --
     //Main Menu: Play Button
@@ -70,6 +84,7 @@ public class MenuController : MonoBehaviour
     {
         expositionUI.SetActive(true);
         mainMenuUI.SetActive(false);
+        playButtonAudioSource.Play();
         expositionActive = true;
     }
     public void StartGameFromExposition()
@@ -135,7 +150,6 @@ public class MenuController : MonoBehaviour
         pauseMenuUI.SetActive(false);
         AudioListener.volume = 1f;
         Cursor.lockState = CursorLockMode.Locked; //Lock cursor
-        Cursor.visible = false;
         Time.timeScale = 1f;
         gamePaused = false;
     }
@@ -144,7 +158,6 @@ public class MenuController : MonoBehaviour
         pauseMenuUI.SetActive(true);
         AudioListener.volume = 0;
         Cursor.lockState = CursorLockMode.None; //Unlock cursor
-        Cursor.visible = true;
         Time.timeScale = 0f;
         gamePaused = true;
     }

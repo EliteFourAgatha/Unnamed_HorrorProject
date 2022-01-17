@@ -17,7 +17,6 @@ public class GameController : MonoBehaviour
     {
         //Lock cursor to center of game window
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         currentCheckpoint = 0;
     }
     private void Update()
