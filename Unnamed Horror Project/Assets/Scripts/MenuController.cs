@@ -17,9 +17,6 @@ public class MenuController : MonoBehaviour
     public LevelController levelController;
     public static bool gamePaused = false;
     private bool canPauseGame = false;
-    private bool expositionActive = false;
-    private bool pressEnterEnabled = false;
-    private AudioSource playButtonAudioSource;
 
     void Awake()
     {
@@ -27,7 +24,6 @@ public class MenuController : MonoBehaviour
         {
             levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
         }
-        playButtonAudioSource = gameObject.GetComponent<AudioSource>();
     }
     void Start()
     {
@@ -59,7 +55,6 @@ public class MenuController : MonoBehaviour
                 }
             }
         }
-        CheckExpositionScreenInput();
     }
     // -- MAIN MENU BUTTONS --
     //Main Menu: Play Button
@@ -84,34 +79,11 @@ public class MenuController : MonoBehaviour
     {
         expositionUI.SetActive(true);
         mainMenuUI.SetActive(false);
-        playButtonAudioSource.Play();
-        expositionActive = true;
     }
     public void StartGameFromExposition()
     {
         expositionUI.SetActive(false);
-        expositionActive = false;
         levelController.FadeInToLevel(1);
-    }
-    public void CheckExpositionScreenInput()
-    {
-        if(expositionActive)
-        {
-            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                pressEnterButton.SetActive(true);
-                pressEnterEnabled = true;
-            }
-        }
-        if(pressEnterEnabled)
-        {
-            if(Input.GetKeyDown(KeyCode.Return))
-            {
-                expositionActive = false;
-                expositionUI.SetActive(false);
-                levelController.FadeInToLevel(1);
-            }
-        }
     }
     // -- END EXPOSITION --
 

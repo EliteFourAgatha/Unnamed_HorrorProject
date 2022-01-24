@@ -31,6 +31,7 @@ public class MainTriggers : MonoBehaviour
     public GameObject mainPaper;    
     private bool canGrabPaper = false;
     public AudioClip mainPaperSFX;
+    public GameObject laundryWindowTrigger;
 
 
     //Laundry Window
@@ -232,8 +233,9 @@ public class MainTriggers : MonoBehaviour
         //Play clip even if object deactivated
         AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
         gameController.currentCheckpoint = 1;
-        StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 2));
-        mainPaper.SetActive(false);
+        laundryWindowTrigger.SetActive(true);
+        StartCoroutine(WaitAndDisableMainPaper());
+
     }
     //Trigger to enter final dungeon scene
     public void ExecuteDungeonTrigger()
@@ -243,10 +245,6 @@ public class MainTriggers : MonoBehaviour
     }
     public void ExecuteLaundryWindowTrigger()
     {
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
         if(laundryWindowOpen)
         {
             triggerAudio.clip = openWindowSFX;
@@ -259,6 +257,12 @@ public class MainTriggers : MonoBehaviour
             laundryWindowAnim.SetTrigger("OpenWindow");
             laundryWindowOpen = true;
         }
+
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+
         if(gameController.currentCheckpoint == 1)
         {
             gameController.currentCheckpoint = 2;
@@ -338,14 +342,6 @@ public class MainTriggers : MonoBehaviour
             triggerAudio.Play();
         }
         StartCoroutine(gameController.ShowPopupMessage(spawnGhostString, 2));
-        //Rock wall crumbles behind player
-        //sound of rocks tumbling to ground
-        //wisp of wind, short.
-        //all 'entrance lights' go out at once.
-        //hearbeat sfx + unsettilng music or ambience
-        //Ghost spawn animation, maybe cutscene if necessary
-        //Otherwise, ghost slowly starts to patrol and try to find player
-        // Activate ghost AI.
         spawnGhostTriggerActive = false; //single use, deactivate after
 
     }
@@ -377,5 +373,11 @@ public class MainTriggers : MonoBehaviour
     {
         yield return new WaitForSeconds(delayTime);
         levelController.FadeInToLevel(levelNumber);
+    }
+    IEnumerator WaitAndDisableMainPaper()
+    {
+        StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 1.5f));
+        yield return new WaitForSeconds(0.5f);
+        mainPaper.SetActive(false);
     }
 }
