@@ -32,6 +32,7 @@ public class MainTriggers : MonoBehaviour
     private bool canGrabPaper = false;
     public AudioClip mainPaperSFX;
     public GameObject laundryWindowTrigger;
+    public GameObject fuseBoxTrigger;
 
 
     //Laundry Window
@@ -234,6 +235,7 @@ public class MainTriggers : MonoBehaviour
         AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
         gameController.currentCheckpoint = 1;
         laundryWindowTrigger.SetActive(true);
+        fuseBoxTrigger.SetActive(true);
         StartCoroutine(WaitAndDisableMainPaper());
 
     }

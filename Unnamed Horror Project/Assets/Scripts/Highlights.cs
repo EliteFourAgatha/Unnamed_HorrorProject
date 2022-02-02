@@ -24,13 +24,13 @@ public class Highlights : MonoBehaviour
     {
         if (lastHighlightedObject != gameObject)
         {
-            //ClearHighlighted();
+            ClearHighlighted();
             //originalMat = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
             //gameObject.GetComponent<MeshRenderer>().sharedMaterial = highlightMat;
             gameObject.GetComponent<Outline>().enabled = true;
             lastHighlightedObject = gameObject;
-            //SetCursorTexture(doorCursorTexture);
-            //Cursor.visible = true;
+            SetCursorTexture(doorCursorTexture);
+            Cursor.visible = true;
         }
     } 
     void ClearHighlighted()
@@ -40,8 +40,8 @@ public class Highlights : MonoBehaviour
             //lastHighlightedObject.GetComponent<MeshRenderer>().sharedMaterial = originalMat;
             lastHighlightedObject.GetComponent<Outline>().enabled = false;
             lastHighlightedObject = null;
-            //SetCursorTexture(normalCursorTexture);
-            //Cursor.visible = false;
+            SetCursorTexture(normalCursorTexture);
+            Cursor.visible = false;
         }
     } 
     void HighlightObjectInCenterOfCam()
@@ -58,16 +58,13 @@ public class Highlights : MonoBehaviour
 
             if(hitObj.GetComponent<Collider>().gameObject.tag == "Lightswitch")
             {
-                if(hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().lightSwitchType == Lightswitch.SwitchType.Laundry)
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
                     {
-                        HighlightObject(hitObj);
-                        if(Input.GetKeyDown(KeyCode.E))
-                        {
-                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().ExecuteLightSwitch();
-                            Debug.Log("execute lights");
-                        }
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().ExecuteLightSwitch();
+                        Debug.Log("execute lights");
                     }
                 }
             }
