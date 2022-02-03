@@ -13,7 +13,6 @@ public class LevelController : MonoBehaviour
     {
         animator = gameObject.GetComponent<Animator>();
     }
-
     public void FadeInToLevel(int levelNumber)
     {
         levelToLoad = levelNumber;

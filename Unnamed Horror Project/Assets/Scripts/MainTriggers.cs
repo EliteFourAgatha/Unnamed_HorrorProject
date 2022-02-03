@@ -15,10 +15,11 @@ public class MainTriggers : MonoBehaviour
 
     //Darkness
     public GameObject darknessWall;
+    public GameObject darknessWallTwo;
     public GameObject closetDarkBackdrop;
+    public GameObject closetDarkTunnel;
     public GameObject closetLightBulb;
-    public GameObject fakeCloset;
-    public GameObject dungeonDoor;    
+    public GameObject fakeCloset;  
     private bool darknessTriggerActive = true;
 
     
@@ -161,7 +162,7 @@ public class MainTriggers : MonoBehaviour
             {
                 if(closetTriggerActive)
                 {
-                    ExecuteClosetTrigger();
+                    ExecuteFinalClosetTrigger();
                 }
             }
             //Spawn ghost in final maze
@@ -237,7 +238,6 @@ public class MainTriggers : MonoBehaviour
         laundryWindowTrigger.SetActive(true);
         fuseBoxTrigger.SetActive(true);
         StartCoroutine(WaitAndDisableMainPaper());
-
     }
     //Trigger to enter final dungeon scene
     public void ExecuteDungeonTrigger()
@@ -291,7 +291,6 @@ public class MainTriggers : MonoBehaviour
             {
                 light.enabled = true;
             }
-            _storageLightMat.SetColor("_EmissionColor", normalEmissionColor);
         }
         //Turn lights off
         else
@@ -302,39 +301,43 @@ public class MainTriggers : MonoBehaviour
             {
                 light.enabled = false;
             }
-            _storageLightMat.SetColor("_EmissionColor", Color.black);
         }
     }
     public void ExecuteDarknessTrigger()
     {
         //Set darkness wall active behind player, block escape backwards
         darknessWall.SetActive(true);
+        darknessWallTwo.SetActive(true);
         //Lights go out
         closetLightBulb.SetActive(false);
         fakeCloset.SetActive(false);
-        //Enable dungeon door
-        dungeonDoor.SetActive(true);
         //Disable darkness backdrop
         closetDarkBackdrop.SetActive(false);
+        closetDarkTunnel.SetActive(true);
+
+        //start animation for walls closing in here
+        //darknessWall.getcomponent<animator>?
+
+
         //Spooky audio plays, need better SFX
         triggerAudio.Play();
+
+
         darknessTriggerActive = false; //single use, deactivate after
     }
-    public void ExecuteClosetTrigger()
+    //Called by animation event after walls close in
+    public void FadeToHallucination()
+    {
+        levelController.FadeInToLevel(2);
+    }
+    public void ExecuteFinalClosetTrigger()
     {
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
         }
-        //Enable broken window emissive color
-        brokenWindowMat.SetColor("_EmissionColor", new Color (0.1f, 0.1f, 0.1f, 1f));
-        bathroomLightMat.SetColor("_EmissionColor", Color.black);
-        bathroomLight.enabled = false;
-        //
-        // Missing, complete later
-        //open closet door (slowly) with creaky door sfx
-        //
-        //
+        //1. pop lights in room, turn off light + glass break sfx
+        //2. open closet door (slowly) with creaky door sfx
         closetTriggerActive = false; //single use, deactivate after
     }
     public void ExecuteSpawnGhostTrigger()
