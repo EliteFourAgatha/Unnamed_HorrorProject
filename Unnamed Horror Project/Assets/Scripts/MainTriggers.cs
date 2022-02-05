@@ -27,10 +27,11 @@ public class MainTriggers : MonoBehaviour
     public GameObject spawnedGhost;
     private bool spawnGhostTriggerActive = true;
 
+    public GameObject topOfStairsDoor;
+
 
     //Main Paper
     public GameObject mainPaper;    
-    private bool canGrabPaper = false;
     public AudioClip mainPaperSFX;
     public GameObject laundryWindowTrigger;
     public GameObject fuseBoxTrigger;
@@ -46,12 +47,8 @@ public class MainTriggers : MonoBehaviour
 
     //Fuse box
     public Light[] breakerLights;
-    public GameObject fuseSwitch;
-    private Color normalEmissionColor;
-    private bool breakerOff = false;
+    public bool breakerOn = true;
     private bool canUseFuseBox = false;
-    //Only storage light mat affected by fuse box trigger
-    public Material _storageLightMat;
 
 
     //Shadow scare
@@ -105,15 +102,6 @@ public class MainTriggers : MonoBehaviour
     }
     void Update()
     {
-        if(canGrabPaper)
-        {
-            //If object material is currently highlighted, means player is looking at it
-            // Check for that before E input. If object = highlighted...
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                ExecuteMainPaperTrigger();
-            }
-        }
         if(canOpenDungeonDoor)
         {
             if(Input.GetKeyDown(KeyCode.E))
@@ -181,10 +169,6 @@ public class MainTriggers : MonoBehaviour
                     ExecuteShadowScareTrigger();
                 }
             }
-            else if(triggerType == TriggerType.MainPaper)
-            {
-                canGrabPaper = true;
-            }
             else if(triggerType == TriggerType.DungeonDoor)
             {
                 canOpenDungeonDoor = true;
@@ -207,11 +191,7 @@ public class MainTriggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(triggerType == TriggerType.MainPaper)
-            {
-                canGrabPaper = false;
-            }
-            else if(triggerType == TriggerType.DungeonDoor)
+            if(triggerType == TriggerType.DungeonDoor)
             {
                 canOpenDungeonDoor = false;
             }
@@ -230,7 +210,7 @@ public class MainTriggers : MonoBehaviour
         }
     }
     //Trigger for main paper in head office
-    public void ExecuteMainPaperTrigger()
+    public void PickUpMainPaper()
     {
         //Play clip even if object deactivated
         AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
@@ -281,25 +261,44 @@ public class MainTriggers : MonoBehaviour
         {
             gameController.currentCheckpoint = 3;
             StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
-        }
-        //Turn lights on
-        if(breakerOff)
-        {
-            breakerOff = false;
-            fuseSwitch.transform.eulerAngles = new Vector3(-60, 0, 0); //Breaker switch ON
-            foreach(Light light in breakerLights)
+            //Turn lights on
+            if(!breakerOn)
             {
-                light.enabled = true;
+                breakerOn = true;
+                foreach(Light light in breakerLights)
+                {
+                    light.enabled = true;
+                }
+            }
+            //Turn lights off
+            else
+            {
+                breakerOn = false;
+                foreach(Light light in breakerLights)
+                {
+                    light.enabled = false;
+                }
             }
         }
-        //Turn lights off
         else
         {
-            breakerOff = true;
-            fuseSwitch.transform.eulerAngles = new Vector3(-20, 0, 0); //Breaker switch OFF
-            foreach(Light light in breakerLights)
+            //Turn lights on
+            if(!breakerOn)
             {
-                light.enabled = false;
+                breakerOn = true;
+                foreach(Light light in breakerLights)
+                {
+                    light.enabled = true;
+                }
+            }
+            //Turn lights off
+            else
+            {
+                breakerOn = false;
+                foreach(Light light in breakerLights)
+                {
+                    light.enabled = false;
+                }
             }
         }
     }
@@ -363,6 +362,15 @@ public class MainTriggers : MonoBehaviour
         shadow.SetActive(true);
         shadowHideTimer.SetActive(true);
         shadowHideTriggers.SetActive(true);
+
+
+
+
+        //enable top of stairs door. move this to actual spot later.
+        topOfStairsDoor.SetActive(true);
+
+
+
         shadowTriggerActive = false; // single use, deactivate after
     }
     public void ExecuteHideTrigger()

@@ -6,23 +6,33 @@ using UnityEngine.SceneManagement;
 
 public class Triggers : MonoBehaviour
 {
+    public Animation playerAnim;
     public AudioSource triggerAudio;
+
+    public Texture2D hideOnCouchTexture;
+    public Texture2D normalCursorTexture;
 
     private bool chamberLightTriggerActive = true;
     public GameObject affectedChamberLights;
     private bool fireScareTriggerActive = true;
     public GameObject fireScareObject;
 
+    private bool playerHidden = false;
 
-    private bool canUseSnackMachine = false;
-    private bool canUseLockedDoor = false;
-    public enum TriggerType {Snacks, LockedDoor, ChamberLight, FireScare}
+
+    private bool canInteractWithObject = false;
+    private bool canUseHideAnimation = false;
+    public enum TriggerType {Snacks, LockedDoor, ChamberLight, FireScare, CouchHide}
     public TriggerType triggerType;
     void Start()
     {
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
+        }
+        if(playerAnim == null)
+        {
+            playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animation>();
         }
         /*
         if(triggerType == TriggerType.Lightswitch || triggerType == TriggerType.FuseBox)
@@ -44,18 +54,18 @@ public class Triggers : MonoBehaviour
     }
     void Update()
     {
-        if(canUseSnackMachine)
+        if(canInteractWithObject)
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
                 ExecuteAudioOnlyTrigger();
             }
         }
-        if(canUseLockedDoor)
+        if(canUseHideAnimation)
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                ExecuteAudioOnlyTrigger();
+                HideBehindCouch();
             }
         }
     }
@@ -65,11 +75,17 @@ public class Triggers : MonoBehaviour
         {
             if(triggerType == TriggerType.Snacks)
             {
-                canUseSnackMachine = true;
+                canInteractWithObject = true;
             }
             else if(triggerType == TriggerType.LockedDoor)
             {
-                canUseLockedDoor = true;
+                canInteractWithObject = true;
+            }
+            else if(triggerType == TriggerType.CouchHide)
+            {
+                canUseHideAnimation = true;
+                Cursor.SetCursor(hideOnCouchTexture, Vector2.zero, CursorMode.Auto);
+                Cursor.visible = true;
             }
             else if(triggerType == TriggerType.ChamberLight)
             {
@@ -93,11 +109,17 @@ public class Triggers : MonoBehaviour
         {
             if(triggerType == TriggerType.Snacks)
             {
-                canUseSnackMachine = false;
+                canInteractWithObject = false;
             }
             else if(triggerType == TriggerType.LockedDoor)
             {
-                canUseLockedDoor = false;
+                canInteractWithObject = false;
+            }
+            else if(triggerType == TriggerType.CouchHide)
+            {
+                canUseHideAnimation = false;
+                Cursor.SetCursor(normalCursorTexture, Vector2.zero, CursorMode.Auto);
+                Cursor.visible = false;
             }
         }
     }
@@ -107,6 +129,14 @@ public class Triggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
+    }
+    public void HideBehindCouch()
+    {        
+        //settrigger
+    }
+    public void UnhideFromCouch()
+    {
+
     }
     public void ExecuteChamberLightsTrigger()
     {
