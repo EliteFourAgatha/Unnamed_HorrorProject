@@ -10,15 +10,8 @@ public class MouseLook : MonoBehaviour
 
     float xRotation = 0f;
 
-    private void Update()
+    void Update()
     {
-        //If player hits escape key, unlock cursor from game window
-        // *Will also trigger UI pause menu*
-        /*
-        if (Input.GetKeyDown(KeyCode.Escape) == true){
-            Cursor.lockState = CursorLockMode.None;
-        }
-        */
         LookWithMouse();
     }
     private void LookWithMouse()
@@ -30,7 +23,7 @@ public class MouseLook : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
-        //Clamps camera rotation so that you can't look past a certain point 
+        //Clamps camera rotation so you can't look past a certain point 
         xRotation = Mathf.Clamp(xRotation, -60f, 60f);
 
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);

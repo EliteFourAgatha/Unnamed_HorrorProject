@@ -10,11 +10,12 @@ public class Highlights : MonoBehaviour
     public Texture2D handCursorTexture;
     public Texture2D doorCursorTexture;
     Texture2D normalCursorTexture;
-    public Camera mainCamera;
-    
+    //public Camera mainCamera;
+    Camera mainCamera;
     void Start()
     {
         SetCursorTexture(normalCursorTexture);
+        mainCamera = Camera.main;
     }
     void Update()
     {
@@ -64,7 +65,28 @@ public class Highlights : MonoBehaviour
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().ExecuteLightSwitch();
-                        Debug.Log("execute lights");
+                    }
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainPaper")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpMainPaper();
+                    }
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "FuseBox")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteFuseBoxTrigger();
                     }
                 }
             }

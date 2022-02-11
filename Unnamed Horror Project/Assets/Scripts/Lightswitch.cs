@@ -9,6 +9,7 @@ public class Lightswitch : MonoBehaviour
     public Light[] controlledLights;
     public GameObject lightSwitch;
     private bool lightsOff = true;
+    public MainTriggers fuseBoxTriggerRef;
 
     void Start()
     {
@@ -16,6 +17,10 @@ public class Lightswitch : MonoBehaviour
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
         }
+    }
+    void Update()
+    {
+        
     }
     public void ExecuteLightSwitch()
     {
@@ -29,9 +34,12 @@ public class Lightswitch : MonoBehaviour
             lightsOff = false;
             //Rotate lightswitch to "on"
             lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
-            foreach(Light light in controlledLights)
+            if(fuseBoxTriggerRef.breakerOn)
             {
-                light.enabled = true;
+                foreach(Light light in controlledLights)
+                {
+                    light.enabled = true;
+                }
             }
         }
         //Turn lights off
@@ -40,9 +48,12 @@ public class Lightswitch : MonoBehaviour
             lightsOff = true;
             //Rotate lightswitch to "off"
             lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
-            foreach(Light light in controlledLights)
+            if(fuseBoxTriggerRef.breakerOn)
             {
-                light.enabled = false;
+                foreach(Light light in controlledLights)
+                {
+                    light.enabled = false;
+                }
             }
         }
     }

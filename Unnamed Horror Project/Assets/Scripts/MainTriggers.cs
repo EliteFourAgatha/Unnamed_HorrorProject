@@ -51,13 +51,9 @@ public class MainTriggers : MonoBehaviour
     private bool canUseFuseBox = false;
 
 
-    //Shadow scare
-    public GameObject shadow;
-    private bool shadowTriggerActive = true;
-    public GameObject shadowHideTimer;
-    public GameObject shadowHideTriggers;
-    private bool canHideFromShadow = false;
-    
+    //First scare - motion blur
+    public GameObject shadowBlurMonster;
+    private bool shadowTriggerActive = true;    
 
 
 
@@ -78,7 +74,7 @@ public class MainTriggers : MonoBehaviour
     private string spawnGhostString = "Find safety in the light";
 
     public enum TriggerType {Darkness, SpawnGhost, MainPaper, LaundryWindow, FuseBox, DungeonDoor, Closet, StorageLight,
-                                ShadowScare, ShadowHide}
+                                ShadowScare}
     public TriggerType triggerType;
     void Start()
     {
@@ -123,17 +119,6 @@ public class MainTriggers : MonoBehaviour
                 ExecuteFuseBoxTrigger();
             }
         }
-        //If player enters "hide" collider on wall...
-        if(canHideFromShadow)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                ExecuteHideTrigger();
-                canHideFromShadow = false;
-                shadowHideTimer.SetActive(false); // Turn off timer UI
-                shadowHideTriggers.SetActive(false); // Turn off hide triggers
-            }
-        }
     }
     public void OnTriggerEnter(Collider other)
     {
@@ -166,7 +151,7 @@ public class MainTriggers : MonoBehaviour
             {
                 if(shadowTriggerActive)
                 {
-                    ExecuteShadowScareTrigger();
+                    ExecuteFirstScare();
                 }
             }
             else if(triggerType == TriggerType.DungeonDoor)
@@ -176,10 +161,6 @@ public class MainTriggers : MonoBehaviour
             else if(triggerType == TriggerType.FuseBox)
             {
                 canUseFuseBox = true;
-            }
-            else if(triggerType == TriggerType.ShadowHide)
-            {
-                canHideFromShadow = true;
             }
             else if(triggerType == TriggerType.LaundryWindow)
             {
@@ -198,10 +179,6 @@ public class MainTriggers : MonoBehaviour
             else if(triggerType == TriggerType.FuseBox)
             {
                 canUseFuseBox = false;
-            }
-            else if(triggerType == TriggerType.ShadowHide)
-            {
-                canHideFromShadow = false;
             }
             else if(triggerType == TriggerType.LaundryWindow)
             {
@@ -349,29 +326,20 @@ public class MainTriggers : MonoBehaviour
         spawnGhostTriggerActive = false; //single use, deactivate after
 
     }
-    public void ExecuteShadowScareTrigger()
+    public void ExecuteFirstScare()
     {
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
         }
-        //Get distance away from storage lights and fade them
-        //  based on range. As shadow moves down hallway, it appears to bend light around it.
-        // Maybe player can't move in this moment? frozen in fear?
-        //  (disable movement / ability to turn camera away)
-        shadow.SetActive(true);
-        shadowHideTimer.SetActive(true);
-        shadowHideTriggers.SetActive(true);
-
-
-
-
-        //enable top of stairs door. move this to actual spot later.
-        topOfStairsDoor.SetActive(true);
-
-
-
+        shadowBlurMonster.SetActive(true);
         shadowTriggerActive = false; // single use, deactivate after
+
+
+
+        //enable top of stairs door. move this to actual spot later, based on
+        //  flow of logic. (if player doesn't leave by x point, spawn this door)
+        topOfStairsDoor.SetActive(true);
     }
     public void ExecuteHideTrigger()
     {
