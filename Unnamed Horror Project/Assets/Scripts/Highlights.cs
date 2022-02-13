@@ -64,7 +64,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().ExecuteLightSwitch();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().UseLightSwitch();
                     }
                 }
             }

@@ -58,11 +58,6 @@ public class MainTriggers : MonoBehaviour
 
 
     //Open closet
-    public MeshRenderer bathroomLightMesh;
-    public MeshRenderer brokenWindowMesh;
-    private Material bathroomLightMat;
-    private Material brokenWindowMat;
-    public Light bathroomLight;
     public GameObject closetDoor;
     private bool closetTriggerActive = true;
 
@@ -89,11 +84,6 @@ public class MainTriggers : MonoBehaviour
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
-        }
-        if(triggerType == TriggerType.Closet)
-        {
-            brokenWindowMat = brokenWindowMesh.material;
-            bathroomLightMat = bathroomLightMesh.material;
         }
     }
     void Update()
@@ -312,8 +302,9 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        //1. pop lights in room, turn off light + glass break sfx
+        StartCoroutine(ShatterLightsBeforeCloset());
         //2. open closet door (slowly) with creaky door sfx
+
         closetTriggerActive = false; //single use, deactivate after
     }
     public void ExecuteSpawnGhostTrigger()
@@ -341,15 +332,6 @@ public class MainTriggers : MonoBehaviour
         //  flow of logic. (if player doesn't leave by x point, spawn this door)
         topOfStairsDoor.SetActive(true);
     }
-    public void ExecuteHideTrigger()
-    {
-        //Rotate player towards fixed point in center of hallway (player's back to wall)
-        //Lock 'manual' player movement / rotation
-        //Move player until their back is touching wall
-        //Big breaths of air? heavy breathing?
-        //Shadow stops, looks down hall, then keeps moving
-        Debug.Log("successfuly hid!");
-    }
     IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
     {
         yield return new WaitForSeconds(delayTime);
@@ -360,5 +342,14 @@ public class MainTriggers : MonoBehaviour
         StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 1.5f));
         yield return new WaitForSeconds(0.5f);
         mainPaper.SetActive(false);
+    }
+    IEnumerator ShatterLightsBeforeCloset()
+    {
+        //backroomLightOne.SetActive(false);
+        //AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
+        yield return new WaitForSeconds(0.5f);
+        //backroomLightTwo.SetActive(false);
+        //AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
+        yield return new WaitForSeconds(1f);
     }
 }

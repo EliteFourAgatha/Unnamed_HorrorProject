@@ -17,7 +17,8 @@ public class Triggers : MonoBehaviour
     private bool fireScareTriggerActive = true;
     public GameObject fireScareObject;
 
-    private bool playerHidden = false;
+    public HideAnimations hideAnimations;
+    bool isHiding;
 
 
     private bool canInteractWithObject = false;
@@ -26,6 +27,7 @@ public class Triggers : MonoBehaviour
     public TriggerType triggerType;
     void Start()
     {
+        isHiding = false;
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
@@ -65,7 +67,14 @@ public class Triggers : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                HideBehindCouch();
+                if(isHiding)
+                {
+                    UnhideFromCouch();
+                }
+                else
+                {
+                    HideBehindCouch();
+                }
             }
         }
     }
@@ -132,11 +141,13 @@ public class Triggers : MonoBehaviour
     }
     public void HideBehindCouch()
     {        
-        //settrigger
+        hideAnimations.HideBehindCouch();
+        isHiding = true;
     }
     public void UnhideFromCouch()
     {
-
+        hideAnimations.UnhideFromCouch();
+        isHiding = false;
     }
     public void ExecuteChamberLightsTrigger()
     {
