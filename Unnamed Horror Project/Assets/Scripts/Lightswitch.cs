@@ -18,11 +18,7 @@ public class Lightswitch : MonoBehaviour
             triggerAudio = gameObject.GetComponent<AudioSource>();
         }
     }
-    void Update()
-    {
-        
-    }
-    public void ExecuteLightSwitch()
+    public void UseLightSwitch()
     {
         if(!triggerAudio.isPlaying)
         {

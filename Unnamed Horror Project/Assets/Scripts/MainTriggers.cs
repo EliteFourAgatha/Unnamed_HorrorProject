@@ -53,13 +53,19 @@ public class MainTriggers : MonoBehaviour
 
     //First scare - motion blur
     public GameObject shadowBlurMonster;
-    private bool shadowTriggerActive = true;    
+    private bool shadowTriggerActive = true; 
 
 
 
     //Open closet
     public GameObject closetDoor;
+    public GameObject lockedClosetDoorTrigger;
+    private Animator closetDoorAnim;
     private bool closetTriggerActive = true;
+    public Light backroomLightOne;
+    public Light backroomLightTwo;
+    public AudioClip lightShatterSFX;
+
 
 
     private bool canOpenDungeonDoor = false;
@@ -84,6 +90,10 @@ public class MainTriggers : MonoBehaviour
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
+        }
+        if(closetDoorAnim == null)
+        {
+            closetDoorAnim = closetDoor.GetComponent<Animator>();
         }
     }
     void Update()
@@ -298,15 +308,13 @@ public class MainTriggers : MonoBehaviour
     }
     public void ExecuteFinalClosetTrigger()
     {
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
         StartCoroutine(ShatterLightsBeforeCloset());
-        //2. open closet door (slowly) with creaky door sfx
+        StartCoroutine(OpenClosetAfterDelay(2f));
+        lockedClosetDoorTrigger.SetActive(false);
 
         closetTriggerActive = false; //single use, deactivate after
     }
+    //spawn ghost in level 2. player now has to run for his life
     public void ExecuteSpawnGhostTrigger()
     {
         if(!triggerAudio.isPlaying)
@@ -345,11 +353,19 @@ public class MainTriggers : MonoBehaviour
     }
     IEnumerator ShatterLightsBeforeCloset()
     {
-        //backroomLightOne.SetActive(false);
-        //AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
-        yield return new WaitForSeconds(0.5f);
-        //backroomLightTwo.SetActive(false);
-        //AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
+        backroomLightOne.enabled = false;
+        AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
         yield return new WaitForSeconds(1f);
+        backroomLightTwo.enabled = false;
+        AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
+    }
+    IEnumerator OpenClosetAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        closetDoorAnim.Play("ClosetCreakOpen");
     }
 }
