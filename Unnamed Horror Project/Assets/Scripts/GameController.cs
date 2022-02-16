@@ -35,11 +35,23 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 2)
         {
-            objectiveText.text = "Turn off power breaker to storage area";
+            objectiveText.text = "Find wrench in maintenance room";
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Fix faulty light in storage room 4";
+            objectiveText.text = "Fix leak in the bathroom";
+        }
+        else if(currentCheckpoint == 4)
+        {
+            objectiveText.text = "Turn off power breaker to storage area";
+        }
+        else if(currentCheckpoint == 5)
+        {
+            objectiveText.text = "Fix faulty light in storage room 2";
+        }
+        else if(currentCheckpoint == 6)
+        {
+            objectiveText.text = "Investigate maintenance room";
         }
     }
     public IEnumerator ShowPopupMessage(string message, float delay)

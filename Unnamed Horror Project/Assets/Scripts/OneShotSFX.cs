@@ -10,7 +10,7 @@ public class OneShotSFX : MonoBehaviour
     public AudioSource audioSourceD;
     public AudioSource audioSourceE;
     private bool playerMovedEnough = false;
-    private bool playerMoving;
+    //private bool playerMoving;
     private float startTime;
     void Start()
     {
@@ -33,7 +33,7 @@ public class OneShotSFX : MonoBehaviour
         }
         if(Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
         {
-            playerMoving = false;
+            //playerMoving = false;
         }
     }
 }

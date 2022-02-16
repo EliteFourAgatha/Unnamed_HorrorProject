@@ -19,7 +19,6 @@ public class LevelController : MonoBehaviour
         animator.SetTrigger("FadeIn");
         animator.SetTrigger("FadeOut");
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     public void OnFadeComplete()
@@ -32,13 +31,11 @@ public class LevelController : MonoBehaviour
         {
             retryLevelOneScreen.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
         else
         {
             retryLevelTwoScreen.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
     }
 }

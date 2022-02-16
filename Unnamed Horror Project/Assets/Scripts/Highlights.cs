@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class Highlights : MonoBehaviour
 {
-    public Material highlightMat;
-    Material originalMat;
     GameObject lastHighlightedObject;
-    public Texture2D handCursorTexture;
-    public Texture2D doorCursorTexture;
+    public Texture2D highlightedCursorTexture;
     Texture2D normalCursorTexture;
-    //public Camera mainCamera;
     Camera mainCamera;
     void Start()
     {
         SetCursorTexture(normalCursorTexture);
         mainCamera = Camera.main;
+        Cursor.visible = true;
     }
     void Update()
     {
@@ -26,12 +23,9 @@ public class Highlights : MonoBehaviour
         if (lastHighlightedObject != gameObject)
         {
             ClearHighlighted();
-            //originalMat = gameObject.GetComponent<MeshRenderer>().sharedMaterial;
-            //gameObject.GetComponent<MeshRenderer>().sharedMaterial = highlightMat;
             gameObject.GetComponent<Outline>().enabled = true;
             lastHighlightedObject = gameObject;
-            SetCursorTexture(doorCursorTexture);
-            Cursor.visible = true;
+            SetCursorTexture(highlightedCursorTexture);
         }
     } 
     void ClearHighlighted()
@@ -42,7 +36,6 @@ public class Highlights : MonoBehaviour
             lastHighlightedObject.GetComponent<Outline>().enabled = false;
             lastHighlightedObject = null;
             SetCursorTexture(normalCursorTexture);
-            Cursor.visible = false;
         }
     } 
     void HighlightObjectInCenterOfCam()

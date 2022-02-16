@@ -58,8 +58,6 @@ public class CarInteractions : MonoBehaviour
                 {
                     carEndingUI.SetActive(true);
                     Time.timeScale = 0;
-                    //cursor.lockState = CursorLockMode.Locked;
-                    //cursor.visible = false;
                 }
             }
             else

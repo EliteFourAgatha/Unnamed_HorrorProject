@@ -9,7 +9,6 @@ public class Lightswitch : MonoBehaviour
     public Light[] controlledLights;
     public GameObject lightSwitch;
     private bool lightsOff = true;
-    public MainTriggers fuseBoxTriggerRef;
 
     void Start()
     {
@@ -30,12 +29,9 @@ public class Lightswitch : MonoBehaviour
             lightsOff = false;
             //Rotate lightswitch to "on"
             lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
-            if(fuseBoxTriggerRef.breakerOn)
+            foreach(Light light in controlledLights)
             {
-                foreach(Light light in controlledLights)
-                {
-                    light.enabled = true;
-                }
+                light.enabled = true;
             }
         }
         //Turn lights off
@@ -44,12 +40,9 @@ public class Lightswitch : MonoBehaviour
             lightsOff = true;
             //Rotate lightswitch to "off"
             lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
-            if(fuseBoxTriggerRef.breakerOn)
+            foreach(Light light in controlledLights)
             {
-                foreach(Light light in controlledLights)
-                {
-                    light.enabled = false;
-                }
+                light.enabled = false;
             }
         }
     }

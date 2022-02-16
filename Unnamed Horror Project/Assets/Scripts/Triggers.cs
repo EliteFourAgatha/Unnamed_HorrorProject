@@ -94,7 +94,6 @@ public class Triggers : MonoBehaviour
             {
                 canUseHideAnimation = true;
                 Cursor.SetCursor(hideOnCouchTexture, Vector2.zero, CursorMode.Auto);
-                Cursor.visible = true;
             }
             else if(triggerType == TriggerType.ChamberLight)
             {
@@ -128,7 +127,6 @@ public class Triggers : MonoBehaviour
             {
                 canUseHideAnimation = false;
                 Cursor.SetCursor(normalCursorTexture, Vector2.zero, CursorMode.Auto);
-                Cursor.visible = false;
             }
         }
     }

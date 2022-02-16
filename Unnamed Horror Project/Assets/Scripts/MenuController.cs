@@ -121,7 +121,7 @@ public class MenuController : MonoBehaviour
     {
         pauseMenuUI.SetActive(false);
         AudioListener.volume = 1f;
-        Cursor.lockState = CursorLockMode.Locked; //Lock cursor
+        Cursor.lockState = CursorLockMode.Locked; //Lock cursor to center of window
         Time.timeScale = 1f;
         gamePaused = false;
     }

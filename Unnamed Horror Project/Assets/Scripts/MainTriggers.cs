@@ -58,13 +58,14 @@ public class MainTriggers : MonoBehaviour
 
 
     //Open closet
-    public GameObject closetDoor;
     public GameObject lockedClosetDoorTrigger;
-    private Animator closetDoorAnim;
+    public Animator closetDoorAnim;
     private bool closetTriggerActive = true;
     public Light backroomLightOne;
+    public AudioSource lightOneAudioSource;
     public Light backroomLightTwo;
-    public AudioClip lightShatterSFX;
+    public AudioSource lightTwoAudioSource;
+    public AudioSource closetCreakAudioSource;
 
 
 
@@ -72,7 +73,6 @@ public class MainTriggers : MonoBehaviour
     private string paperInstructionString = "Press [Esc] to view objectives";
     private string laundryWindowString = "Turn off breaker to storage area";
     private string fuseboxString = "Fix the faulty light in storage room 4";
-    private string spawnGhostString = "Find safety in the light";
 
     public enum TriggerType {Darkness, SpawnGhost, MainPaper, LaundryWindow, FuseBox, DungeonDoor, Closet, StorageLight,
                                 ShadowScare}
@@ -90,10 +90,6 @@ public class MainTriggers : MonoBehaviour
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
-        }
-        if(closetDoorAnim == null)
-        {
-            closetDoorAnim = closetDoor.GetComponent<Animator>();
         }
     }
     void Update()
@@ -189,11 +185,6 @@ public class MainTriggers : MonoBehaviour
     //Trigger for main paper in head office
     public void PickUpMainPaper()
     {
-        //Play clip even if object deactivated
-        AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
-        gameController.currentCheckpoint = 1;
-        laundryWindowTrigger.SetActive(true);
-        fuseBoxTrigger.SetActive(true);
         StartCoroutine(WaitAndDisableMainPaper());
     }
     //Trigger to enter final dungeon scene
@@ -234,12 +225,11 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        if(gameController.currentCheckpoint == 2)
+        if(gameController.currentCheckpoint == 4)
         {
-            gameController.currentCheckpoint = 3;
+            gameController.currentCheckpoint = 5;
             StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
-            //Turn lights on
-            if(!breakerOn)
+            if(!breakerOn)  //Turn lights on
             {
                 breakerOn = true;
                 foreach(Light light in breakerLights)
@@ -247,8 +237,7 @@ public class MainTriggers : MonoBehaviour
                     light.enabled = true;
                 }
             }
-            //Turn lights off
-            else
+            else  //Turn lights off
             {
                 breakerOn = false;
                 foreach(Light light in breakerLights)
@@ -259,8 +248,7 @@ public class MainTriggers : MonoBehaviour
         }
         else
         {
-            //Turn lights on
-            if(!breakerOn)
+            if(!breakerOn)  //Turn lights on
             {
                 breakerOn = true;
                 foreach(Light light in breakerLights)
@@ -268,8 +256,7 @@ public class MainTriggers : MonoBehaviour
                     light.enabled = true;
                 }
             }
-            //Turn lights off
-            else
+            else  //Turn lights off
             {
                 breakerOn = false;
                 foreach(Light light in breakerLights)
@@ -293,6 +280,7 @@ public class MainTriggers : MonoBehaviour
 
         //start animation for walls closing in here
         //darknessWall.getcomponent<animator>?
+        //darknessWallAnimator.Play("wallsclosein")?
 
 
         //Spooky audio plays, need better SFX
@@ -301,8 +289,8 @@ public class MainTriggers : MonoBehaviour
 
         darknessTriggerActive = false; //single use, deactivate after
     }
-    //Called by animation event after walls close in
-    public void FadeToHallucination()
+
+    public void FadeToHallucination()  //Animation event after walls close in
     {
         levelController.FadeInToLevel(2);
     }
@@ -314,17 +302,23 @@ public class MainTriggers : MonoBehaviour
 
         closetTriggerActive = false; //single use, deactivate after
     }
-    //spawn ghost in level 2. player now has to run for his life
-    public void ExecuteSpawnGhostTrigger()
+
+    public void ExecuteSpawnGhostTrigger()  //spawn ghost in level 2
     {
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
         }
-        StartCoroutine(gameController.ShowPopupMessage(spawnGhostString, 2));
-        spawnGhostTriggerActive = false; //single use, deactivate after
+        //spawn ghost in first room (starting area)
+        // Then tell ghost which quadrant / room player is currently in.
 
+        //
+        //    **perhaps instead of going in order, can make a few set paths for
+        //     him to travel.**
+        //   Path 1: moves around outside, checks perimeter, moves on if nothing
+        //   Path 2: moves in zig-zag
     }
+
     public void ExecuteFirstScare()
     {
         if(!triggerAudio.isPlaying)
@@ -333,6 +327,12 @@ public class MainTriggers : MonoBehaviour
         }
         shadowBlurMonster.SetActive(true);
         shadowTriggerActive = false; // single use, deactivate after
+        
+
+        //First scare, blur rushes past.
+        // player given option to leave now.
+        // if player continues (goes into maintenance room, use simple trigger),
+        //  then spawn topofstairsdoor and disable ability to leave.
 
 
 
@@ -347,25 +347,27 @@ public class MainTriggers : MonoBehaviour
     }
     IEnumerator WaitAndDisableMainPaper()
     {
-        StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 1.5f));
-        yield return new WaitForSeconds(0.5f);
+        //Play clip even if object deactivated
+        AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
+        gameController.currentCheckpoint = 1;
+        laundryWindowTrigger.SetActive(true);
+        fuseBoxTrigger.SetActive(true);
+        StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 1f));
+        yield return new WaitForSeconds(1.5f);
         mainPaper.SetActive(false);
     }
     IEnumerator ShatterLightsBeforeCloset()
     {
         backroomLightOne.enabled = false;
-        AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
+        lightOneAudioSource.Play();
         yield return new WaitForSeconds(1f);
         backroomLightTwo.enabled = false;
-        AudioSource.PlayClipAtPoint(lightShatterSFX, transform.position);
+        lightTwoAudioSource.Play();
     }
     IEnumerator OpenClosetAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
+        closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
     }
 }
