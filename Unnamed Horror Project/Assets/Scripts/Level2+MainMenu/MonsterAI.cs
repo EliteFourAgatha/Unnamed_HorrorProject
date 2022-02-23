@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MonsterAI : MonoBehaviour
 {
     public GameObject player;
+    public NavMeshAgent agent;
     public LevelController levelController;
     public float moveSpeed = 5f;
     //float maxDist = 10f;
@@ -15,6 +17,10 @@ public class MonsterAI : MonoBehaviour
     float distance;
     void Start()
     {
+        if(agent == null)
+        {
+            agent = gameObject.GetComponent<NavMeshAgent>();
+        }
         TeleportIntoQuadrant();
     }
     void Update()
@@ -23,7 +29,8 @@ public class MonsterAI : MonoBehaviour
         //Get basic follow logic from ai scripts from tank game.
         // Don't reinvent the wheel! copy as much as you can.
         //  Get used to modular components that can be reused
-
+        
+        agent.destination = player.transform.position;
 
         //Create a trigger collider that acts as a "line of sight" cone.
         //  If player collides with this cone, player is seen. Monster behavior changes.

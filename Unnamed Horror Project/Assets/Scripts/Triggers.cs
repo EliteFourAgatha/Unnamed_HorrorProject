@@ -21,9 +21,18 @@ public class Triggers : MonoBehaviour
     bool isHiding;
 
 
+    //Triggerable sounds
+    bool soundTriggerCanFire = true;
+    AudioClip chosenClip;
+    public AudioClip[] woodCreakClips;
+    public AudioClip[] buildingGroanClips;
+
+
+
     private bool canInteractWithObject = false;
     private bool canUseHideAnimation = false;
-    public enum TriggerType {Snacks, LockedDoor, ChamberLight, FireScare, CouchHide}
+    public enum TriggerType {Snacks, LockedDoor, ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
+                                TriggerBuildingGroan}
     public TriggerType triggerType;
     void Start()
     {
@@ -109,6 +118,13 @@ public class Triggers : MonoBehaviour
                     ExecuteFireScareTrigger();
                 }
             }
+            else if(triggerType == TriggerType.TriggerWoodCreak)
+            {
+                if(soundTriggerCanFire)
+                {
+                    ExecuteSoundTrigger();
+                }
+            }
         }
     }
     public void OnTriggerExit(Collider other)
@@ -130,11 +146,21 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    public void ExecuteAudioOnlyTrigger()
+    public void ExecuteAudioOnlyTrigger() //Interact with objects + sfx only (locked door)
     {
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
+        }
+    }
+    public void ExecuteSoundTrigger() //Triggerable sound with cooldown
+    {
+        if(soundTriggerCanFire)
+        {
+            if(triggerType == TriggerType.TriggerWoodCreak)
+            {
+                StartCoroutine(PlaySoundTriggerAndCooldown(woodCreakClips));
+            }
         }
     }
     public void HideBehindCouch()
@@ -171,5 +197,19 @@ public class Triggers : MonoBehaviour
         fireScareObject.SetActive(true);
         yield return new WaitForSeconds(1.5f);
         fireScareObject.SetActive(false);
+    }
+    private IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
+    {
+        int randInt = Random.Range(0, sourceArray.Length);
+        chosenClip = sourceArray[randInt];
+        triggerAudio.clip = chosenClip;
+
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        soundTriggerCanFire = false;
+        yield return new WaitForSeconds(5);
+        soundTriggerCanFire = true;
     }
 }

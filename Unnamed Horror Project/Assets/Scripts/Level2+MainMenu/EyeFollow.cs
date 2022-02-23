@@ -5,11 +5,6 @@ using UnityEngine;
 public class EyeFollow : MonoBehaviour
 {
     public Transform playerTF;
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         RotateToLookAtPlayer();

@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class Level2Triggers : MonoBehaviour
 {
+    public GameObject giantEye;
+    public EyeFollow[] eyeFollowArray;
+    public CameraShake cameraShakeRef;
+    public AudioSource chantAudioSource;
     public AudioSource monsterAIAudioSource;
     private AudioSource audioSource;
+    public enum TriggerType {RedLight, FinalTest}
+    public TriggerType triggerType;
     void Awake()
     {
         if(audioSource == null)
@@ -20,6 +26,13 @@ public class Level2Triggers : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
+        if(triggerType == TriggerType.FinalTest)
+        {
+            if(other.gameObject.tag == "Player")
+            {
+                ExecuteFinalTrigger();
+            }
+        }
         if(other.gameObject.tag == "Player")
         {
             ExecuteSeenByLightTrigger();
@@ -53,4 +66,22 @@ public class Level2Triggers : MonoBehaviour
         // 6. Unholy wail heard from deep below.
         // 7. Screen shakes and rumble sfx
     }
+    public void ExecuteFinalTrigger()
+    {
+        StartCoroutine(FinalScene());
+    }
+    IEnumerator FinalScene()
+    {
+        yield return new WaitForSeconds(1f);
+        chantAudioSource.Stop();
+        //cameraShakeRef.StartCoroutine(ShakeCamera(5, 2));
+        giantEye.SetActive(true);
+        foreach (EyeFollow followScript in eyeFollowArray)
+        {
+            followScript.enabled = true;
+        }
+        audioSource.Play();
+        gameObject.GetComponent<Level2Triggers>().enabled = false; // Single use
+    }
+
 }
