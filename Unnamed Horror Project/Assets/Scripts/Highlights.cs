@@ -83,6 +83,17 @@ public class Highlights : MonoBehaviour
                     }
                 }
             }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "LockerDoor")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteLockerDoorTrigger();
+                    }
+                }
+            }
             // -- LEVEL 2 ONLY OBJECTS --
             // Burn the plant in right dungeon room
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "BurnPlant")

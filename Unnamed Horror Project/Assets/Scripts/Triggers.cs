@@ -26,13 +26,18 @@ public class Triggers : MonoBehaviour
     AudioClip chosenClip;
     public AudioClip[] woodCreakClips;
     public AudioClip[] buildingGroanClips;
+    public AudioClip[] pebbleDropClips;
+
+
+    public Animator lockerDoorAnim;
+    bool lockerDoorClosed = true;
 
 
 
     private bool canInteractWithObject = false;
     private bool canUseHideAnimation = false;
     public enum TriggerType {Snacks, LockedDoor, ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
-                                TriggerBuildingGroan}
+                                TriggerBuildingGroan, TriggerPebbleDrop}
     public TriggerType triggerType;
     void Start()
     {
@@ -125,6 +130,13 @@ public class Triggers : MonoBehaviour
                     ExecuteSoundTrigger();
                 }
             }
+            else if(triggerType == TriggerType.TriggerPebbleDrop)
+            {
+                if(soundTriggerCanFire)
+                {
+                    ExecuteSoundTrigger();
+                }
+            }
         }
     }
     public void OnTriggerExit(Collider other)
@@ -161,6 +173,10 @@ public class Triggers : MonoBehaviour
             {
                 StartCoroutine(PlaySoundTriggerAndCooldown(woodCreakClips));
             }
+            else if(triggerType == TriggerType.TriggerPebbleDrop)
+            {
+                StartCoroutine(PlaySoundTriggerAndCooldown(pebbleDropClips));
+            }
         }
     }
     public void HideBehindCouch()
@@ -192,6 +208,30 @@ public class Triggers : MonoBehaviour
         StartCoroutine(FlashFireScareObject());
         fireScareTriggerActive = false;
     }
+    public void ExecuteLockerDoorTrigger()
+    {
+        if(lockerDoorAnim == null)
+        {
+            lockerDoorAnim = gameObject.GetComponent<Animator>();
+        }
+        //randomized, at least 3 clips (4-6 ideal)
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        if(lockerDoorClosed)
+        {
+            lockerDoorClosed = false;
+            lockerDoorAnim.Play("OpenLockerDoor");
+        }
+        else
+        {
+            lockerDoorClosed = true;
+            lockerDoorAnim.Play("CloseLockerDoor");
+        }
+    }
+
+
     private IEnumerator FlashFireScareObject()
     {
         fireScareObject.SetActive(true);

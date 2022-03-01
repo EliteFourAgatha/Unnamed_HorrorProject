@@ -15,6 +15,7 @@ public class MonsterAI : MonoBehaviour
     public float catchRange = 2f;
     private bool playerSeen = false;
     float distance;
+    bool playerIsHiding;
     void Start()
     {
         if(agent == null)
@@ -30,8 +31,11 @@ public class MonsterAI : MonoBehaviour
         // Don't reinvent the wheel! copy as much as you can.
         //  Get used to modular components that can be reused
         
-        agent.destination = player.transform.position;
 
+        if(playerIsHiding)
+        {
+            playerSeen = false;
+        }
         //Create a trigger collider that acts as a "line of sight" cone.
         //  If player collides with this cone, player is seen. Monster behavior changes.
 
@@ -47,11 +51,16 @@ public class MonsterAI : MonoBehaviour
     }
     void FollowPlayer()
     {
+        agent.destination = player.transform.position;
+        /*
         gameObject.transform.LookAt(player.transform);
         if(distance >= minDist)
         {
             transform.position += transform.forward * moveSpeed * Time.deltaTime;
         }
+        */
+
+
         //If player not seen again for x number of seconds, disappear?
         //  Can't chase forever, would be too much tension. Need to ebb and flow.
     }
