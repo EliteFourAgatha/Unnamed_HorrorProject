@@ -12,7 +12,7 @@ public class MonsterAI : MonoBehaviour
     //float maxDist = 10f;
     float minDist = 10f;
     public float teleportRange = 25f;
-    public float catchRange = 2f;
+    public float catchRange = 5f;
     private bool playerSeen = false;
     float distance;
     bool playerIsHiding;
@@ -31,7 +31,8 @@ public class MonsterAI : MonoBehaviour
         // Don't reinvent the wheel! copy as much as you can.
         //  Get used to modular components that can be reused
         
-
+        FollowPlayer();
+        AttemptToCatchPlayer();
         if(playerIsHiding)
         {
             playerSeen = false;
