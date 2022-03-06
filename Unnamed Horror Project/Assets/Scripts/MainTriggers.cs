@@ -340,6 +340,16 @@ public class MainTriggers : MonoBehaviour
         //  flow of logic. (if player doesn't leave by x point, spawn this door)
         topOfStairsDoor.SetActive(true);
     }
+    public void ExecuteLockedDrawerTrigger()
+    {
+        //get animator
+        // if drawer closed, open drawer
+        // if drawer open, close drawer
+    }
+    public void ExecuteExpositionNote()
+    {
+        
+    }
     IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
     {
         yield return new WaitForSeconds(delayTime);

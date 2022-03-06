@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     public Text objectiveText;
     private AudioSource audioSource;
     public int currentCheckpoint;
+    public bool playerHasKey = false;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();

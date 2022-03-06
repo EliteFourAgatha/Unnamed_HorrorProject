@@ -8,6 +8,8 @@ public class Highlights : MonoBehaviour
     public Texture2D highlightedCursorTexture;
     Texture2D normalCursorTexture;
     Camera mainCamera;
+    public GameController gameController;
+    private string noKeyFoundString = "It's locked...";
     void Start()
     {
         SetCursorTexture(normalCursorTexture);
@@ -23,7 +25,15 @@ public class Highlights : MonoBehaviour
         if (lastHighlightedObject != gameObject)
         {
             ClearHighlighted();
+
+            //currently showing outline around objects.
+            //  looks bad in low resolution.
+            //  Either:
+            //  A. small 'E' ui button hover on interactables
+            //  B. slight tint material applied, coats object light blue
             gameObject.GetComponent<Outline>().enabled = true;
+
+
             lastHighlightedObject = gameObject;
             SetCursorTexture(highlightedCursorTexture);
         }
@@ -91,6 +101,35 @@ public class Highlights : MonoBehaviour
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteLockerDoorTrigger();
+                    }
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "LockedDrawer")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        if(gameController.playerHasKey)
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteLockedDrawerTrigger();
+                        }
+                        else
+                        {
+                            StartCoroutine(gameController.ShowPopupMessage(noKeyFoundString, 2));
+                        }
+                    }
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "ExpositionNote")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteExpositionNote();
                     }
                 }
             }
