@@ -18,12 +18,13 @@ public class MainTriggers : MonoBehaviour
     public GameObject darknessWallTwo;
     public GameObject closetDarkBackdrop;
     public GameObject closetDarkTunnel;
+    public GameObject closetGrimReaper;
     public GameObject closetLightBulb;
     public GameObject fakeCloset;  
     private bool darknessTriggerActive = true;
 
     
-    //Spawn Ghost
+    //Spawn Ghost in level 2
     public GameObject spawnedGhost;
     private bool spawnGhostTriggerActive = true;
 
@@ -61,6 +62,7 @@ public class MainTriggers : MonoBehaviour
     public GameObject lockedClosetDoorTrigger;
     public Animator closetDoorAnim;
     private bool closetTriggerActive = true;
+    public Light[] breakLightsArray;
     public Light backroomLightOne;
     public AudioSource lightOneAudioSource;
     public Light backroomLightTwo;
@@ -71,7 +73,9 @@ public class MainTriggers : MonoBehaviour
 
     private bool canOpenDungeonDoor = false;
     private string paperInstructionString = "Press [Esc] to view objectives";
-    private string laundryWindowString = "Turn off breaker to storage area";
+    private string laundryToWrenchString = "Find the wrench left for you in storage";
+    private string wrenchToBathroomString = "Fix leak in bathroom sink";
+    private string BathroomToFuseBoxString = "Turn off breaker to storage area";
     private string fuseboxString = "Fix the faulty light in storage room 4";
 
     public enum TriggerType {Darkness, SpawnGhost, MainPaper, LaundryWindow, FuseBox, DungeonDoor, Closet, StorageLight,
@@ -216,7 +220,7 @@ public class MainTriggers : MonoBehaviour
         if(gameController.currentCheckpoint == 1)
         {
             gameController.currentCheckpoint = 2;
-            StartCoroutine(gameController.ShowPopupMessage(laundryWindowString, 2));
+            StartCoroutine(gameController.ShowPopupMessage(laundryToWrenchString, 2));
         }
     }
     public void ExecuteFuseBoxTrigger()
@@ -271,21 +275,16 @@ public class MainTriggers : MonoBehaviour
         //Set darkness wall active behind player, block escape backwards
         darknessWall.SetActive(true);
         darknessWallTwo.SetActive(true);
-        //Lights go out
+        closetDarkTunnel.SetActive(true);
+        closetGrimReaper.SetActive(true);
+
         closetLightBulb.SetActive(false);
         fakeCloset.SetActive(false);
-        //Disable darkness backdrop
         closetDarkBackdrop.SetActive(false);
-        closetDarkTunnel.SetActive(true);
-
-        //start animation for walls closing in here
-        //darknessWall.getcomponent<animator>?
-        //darknessWallAnimator.Play("wallsclosein")?
 
 
         //Spooky audio plays, need better SFX
         triggerAudio.Play();
-
 
         darknessTriggerActive = false; //single use, deactivate after
     }
@@ -298,7 +297,9 @@ public class MainTriggers : MonoBehaviour
     {
         StartCoroutine(ShatterLightsBeforeCloset());
         StartCoroutine(OpenClosetAfterDelay(2f));
-        lockedClosetDoorTrigger.SetActive(false);
+        lockedClosetDoorTrigger.SetActive(false); //Trigger on closet door
+
+        
 
         closetTriggerActive = false; //single use, deactivate after
     }
@@ -368,8 +369,14 @@ public class MainTriggers : MonoBehaviour
     }
     IEnumerator ShatterLightsBeforeCloset()
     {
+        //disable light on proximity
+        //  if distance between player and one of lights in
+        //  breakLights array < breakDistance, disable/SFX.
+        //   'darkness is walking with you'
         backroomLightOne.enabled = false;
         lightOneAudioSource.Play();
+
+
         yield return new WaitForSeconds(1f);
         backroomLightTwo.enabled = false;
         lightTwoAudioSource.Play();

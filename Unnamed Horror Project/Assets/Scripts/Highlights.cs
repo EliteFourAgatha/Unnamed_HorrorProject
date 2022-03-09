@@ -6,6 +6,13 @@ public class Highlights : MonoBehaviour
 {
     GameObject lastHighlightedObject;
     public Texture2D highlightedCursorTexture;
+
+
+    public Material highlightMaterialTEST;
+    Material originalMat;
+
+
+
     Texture2D normalCursorTexture;
     Camera mainCamera;
     public GameController gameController;
@@ -26,26 +33,25 @@ public class Highlights : MonoBehaviour
         {
             ClearHighlighted();
 
-            //currently showing outline around objects.
-            //  looks bad in low resolution.
-            //  Either:
-            //  A. small 'E' ui button hover on interactables
-            //  B. slight tint material applied, coats object light blue
-            gameObject.GetComponent<Outline>().enabled = true;
+            //originalMat = gameObject.GetComponent<MeshRenderer>().material;
+            //gameObject.GetComponent<MeshRenderer>().material = highlightMaterialTEST;
+
 
 
             lastHighlightedObject = gameObject;
             SetCursorTexture(highlightedCursorTexture);
+            Cursor.visible = true;
         }
     } 
     void ClearHighlighted()
     {
         if (lastHighlightedObject != null)
         {
-            //lastHighlightedObject.GetComponent<MeshRenderer>().sharedMaterial = originalMat;
-            lastHighlightedObject.GetComponent<Outline>().enabled = false;
+            //lastHighlightedObject.GetComponent<MeshRenderer>().material = originalMat;
+            
             lastHighlightedObject = null;
             SetCursorTexture(normalCursorTexture);
+            Cursor.visible = false;
         }
     } 
     void HighlightObjectInCenterOfCam()
@@ -79,6 +85,17 @@ public class Highlights : MonoBehaviour
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpMainPaper();
+                    }
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainCar")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<CarInteractions>().AttemptToUseCar();
                     }
                 }
             }
