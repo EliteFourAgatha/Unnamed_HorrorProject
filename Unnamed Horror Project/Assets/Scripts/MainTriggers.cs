@@ -68,6 +68,7 @@ public class MainTriggers : MonoBehaviour
     public Light backroomLightTwo;
     public AudioSource lightTwoAudioSource;
     public AudioSource closetCreakAudioSource;
+    public AudioClip closetCreakAudio;
 
 
 
@@ -384,6 +385,7 @@ public class MainTriggers : MonoBehaviour
     IEnumerator OpenClosetAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+        closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
     }

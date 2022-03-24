@@ -1,27 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Highlights : MonoBehaviour
 {
     GameObject lastHighlightedObject;
-    public Texture2D highlightedCursorTexture;
 
 
     public Material highlightMaterialTEST;
     Material originalMat;
 
-
-
-    Texture2D normalCursorTexture;
+    public Image UIInteractImage;
     Camera mainCamera;
     public GameController gameController;
-    private string noKeyFoundString = "It's locked...";
+    private string noKeyFoundString = "It's locked but I see a key hole...";
+    private string doorLockedString = "Locked";
     void Start()
     {
-        SetCursorTexture(normalCursorTexture);
         mainCamera = Camera.main;
-        Cursor.visible = true;
     }
     void Update()
     {
@@ -39,8 +36,7 @@ public class Highlights : MonoBehaviour
 
 
             lastHighlightedObject = gameObject;
-            SetCursorTexture(highlightedCursorTexture);
-            Cursor.visible = true;
+            UIInteractImage.enabled = true;
         }
     } 
     void ClearHighlighted()
@@ -50,8 +46,7 @@ public class Highlights : MonoBehaviour
             //lastHighlightedObject.GetComponent<MeshRenderer>().material = originalMat;
             
             lastHighlightedObject = null;
-            SetCursorTexture(normalCursorTexture);
-            Cursor.visible = false;
+            UIInteractImage.enabled = false;
         }
     } 
     void HighlightObjectInCenterOfCam()
@@ -76,6 +71,40 @@ public class Highlights : MonoBehaviour
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().UseLightSwitch();
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "LockedDoor")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteAudioOnlyTrigger();
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Snacks")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteAudioOnlyTrigger();
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                                
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainPaper")
             {
@@ -87,6 +116,10 @@ public class Highlights : MonoBehaviour
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpMainPaper();
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainCar")
             {
@@ -98,6 +131,10 @@ public class Highlights : MonoBehaviour
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<CarInteractions>().AttemptToUseCar();
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "FuseBox")
             {
@@ -109,8 +146,12 @@ public class Highlights : MonoBehaviour
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteFuseBoxTrigger();
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
-            else if(hitObj.GetComponent<Collider>().gameObject.tag == "LockerDoor")
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Locker")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
@@ -120,6 +161,10 @@ public class Highlights : MonoBehaviour
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteLockerDoorTrigger();
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "LockedDrawer")
             {
@@ -138,6 +183,10 @@ public class Highlights : MonoBehaviour
                         }
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "ExpositionNote")
             {
@@ -149,6 +198,10 @@ public class Highlights : MonoBehaviour
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteExpositionNote();
                     }
                 }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
             // -- LEVEL 2 ONLY OBJECTS --
             // Burn the plant in right dungeon room
@@ -163,6 +216,10 @@ public class Highlights : MonoBehaviour
                             hitObj.GetComponent<Collider>().gameObject.GetComponent<Level2Triggers>().ExecuteBurnPlant();
                         }
                     }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
             }
 
             else
@@ -174,10 +231,5 @@ public class Highlights : MonoBehaviour
         {
             ClearHighlighted();
         }
-    }
-
-    void SetCursorTexture(Texture2D tex)
-    {
-        Cursor.SetCursor(tex, Vector2.zero, CursorMode.Auto);
     }
 }

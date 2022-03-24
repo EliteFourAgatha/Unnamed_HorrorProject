@@ -36,7 +36,7 @@ public class Triggers : MonoBehaviour
 
     private bool canInteractWithObject = false;
     private bool canUseHideAnimation = false;
-    public enum TriggerType {Snacks, LockedDoor, ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
+    public enum TriggerType {ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
                                 TriggerBuildingGroan, TriggerPebbleDrop}
     public TriggerType triggerType;
     void Start()
@@ -96,15 +96,7 @@ public class Triggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(triggerType == TriggerType.Snacks)
-            {
-                canInteractWithObject = true;
-            }
-            else if(triggerType == TriggerType.LockedDoor)
-            {
-                canInteractWithObject = true;
-            }
-            else if(triggerType == TriggerType.CouchHide)
+            if(triggerType == TriggerType.CouchHide)
             {
                 canUseHideAnimation = true;
                 Cursor.SetCursor(hideOnCouchTexture, Vector2.zero, CursorMode.Auto);
@@ -143,15 +135,7 @@ public class Triggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(triggerType == TriggerType.Snacks)
-            {
-                canInteractWithObject = false;
-            }
-            else if(triggerType == TriggerType.LockedDoor)
-            {
-                canInteractWithObject = false;
-            }
-            else if(triggerType == TriggerType.CouchHide)
+            if(triggerType == TriggerType.CouchHide)
             {
                 canUseHideAnimation = false;
                 Cursor.SetCursor(normalCursorTexture, Vector2.zero, CursorMode.Auto);

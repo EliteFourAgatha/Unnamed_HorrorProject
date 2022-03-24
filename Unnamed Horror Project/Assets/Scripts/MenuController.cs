@@ -25,10 +25,6 @@ public class MenuController : MonoBehaviour
             levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
         }
     }
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.None;
-    }
     void Update()
     {
         Scene currentScene = SceneManager.GetActiveScene();
@@ -122,7 +118,6 @@ public class MenuController : MonoBehaviour
         pauseMenuUI.SetActive(false);
         AudioListener.volume = 1f;
         Cursor.lockState = CursorLockMode.Locked; //Lock cursor to center of window
-        Cursor.visible = false;
         Time.timeScale = 1f;
         gamePaused = false;
     }
@@ -131,7 +126,6 @@ public class MenuController : MonoBehaviour
         pauseMenuUI.SetActive(true);
         AudioListener.volume = 0;
         Cursor.lockState = CursorLockMode.None; //Unlock cursor
-        Cursor.visible = true;
         Time.timeScale = 0f;
         gamePaused = true;
     }

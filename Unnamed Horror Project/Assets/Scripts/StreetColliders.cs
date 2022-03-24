@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StreetColliders : MonoBehaviour
 {
-    private string stopTravelString = "Wouldn't make it far in this weather...";
+    private string stopTravelString = "Not crazy about walking in this rain...";
     private GameController gameController;
     private void Awake()
     {
