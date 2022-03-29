@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Highlights : MonoBehaviour
 {
     GameObject lastHighlightedObject;
+    public HideAnimations hideAnimations;
 
 
     public Material highlightMaterialTEST;
@@ -16,6 +17,13 @@ public class Highlights : MonoBehaviour
     public GameController gameController;
     private string noKeyFoundString = "It's locked but I see a key hole...";
     private string doorLockedString = "Locked";
+    void Awake()
+    {
+        if(hideAnimations == null)
+        {
+            hideAnimations = gameObject.GetComponent<HideAnimations>();
+        }
+    }
     void Start()
     {
         mainCamera = Camera.main;
@@ -91,6 +99,30 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }
             }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "OpenableDoor")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        var doorScript = hitObj.GetComponent<Collider>().gameObject.GetComponent<DoorController>();
+                        var doorClosed = doorScript.doorClosed;
+                        if(doorClosed)
+                        {
+                            doorScript.OpenDoor();
+                        }
+                        else
+                        {
+                            doorScript.CloseDoor();
+                        }
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }
+            }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "Snacks")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
@@ -106,6 +138,30 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                                
             }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Couch")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 2f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        if(hideAnimations.isHiding)
+                        {
+                            hideAnimations.UnhideFromCouch();
+                            hideAnimations.isHiding = false;
+                        }
+                        else
+                        {
+                            hideAnimations.HideBehindCouch();
+                            hideAnimations.isHiding = true;
+                        }
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                
+            }            
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainPaper")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
@@ -204,6 +260,10 @@ public class Highlights : MonoBehaviour
                 }                
             }
             // -- LEVEL 2 ONLY OBJECTS --
+            //
+            //      consider putting this in larger if/else to break up function call.
+            //      if level 1... level 2...
+            //
             // Burn the plant in right dungeon room
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "BurnPlant")
             {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HideAnimations : MonoBehaviour
 {
+    public bool isHiding = false;
     public Animator hideAnimator;
     public void HideBehindCouch()
     {

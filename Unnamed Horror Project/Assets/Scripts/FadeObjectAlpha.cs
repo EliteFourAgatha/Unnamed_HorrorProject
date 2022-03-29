@@ -1,6 +1,9 @@
 using System.Collections;
+
 using System.Collections.Generic;
+
 using UnityEngine;
+
 
 //Fade object alpha based on proximity.
 //  As player gets closer to object, it starts to fade like a mirage

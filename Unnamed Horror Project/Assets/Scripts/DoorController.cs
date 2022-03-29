@@ -11,53 +11,14 @@ public class DoorController : MonoBehaviour
     //Serialize field allows you to edit in inspector while keeping private
     [SerializeField] private Animator myDoor;
     //private AudioSource doorAudioSource;
-    private bool canChangeDoorState;
-    private bool doorClosed = true;
+    public bool doorClosed = true;
     public AudioClip doorOpenOne;
     public AudioClip doorCloseOne;
     //Normal door is most doors
     // Apartment door is main entrance, opens to different angle
     public enum DoorType {normalDoor, apartmentDoor};
     public DoorType doorType;
-    private void Awake()
-    {
-        //doorAudioSource = gameObject.GetComponent<AudioSource>();
-    }
-    public void Update()
-    {
-        //If in range of door
-        if(canChangeDoorState)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                if(doorClosed)
-                {
-                    OpenDoor();
-                }
-                else
-                {
-                    CloseDoor();
-                }
-            }
-        }
-    }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-            canChangeDoorState = true;
-        }
-    }
-    public void OnTriggerExit(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-            canChangeDoorState = false;
-        }
-    }
-
-    private void OpenDoor()
+    public void OpenDoor()
     {
         if(doorType == DoorType.normalDoor)
         {
@@ -67,13 +28,12 @@ public class DoorController : MonoBehaviour
         {
             myDoor.Play("FrontDoorOpen", 0, 0.0f);
         }
-        canChangeDoorState = false;
         PlayRandomOpenSFX();
         //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
         doorClosed = false;
     }
 
-    private void CloseDoor()
+    public void CloseDoor()
     {
         if(doorType == DoorType.normalDoor)
         {
@@ -83,7 +43,6 @@ public class DoorController : MonoBehaviour
         {
             myDoor.Play("FrontDoorClose", 0, 0.0f);
         }
-        canChangeDoorState = false;
         PlayRandomCloseSFX();
         //Wait for cooldown? Avoid spamming open/Wait for sfx/Reset doorClosed bool
         doorClosed = true;

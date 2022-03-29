@@ -9,17 +9,10 @@ public class Triggers : MonoBehaviour
     public Animation playerAnim;
     public AudioSource triggerAudio;
 
-    public Texture2D hideOnCouchTexture;
-    public Texture2D normalCursorTexture;
-
     private bool chamberLightTriggerActive = true;
     public GameObject affectedChamberLights;
     private bool fireScareTriggerActive = true;
     public GameObject fireScareObject;
-
-    public HideAnimations hideAnimations;
-    bool isHiding;
-
 
     //Triggerable sounds
     bool soundTriggerCanFire = true;
@@ -35,13 +28,11 @@ public class Triggers : MonoBehaviour
 
 
     private bool canInteractWithObject = false;
-    private bool canUseHideAnimation = false;
     public enum TriggerType {ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
                                 TriggerBuildingGroan, TriggerPebbleDrop}
     public TriggerType triggerType;
     void Start()
     {
-        isHiding = false;
         if(triggerAudio == null)
         {
             triggerAudio = gameObject.GetComponent<AudioSource>();
@@ -50,23 +41,6 @@ public class Triggers : MonoBehaviour
         {
             playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animation>();
         }
-        /*
-        if(triggerType == TriggerType.Lightswitch || triggerType == TriggerType.FuseBox)
-        {
-            //Create array of materials from all used lights
-            for(int i = 0; i < lightFoundations.Length; i++)
-            {
-                lightFoundationMaterials[i] = lightFoundations[i].material;
-            }
-            //Set reference to normal color of emission map, for turning lights on
-            normalEmissionColor = lightFoundationMaterials[0].color;
-        }
-        if(triggerType == TriggerType.Closet)
-        {
-            brokenWindowMat = brokenWindowMesh.material;
-            bathroomLightMat = bathroomLightMesh.material;
-        }
-        */
     }
     void Update()
     {
@@ -77,31 +51,12 @@ public class Triggers : MonoBehaviour
                 ExecuteAudioOnlyTrigger();
             }
         }
-        if(canUseHideAnimation)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                if(isHiding)
-                {
-                    UnhideFromCouch();
-                }
-                else
-                {
-                    HideBehindCouch();
-                }
-            }
-        }
     }
     public void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
         {
-            if(triggerType == TriggerType.CouchHide)
-            {
-                canUseHideAnimation = true;
-                Cursor.SetCursor(hideOnCouchTexture, Vector2.zero, CursorMode.Auto);
-            }
-            else if(triggerType == TriggerType.ChamberLight)
+            if(triggerType == TriggerType.ChamberLight)
             {
                 if(chamberLightTriggerActive)
                 {
@@ -131,17 +86,6 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    public void OnTriggerExit(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-            if(triggerType == TriggerType.CouchHide)
-            {
-                canUseHideAnimation = false;
-                Cursor.SetCursor(normalCursorTexture, Vector2.zero, CursorMode.Auto);
-            }
-        }
-    }
     public void ExecuteAudioOnlyTrigger() //Interact with objects + sfx only (locked door)
     {
         if(!triggerAudio.isPlaying)
@@ -162,16 +106,6 @@ public class Triggers : MonoBehaviour
                 StartCoroutine(PlaySoundTriggerAndCooldown(pebbleDropClips));
             }
         }
-    }
-    public void HideBehindCouch()
-    {        
-        hideAnimations.HideBehindCouch();
-        isHiding = true;
-    }
-    public void UnhideFromCouch()
-    {
-        hideAnimations.UnhideFromCouch();
-        isHiding = false;
     }
     public void ExecuteChamberLightsTrigger()
     {
@@ -214,8 +148,6 @@ public class Triggers : MonoBehaviour
             lockerDoorAnim.Play("CloseLockerDoor");
         }
     }
-
-
     private IEnumerator FlashFireScareObject()
     {
         fireScareObject.SetActive(true);
