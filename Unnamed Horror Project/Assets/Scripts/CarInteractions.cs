@@ -72,6 +72,6 @@ public class CarInteractions : MonoBehaviour
         //
         //Fade in to "game over screen / stats / endings" screen
         // "No job is worth this shit" ending        
-        levelController.FadeInToLevel(4);
+        levelController.FadeInToLevel(1);
     }
 }

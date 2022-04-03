@@ -11,9 +11,10 @@ public class MonsterAI : MonoBehaviour
     public float moveSpeed = 5f;
     //float maxDist = 10f;
     float minDist = 10f;
-    public float teleportRange = 25f;
     public float catchRange = 5f;
-    private bool playerSeen = false;
+    [SerializeField] private float flashlightRange = 10f;
+    private bool playerInLineOfSight = false;
+    private bool awareOfPlayer = false;
     float distance;
     bool playerIsHiding;
     void Start()
@@ -27,20 +28,17 @@ public class MonsterAI : MonoBehaviour
     void Update()
     {
         distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
-        //Get basic follow logic from ai scripts from tank game.
-        // Don't reinvent the wheel! copy as much as you can.
-        //  Get used to modular components that can be reused
-        
-        FollowPlayer();
-        AttemptToCatchPlayer();
         if(playerIsHiding)
         {
-            playerSeen = false;
+            awareOfPlayer = false;
         }
+        CheckForFlashlight(distance);
+        
+
         //Create a trigger collider that acts as a "line of sight" cone.
         //  If player collides with this cone, player is seen. Monster behavior changes.
 
-        if(playerSeen)
+        if(awareOfPlayer)
         {
             FollowPlayer();
             AttemptToCatchPlayer();
@@ -53,27 +51,9 @@ public class MonsterAI : MonoBehaviour
     void FollowPlayer()
     {
         agent.destination = player.transform.position;
-        /*
-        gameObject.transform.LookAt(player.transform);
-        if(distance >= minDist)
-        {
-            transform.position += transform.forward * moveSpeed * Time.deltaTime;
-        }
-        */
-
 
         //If player not seen again for x number of seconds, disappear?
         //  Can't chase forever, would be too much tension. Need to ebb and flow.
-    }
-    void TeleportIntoQuadrant()
-    {
-        //Call function here that gets current quadrant of player.
-        // Example: If player is in red lights room, quadrant = 1. Teleport
-        //  monster to quadrant 1, and start at waypoint 1.
-        
-
-        //if playerquadrant = 1,
-        //  transform.position = quadrant1waypoint1
     }
     void AttemptToCatchPlayer()
     {
@@ -103,5 +83,23 @@ public class MonsterAI : MonoBehaviour
     void PatrolCurrentQuadrant()
     {
 
+    }
+    void CheckForFlashlight(float distance)
+    {
+        if(distance <= flashlightRange)
+        {
+            awareOfPlayer = true;
+        }
+    }
+    //Used in Level 2
+    void TeleportIntoQuadrant()
+    {
+        //Call function here that gets current quadrant of player.
+        // Example: If player is in red lights room, quadrant = 1. Teleport
+        //  monster to quadrant 1, and start at waypoint 1.
+        
+
+        //if playerquadrant = 1,
+        //  transform.position = quadrant1waypoint1
     }
 }

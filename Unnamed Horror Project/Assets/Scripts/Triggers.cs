@@ -8,29 +8,39 @@ public class Triggers : MonoBehaviour
 {
     public Animation playerAnim;
     public AudioSource triggerAudio;
+    public enum TriggerType {NormalObject, ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
+                                TriggerBuildingGroan, TriggerPebbleDrop}
+    public TriggerType triggerType;
 
+    [Header("Chamber Lights")]
     private bool chamberLightTriggerActive = true;
     public GameObject affectedChamberLights;
     private bool fireScareTriggerActive = true;
     public GameObject fireScareObject;
 
-    //Triggerable sounds
+    [Header("Laundry Window")]
+    public Animator laundryWindowAnim;
+    private bool laundryWindowOpen = true;
+    public AudioClip openWindowSFX;
+    public AudioClip closeWindowSFX;
+    public AudioSource laundryRainAudio;
+
+
+    [Header("Triggerable Sounds")]
     bool soundTriggerCanFire = true;
     AudioClip chosenClip;
     public AudioClip[] woodCreakClips;
     public AudioClip[] buildingGroanClips;
     public AudioClip[] pebbleDropClips;
 
-
+    [Header("Locker Door")]
     public Animator lockerDoorAnim;
     bool lockerDoorClosed = true;
 
 
 
     private bool canInteractWithObject = false;
-    public enum TriggerType {ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
-                                TriggerBuildingGroan, TriggerPebbleDrop}
-    public TriggerType triggerType;
+
     void Start()
     {
         if(triggerAudio == null)
@@ -48,7 +58,7 @@ public class Triggers : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                ExecuteAudioOnlyTrigger();
+                TriggerAudioOnly();
             }
         }
     }
@@ -86,7 +96,7 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    public void ExecuteAudioOnlyTrigger() //Interact with objects + sfx only (locked door)
+    public void TriggerAudioOnly() //Interact with objects + sfx only (locked door)
     {
         if(!triggerAudio.isPlaying)
         {
@@ -126,7 +136,7 @@ public class Triggers : MonoBehaviour
         StartCoroutine(FlashFireScareObject());
         fireScareTriggerActive = false;
     }
-    public void ExecuteLockerDoorTrigger()
+    public void TriggerLockerDoor()
     {
         if(lockerDoorAnim == null)
         {
@@ -146,6 +156,29 @@ public class Triggers : MonoBehaviour
         {
             lockerDoorClosed = true;
             lockerDoorAnim.Play("CloseLockerDoor");
+        }
+    }
+    public void TriggerLaundryWindow()
+    {
+        if(laundryWindowOpen)
+        {
+            triggerAudio.clip = openWindowSFX;
+            laundryWindowAnim.Play("CloseWindow");
+            laundryWindowOpen = false;
+
+            laundryRainAudio.volume = 0.3f; //Muffle outside sfx
+        }
+        else
+        {
+            triggerAudio.clip = closeWindowSFX;
+            laundryWindowAnim.Play("OpenWindow");
+            laundryWindowOpen = true;
+
+            laundryRainAudio.volume = 0.8f; //Reverse above
+        }
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
         }
     }
     private IEnumerator FlashFireScareObject()

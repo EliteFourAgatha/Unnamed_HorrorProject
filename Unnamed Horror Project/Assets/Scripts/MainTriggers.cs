@@ -11,9 +11,10 @@ public class MainTriggers : MonoBehaviour
     public GameController gameController;
     public LevelController levelController;
     public AudioSource triggerAudio;
+    public AudioSource musicAudioSource;
 
 
-    //Darkness
+    [Header("Darkness Trigger (In Closet)")]
     public GameObject darknessWall;
     public GameObject darknessWallTwo;
     public GameObject closetDarkBackdrop;
@@ -23,42 +24,42 @@ public class MainTriggers : MonoBehaviour
     public GameObject fakeCloset;  
     private bool darknessTriggerActive = true;
 
-    
-    //Spawn Ghost in level 2
-    public GameObject spawnedGhost;
-    private bool spawnGhostTriggerActive = true;
 
+    [Header("Misc.")]
     public GameObject topOfStairsDoor;
 
 
-    //Main Paper
+    [Header("Main Paper")]
     public GameObject mainPaper;    
     public AudioClip mainPaperSFX;
     public GameObject laundryWindowTrigger;
     public GameObject fuseBoxTrigger;
 
-
-    //Laundry Window
-    public Animator laundryWindowAnim;
-    private bool canUseLaundryWindow = false;
-    private bool laundryWindowOpen = true;
-    public AudioClip openWindowSFX;
-    public AudioClip closeWindowSFX;
-
-
-    //Fuse box
+    [Header("Fuse Box")]
     public Light[] breakerLights;
     public bool breakerOn = true;
-    private bool canUseFuseBox = false;
+    public AudioSource breathBehindYouAudio;
 
 
-    //First scare - motion blur
+    [Header("Head Office Key")]
+    public GameObject heldKey;
+    public GameObject heldKeyUI;
+
+    [Header("Head Office Locked Drawer")]
+    public Animator lockedDrawerAnim;
+    private bool drawerOpen = false;
+    public AudioClip openDrawerClip;
+    public AudioClip closeDrawerClip;
+
+
+    [Header("First Scare")]
     public GameObject shadowBlurMonster;
-    private bool shadowTriggerActive = true; 
+    private bool shadowTriggerActive = true;
+    public AudioSource heartBeatAudioSource; 
 
 
 
-    //Open closet
+    [Header("Open Closet")]
     public GameObject lockedClosetDoorTrigger;
     public Animator closetDoorAnim;
     private bool closetTriggerActive = true;
@@ -70,9 +71,12 @@ public class MainTriggers : MonoBehaviour
     public AudioSource closetCreakAudioSource;
     public AudioClip closetCreakAudio;
 
+    [Header("Level 2 - Spawn Ghost")]
+    //Spawn Ghost in level 2
+    public GameObject spawnedGhost;
+    private bool spawnGhostTriggerActive = true;
 
 
-    private bool canOpenDungeonDoor = false;
     private string paperInstructionString = "Press [Esc] to view objectives";
     private string laundryToWrenchString = "Find the wrench left for you in storage";
     private string wrenchToBathroomString = "Fix leak in bathroom sink";
@@ -97,30 +101,6 @@ public class MainTriggers : MonoBehaviour
             triggerAudio = gameObject.GetComponent<AudioSource>();
         }
     }
-    void Update()
-    {
-        if(canOpenDungeonDoor)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                ExecuteDungeonTrigger();
-            }
-        }
-        if(canUseLaundryWindow)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                ExecuteLaundryWindowTrigger();
-            }
-        }
-        if(canUseFuseBox)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                ExecuteFuseBoxTrigger();
-            }
-        }
-    }
     public void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
@@ -129,22 +109,22 @@ public class MainTriggers : MonoBehaviour
             {
                 if(darknessTriggerActive)
                 {
-                    ExecuteDarknessTrigger();
+                    TriggerDarkness();
                 }
             }
             else if(triggerType == TriggerType.Closet)
             {
                 if(closetTriggerActive)
                 {
-                    ExecuteFinalClosetTrigger();
+                    TriggerFinalCloset();
                 }
             }
-            //Spawn ghost in final maze
+            //Spawn ghost in final maze. Red light triggers (rename?)
             else if(triggerType == TriggerType.SpawnGhost)
             {
                 if(spawnGhostTriggerActive)
                 {
-                    ExecuteSpawnGhostTrigger();
+                    TriggerSpawnGhost();
                 }
             }
             //Shadow scare after fixing light
@@ -152,79 +132,35 @@ public class MainTriggers : MonoBehaviour
             {
                 if(shadowTriggerActive)
                 {
-                    ExecuteFirstScare();
+                    TriggerFirstScare();
                 }
             }
-            else if(triggerType == TriggerType.DungeonDoor)
-            {
-                canOpenDungeonDoor = true;
-            }
-            else if(triggerType == TriggerType.FuseBox)
-            {
-                canUseFuseBox = true;
-            }
-            else if(triggerType == TriggerType.LaundryWindow)
-            {
-                canUseLaundryWindow = true;
-            }
         }
     }
-    public void OnTriggerExit(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-            if(triggerType == TriggerType.DungeonDoor)
-            {
-                canOpenDungeonDoor = false;
-            }
-            else if(triggerType == TriggerType.FuseBox)
-            {
-                canUseFuseBox = false;
-            }
-            else if(triggerType == TriggerType.LaundryWindow)
-            {
-                canUseLaundryWindow = false;
-            }
-        }
-    }
-    //Trigger for main paper in head office
-    public void PickUpMainPaper()
+    public void PickUpMainPaper() // Main paper in head office
     {
         StartCoroutine(WaitAndDisableMainPaper());
     }
+    public void PickUpPliers() // Pliers in basement
+    {
+        if(gameController.currentCheckpoint == 1)
+        {
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+            //StartCoroutine(ShowItemAndText(heldPliers, heldPliersUI, 3f));
+            gameController.currentCheckpoint = 2;
+            //disable pliers mesh, then delete after delay? Only used once
+        }
+    }
     //Trigger to enter final dungeon scene
-    public void ExecuteDungeonTrigger()
+    public void TriggerDungeon()
     {
         triggerAudio.Play();
         levelController.FadeInToLevel(2);
     }
-    public void ExecuteLaundryWindowTrigger()
-    {
-        if(laundryWindowOpen)
-        {
-            triggerAudio.clip = openWindowSFX;
-            laundryWindowAnim.SetTrigger("CloseWindow");
-            laundryWindowOpen = false;
-        }
-        else
-        {
-            triggerAudio.clip = closeWindowSFX;
-            laundryWindowAnim.SetTrigger("OpenWindow");
-            laundryWindowOpen = true;
-        }
-
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
-
-        if(gameController.currentCheckpoint == 1)
-        {
-            gameController.currentCheckpoint = 2;
-            StartCoroutine(gameController.ShowPopupMessage(laundryToWrenchString, 2));
-        }
-    }
-    public void ExecuteFuseBoxTrigger()
+    public void TriggerFuseBox()
     {
         if(!triggerAudio.isPlaying)
         {
@@ -271,7 +207,7 @@ public class MainTriggers : MonoBehaviour
             }
         }
     }
-    public void ExecuteDarknessTrigger()
+    public void TriggerDarkness()
     {
         //Set darkness wall active behind player, block escape backwards
         darknessWall.SetActive(true);
@@ -294,7 +230,7 @@ public class MainTriggers : MonoBehaviour
     {
         levelController.FadeInToLevel(2);
     }
-    public void ExecuteFinalClosetTrigger()
+    public void TriggerFinalCloset()
     {
         StartCoroutine(ShatterLightsBeforeCloset());
         StartCoroutine(OpenClosetAfterDelay(2f));
@@ -305,7 +241,7 @@ public class MainTriggers : MonoBehaviour
         closetTriggerActive = false; //single use, deactivate after
     }
 
-    public void ExecuteSpawnGhostTrigger()  //spawn ghost in level 2
+    public void TriggerSpawnGhost()  //spawn ghost in level 2
     {
         if(!triggerAudio.isPlaying)
         {
@@ -321,12 +257,21 @@ public class MainTriggers : MonoBehaviour
         //   Path 2: moves in zig-zag
     }
 
-    public void ExecuteFirstScare()
+    public void TriggerFirstScare()
     {
+        musicAudioSource.Stop();
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
         }
+
+        //Remember to turn this off somewhere. Loses effect the longer it stays on.
+        //  Should be for tense moments, then fade out
+        if(!heartBeatAudioSource.isPlaying)
+        {
+            heartBeatAudioSource.Play();
+        }
+
         shadowBlurMonster.SetActive(true);
         shadowTriggerActive = false; // single use, deactivate after
         
@@ -342,11 +287,41 @@ public class MainTriggers : MonoBehaviour
         //  flow of logic. (if player doesn't leave by x point, spawn this door)
         topOfStairsDoor.SetActive(true);
     }
-    public void ExecuteLockedDrawerTrigger()
+    public void TriggerLockedDrawer()
     {
-        //get animator
-        // if drawer closed, open drawer
-        // if drawer open, close drawer
+        if(drawerOpen)
+        {
+            lockedDrawerAnim.Play("DrawerClose", 0, 0.0f);
+            drawerOpen = false;
+            triggerAudio.clip = closeDrawerClip;
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+        }
+        else
+        {
+            lockedDrawerAnim.Play("DrawerOpen", 0, 0.0f);
+            drawerOpen = true;
+            triggerAudio.clip = openDrawerClip;
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+        }
+        //Once drawer has been opened for first time / used key...
+        gameController.playerNeedsKey = false;
+    }
+    public void TriggerFoundKey()
+    {
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        StartCoroutine(ShowItemAndText(heldKey, heldKeyUI, 4f));
+        gameController.playerNeedsKey = false;
+        //Reset object tag to disable interactions
+        gameObject.tag = "Untagged";
     }
     public void ExecuteExpositionNote()
     {
@@ -388,5 +363,13 @@ public class MainTriggers : MonoBehaviour
         closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
+    }
+    IEnumerator ShowItemAndText(GameObject item, GameObject text, float delay)
+    {
+        item.SetActive(true);
+        text.SetActive(true);
+        yield return new WaitForSeconds(delay);
+        item.SetActive(false);
+        text.SetActive(false);
     }
 }

@@ -91,7 +91,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteAudioOnlyTrigger();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerAudioOnly();
                     }
                 }
                 else
@@ -130,7 +130,22 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteAudioOnlyTrigger();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerAudioOnly();
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                                
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "LaundryWindow")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 4f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerLaundryWindow();
                     }
                 }
                 else
@@ -177,6 +192,21 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                
             }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Pliers")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpPliers();
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                
+            }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainCar")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
@@ -199,7 +229,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteFuseBoxTrigger();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerFuseBox();
                     }
                 }
                 else
@@ -214,7 +244,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().ExecuteLockerDoorTrigger();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerLockerDoor();
                     }
                 }
                 else
@@ -229,14 +259,29 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        if(gameController.playerHasKey)
+                        if(!gameController.playerNeedsKey)
                         {
-                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().ExecuteLockedDrawerTrigger();
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerLockedDrawer();
                         }
                         else
                         {
                             StartCoroutine(gameController.ShowPopupMessage(noKeyFoundString, 2));
                         }
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "HiddenKey")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerFoundKey();
                     }
                 }
                 else

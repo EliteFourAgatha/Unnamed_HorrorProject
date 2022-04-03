@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
     public Text objectiveText;
     private AudioSource audioSource;
     public int currentCheckpoint;
-    public bool playerHasKey = false;
+    public bool playerNeedsKey = true;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -32,27 +32,19 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 1)
         {
-            objectiveText.text = "Close window in laundry room";
+            objectiveText.text = "Find pliers in maintenance room";
         }
         else if(currentCheckpoint == 2)
         {
-            objectiveText.text = "Find wrench in maintenance room";
+            objectiveText.text = "Fix leak in the bathroom";
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Fix leak in the bathroom";
+            objectiveText.text = "Turn off power breaker";
         }
         else if(currentCheckpoint == 4)
         {
-            objectiveText.text = "Turn off power breaker to storage area";
-        }
-        else if(currentCheckpoint == 5)
-        {
-            objectiveText.text = "Fix faulty light in storage room 2";
-        }
-        else if(currentCheckpoint == 6)
-        {
-            objectiveText.text = "Investigate maintenance room";
+            objectiveText.text = "Fix faulty light near fuse box";
         }
     }
     public IEnumerator ShowPopupMessage(string message, float delay)

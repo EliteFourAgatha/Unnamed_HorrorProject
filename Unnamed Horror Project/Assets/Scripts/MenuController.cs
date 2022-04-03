@@ -10,7 +10,6 @@ public class MenuController : MonoBehaviour
     public GameObject pauseMenuUI;
     public GameObject mainMenuUI;
     public GameObject expositionUI;
-    public GameObject controlMenuUI;
     public GameObject quitGameOptionUI;
     public GameObject pressEnterButton;
     public GameObject expositionText;
@@ -82,35 +81,6 @@ public class MenuController : MonoBehaviour
         levelController.FadeInToLevel(1);
     }
     // -- END EXPOSITION --
-
-    // -- CONTROL MENU, FROM MAIN / PAUSE MENUS --
-    public void EnableControlMenu()
-    {
-        Scene scene = SceneManager.GetActiveScene();
-        if(scene.name == "MainMenu")
-        {
-            mainMenuUI.SetActive(false);
-        }
-        else
-        {
-            pauseMenuUI.SetActive(false);
-        }
-        controlMenuUI.SetActive(true);
-    }
-    public void DisableControlMenu()
-    {
-        Scene scene = SceneManager.GetActiveScene();
-        controlMenuUI.SetActive(false);
-        if(scene.name == "MainMenu")
-        {
-            mainMenuUI.SetActive(true);
-        }
-        else
-        {
-            pauseMenuUI.SetActive(true);
-        }
-    }
-    // -- END CONTROL MENU --
 
     // -- PAUSE MENU --
     public void ResumeGame()

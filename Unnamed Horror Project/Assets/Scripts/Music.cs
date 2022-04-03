@@ -26,8 +26,4 @@ public class Music : MonoBehaviour
     {
         musicAudioSource.Pause();
     }
-    public void ChangeMusicSelection(){
-        //change the audiosource.clip to something else. 
-        //  -make sure the source is paused or stopped!
-    }
 }
