@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     private AudioSource audioSource;
     public int currentCheckpoint;
     public bool playerNeedsKey = true;
+    public bool breakerOn = false;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -32,15 +33,15 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 1)
         {
-            objectiveText.text = "Find pliers in maintenance room";
+            objectiveText.text = "Turn on the power breaker";
         }
         else if(currentCheckpoint == 2)
         {
-            objectiveText.text = "Fix leak in the bathroom";
+            objectiveText.text = "Find the pliers in the basement";
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Turn off power breaker";
+            objectiveText.text = "Fix leak in the bathroom";
         }
         else if(currentCheckpoint == 4)
         {

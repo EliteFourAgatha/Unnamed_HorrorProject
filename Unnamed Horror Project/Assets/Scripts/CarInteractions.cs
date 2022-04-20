@@ -39,6 +39,7 @@ public class CarInteractions : MonoBehaviour
     }
     public void AttemptToUseCar()
     {
+        Debug.Log("CARCARCAR");
         if(carEndingPossible)
         {
             StartCarEnding();

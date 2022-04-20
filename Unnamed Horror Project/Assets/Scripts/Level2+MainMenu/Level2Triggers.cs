@@ -6,7 +6,6 @@ public class Level2Triggers : MonoBehaviour
 {
     public GameObject giantEye;
     public EyeFollow[] eyeFollowArray;
-    public CameraShake cameraShakeRef;
     public AudioSource chantAudioSource;
     public AudioSource monsterAIAudioSource;
     private AudioSource audioSource;

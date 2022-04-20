@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Highlights : MonoBehaviour
 {
     GameObject lastHighlightedObject;
-    public HideAnimations hideAnimations;
+    public FirstPersonAnimations fpsAnimations;
 
 
     public Material highlightMaterialTEST;
@@ -19,9 +19,9 @@ public class Highlights : MonoBehaviour
     private string doorLockedString = "Locked";
     void Awake()
     {
-        if(hideAnimations == null)
+        if(fpsAnimations == null)
         {
-            hideAnimations = gameObject.GetComponent<HideAnimations>();
+            fpsAnimations = gameObject.GetComponent<FirstPersonAnimations>();
         }
     }
     void Start()
@@ -160,15 +160,15 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        if(hideAnimations.isHiding)
+                        if(fpsAnimations.isHiding)
                         {
-                            hideAnimations.UnhideFromCouch();
-                            hideAnimations.isHiding = false;
+                            fpsAnimations.UnhideFromCouch();
+                            fpsAnimations.isHiding = false;
                         }
                         else
                         {
-                            hideAnimations.HideBehindCouch();
-                            hideAnimations.isHiding = true;
+                            fpsAnimations.HideBehindCouch();
+                            fpsAnimations.isHiding = true;
                         }
                     }
                 }

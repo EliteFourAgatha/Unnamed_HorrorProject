@@ -23,7 +23,7 @@ public class Thunder : MonoBehaviour
             WaitToPlayAudio();
         }
     }
-    public IEnumerator WaitToPlayAudio()
+    private IEnumerator WaitToPlayAudio()
     {
         int randIndex = Random.Range(0, waitTimes.Length);
         int randTime = waitTimes[randIndex];

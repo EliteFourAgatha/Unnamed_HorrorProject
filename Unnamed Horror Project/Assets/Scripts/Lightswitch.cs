@@ -5,10 +5,13 @@ using UnityEngine;
 public class Lightswitch : MonoBehaviour
 {
     public AudioSource triggerAudio;
+    public GameController gameController;
 
     public Light[] controlledLights;
     public GameObject lightSwitch;
     private bool lightsOff = true;
+    public enum LightType {breaker, nonBreaker};
+    public LightType lightType;
 
     void Start()
     {
@@ -23,26 +26,33 @@ public class Lightswitch : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        //Turn lights on
-        if(lightsOff)
+        if(lightType == LightType.breaker)
         {
-            lightsOff = false;
-            //Rotate lightswitch to "on"
-            lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
-            foreach(Light light in controlledLights)
+            //Make sure breaker is on so lights function properly
+            if(gameController.breakerOn)
             {
-                light.enabled = true;
-            }
-        }
-        //Turn lights off
-        else
-        {
-            lightsOff = true;
-            //Rotate lightswitch to "off"
-            lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
-            foreach(Light light in controlledLights)
-            {
-                light.enabled = false;
+                //Turn lights on
+                if(lightsOff)
+                {
+                    lightsOff = false;
+                    //Rotate lightswitch to "on"
+                    lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
+                    foreach(Light light in controlledLights)
+                    {
+                        light.enabled = true;
+                    }
+                }
+                //Turn lights off
+                else
+                {
+                    lightsOff = true;
+                    //Rotate lightswitch to "off"
+                    lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
+                    foreach(Light light in controlledLights)
+                    {
+                        light.enabled = false;
+                    }
+                }
             }
         }
     }

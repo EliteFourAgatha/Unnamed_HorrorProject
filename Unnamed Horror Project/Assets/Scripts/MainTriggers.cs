@@ -32,13 +32,13 @@ public class MainTriggers : MonoBehaviour
     [Header("Main Paper")]
     public GameObject mainPaper;    
     public AudioClip mainPaperSFX;
-    public GameObject laundryWindowTrigger;
-    public GameObject fuseBoxTrigger;
+    
+    [Header("Pliers")]
+    public GameObject pliers;    
+    public AudioClip pliersSFX;
 
     [Header("Fuse Box")]
     public Light[] breakerLights;
-    public bool breakerOn = true;
-    public AudioSource breathBehindYouAudio;
 
 
     [Header("Head Office Key")]
@@ -79,12 +79,11 @@ public class MainTriggers : MonoBehaviour
 
     private string paperInstructionString = "Press [Esc] to view objectives";
     private string laundryToWrenchString = "Find the wrench left for you in storage";
-    private string wrenchToBathroomString = "Fix leak in bathroom sink";
+    private string pliersString = "Fix bathroom sink leak";
     private string BathroomToFuseBoxString = "Turn off breaker to storage area";
-    private string fuseboxString = "Fix the faulty light in storage room 4";
+    private string fuseboxString = "Find the pliers left for you in the basement.";
 
-    public enum TriggerType {Darkness, SpawnGhost, MainPaper, LaundryWindow, FuseBox, DungeonDoor, Closet, StorageLight,
-                                ShadowScare}
+    public enum TriggerType {Darkness, SpawnGhost, Closet, ShadowScare}
     public TriggerType triggerType;
     void Start()
     {
@@ -139,19 +138,15 @@ public class MainTriggers : MonoBehaviour
     }
     public void PickUpMainPaper() // Main paper in head office
     {
-        StartCoroutine(WaitAndDisableMainPaper());
+        gameController.currentCheckpoint = 1;
+        StartCoroutine(WaitAndDisableObject(1, mainPaper, mainPaperSFX, paperInstructionString));
     }
     public void PickUpPliers() // Pliers in basement
     {
-        if(gameController.currentCheckpoint == 1)
+        if(gameController.currentCheckpoint == 2)
         {
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-            //StartCoroutine(ShowItemAndText(heldPliers, heldPliersUI, 3f));
-            gameController.currentCheckpoint = 2;
-            //disable pliers mesh, then delete after delay? Only used once
+            gameController.currentCheckpoint == 3;
+            StartCoroutine(WaitAndDisableObject(2, pliers, pliersSFX, pliersString));
         }
     }
     //Trigger to enter final dungeon scene
@@ -162,48 +157,18 @@ public class MainTriggers : MonoBehaviour
     }
     public void TriggerFuseBox()
     {
-        if(!triggerAudio.isPlaying)
+        if(gameController.currentCheckpoint == 1)
         {
-            triggerAudio.Play();
-        }
-        if(gameController.currentCheckpoint == 4)
-        {
-            gameController.currentCheckpoint = 5;
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+            gameController.currentCheckpoint = 2;
             StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
-            if(!breakerOn)  //Turn lights on
+            gameController.breakerOn = true;
+            foreach(Light light in breakerLights)
             {
-                breakerOn = true;
-                foreach(Light light in breakerLights)
-                {
-                    light.enabled = true;
-                }
-            }
-            else  //Turn lights off
-            {
-                breakerOn = false;
-                foreach(Light light in breakerLights)
-                {
-                    light.enabled = false;
-                }
-            }
-        }
-        else
-        {
-            if(!breakerOn)  //Turn lights on
-            {
-                breakerOn = true;
-                foreach(Light light in breakerLights)
-                {
-                    light.enabled = true;
-                }
-            }
-            else  //Turn lights off
-            {
-                breakerOn = false;
-                foreach(Light light in breakerLights)
-                {
-                    light.enabled = false;
-                }
+                light.enabled = true;
             }
         }
     }
@@ -323,25 +288,29 @@ public class MainTriggers : MonoBehaviour
         //Reset object tag to disable interactions
         gameObject.tag = "Untagged";
     }
+
+
+
+    //Consider moving this to new script. Exposition script (not a main trigger)
     public void ExecuteExpositionNote()
     {
         
     }
+
+
+
     IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
     {
         yield return new WaitForSeconds(delayTime);
         levelController.FadeInToLevel(levelNumber);
     }
-    IEnumerator WaitAndDisableMainPaper()
+    IEnumerator WaitAndDisableObject(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
     {
-        //Play clip even if object deactivated
-        AudioSource.PlayClipAtPoint(mainPaperSFX, gameObject.transform.position);
-        gameController.currentCheckpoint = 1;
-        laundryWindowTrigger.SetActive(true);
-        fuseBoxTrigger.SetActive(true);
-        StartCoroutine(gameController.ShowPopupMessage(paperInstructionString, 1f));
-        yield return new WaitForSeconds(1.5f);
-        mainPaper.SetActive(false);
+        AudioSource.PlayClipAtPoint(objectSFX, gameObject.transform.position);
+        gameController.currentCheckpoint = nextCheckpoint;
+        StartCoroutine(gameController.ShowPopupMessage(textMessage, 1f));
+        yield return new WaitForSeconds(1f);
+        disabledObj.SetActive(false);
     }
     IEnumerator ShatterLightsBeforeCloset()
     {

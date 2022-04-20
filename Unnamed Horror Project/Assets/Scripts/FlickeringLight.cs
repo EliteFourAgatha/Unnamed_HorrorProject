@@ -7,17 +7,13 @@ public class FlickeringLight : MonoBehaviour
     private bool isFlickering = false;
     public float flickerDelay;
     public Light lightToFlicker;
-    public MeshRenderer lightFoundation;
-    private Material lightFoundationMat;
-    private Color normalColor;
+    public AudioSource flickerAudio;
     void Awake()
     {
         if(lightToFlicker == null)
         {
             lightToFlicker = gameObject.GetComponent<Light>();
         }
-        lightFoundationMat = lightFoundation.material;
-        normalColor = lightFoundationMat.color;
     }
 
     void Update()
@@ -33,12 +29,12 @@ public class FlickeringLight : MonoBehaviour
         isFlickering = true;
         //Disable light, then randomize delay time and wait
         lightToFlicker.enabled = false;
-        lightFoundationMat.SetColor("_EmissionColor", Color.black);
+        flickerAudio.Pause();
         flickerDelay = Random.Range(0.5f, 2f);
         yield return new WaitForSeconds(flickerDelay);
         //Enable light, then randomize delay time and wait
         lightToFlicker.enabled = true;
-        lightFoundationMat.SetColor("_EmissionColor", normalColor);
+        flickerAudio.Play();
         flickerDelay = Random.Range(0.01f, 0.5f);
         yield return new WaitForSeconds(flickerDelay);
         isFlickering = false;
