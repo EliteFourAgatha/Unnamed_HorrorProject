@@ -55,5 +55,30 @@ public class Lightswitch : MonoBehaviour
                 }
             }
         }
+        else if(lightType == LightType.nonBreaker)
+        {
+            //Turn lights on
+            if(lightsOff)
+            {
+                lightsOff = false;
+                //Rotate lightswitch to "on"
+                lightSwitch.transform.eulerAngles = new Vector3(-60, 0, 0);
+                foreach(Light light in controlledLights)
+                {
+                    light.enabled = true;
+                }
+            }
+            //Turn lights off
+            else
+            {
+                lightsOff = true;
+                //Rotate lightswitch to "off"
+                lightSwitch.transform.eulerAngles = new Vector3(-20, 0, 0);
+                foreach(Light light in controlledLights)
+                {
+                    light.enabled = false;
+                }
+            }            
+        }
     }
 }

@@ -145,7 +145,8 @@ public class MainTriggers : MonoBehaviour
     {
         if(gameController.currentCheckpoint == 2)
         {
-            gameController.currentCheckpoint == 3;
+            gameController.currentCheckpoint = 3;
+            gameController.playerHasPliers = true;
             StartCoroutine(WaitAndDisableObject(2, pliers, pliersSFX, pliersString));
         }
     }

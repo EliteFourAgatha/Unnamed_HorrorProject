@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     public int currentCheckpoint;
     public bool playerNeedsKey = true;
     public bool breakerOn = false;
+    public bool playerHasPliers = false;
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
