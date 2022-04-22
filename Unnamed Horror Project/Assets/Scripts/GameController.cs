@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
 {
     public Text popupText;
     public Text objectiveText;
+    public Text endingUIText;
     private AudioSource audioSource;
     public int currentCheckpoint;
     public bool playerNeedsKey = true;
@@ -38,15 +39,23 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 2)
         {
-            objectiveText.text = "Find the pliers in the basement";
+            objectiveText.text = "Fix the laundry room window and make sure it stays closed.";
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Fix leak in the bathroom";
+            objectiveText.text = "Find the pliers left for you in the back room";
         }
         else if(currentCheckpoint == 4)
         {
-            objectiveText.text = "Fix faulty light near fuse box";
+            objectiveText.text = "Repair leak in the bathroom sink";
+        }
+        else if(currentCheckpoint == 5)
+        {
+            objectiveText.text = "Fix TV in open storage room";
+        }
+        else if(currentCheckpoint == 6)
+        {
+            objectiveText.text = "Turn off breaker and lock up before you leave";
         }
     }
     public IEnumerator ShowPopupMessage(string message, float delay)
@@ -70,4 +79,28 @@ public class GameController : MonoBehaviour
         yield return null;
     }
     */
+    public void DisplayEndingText(string ending)
+    {
+        if(ending == "scaredyCat")
+        {
+            //"having barely seen anything / startled by a bump in the night, our
+            //   protagonist flees with his tail between his legs."
+            // -or-
+            //"...you flee with your tail between your legs."
+            endingUIText.text = "scaredycatending";
+        }
+        else if(ending == "sensible")
+        {
+            //"considering the unearthly sounds emanating from the basement, 
+            //  our protagonist makes the sensible decision to leave and consider other employment."
+            // -or-
+            // "...you make the sensible decision..."
+            endingUIText.text = "sensibleending";
+        }
+        else if(ending == "caught")
+        {
+            
+        }
+
+    }
 }

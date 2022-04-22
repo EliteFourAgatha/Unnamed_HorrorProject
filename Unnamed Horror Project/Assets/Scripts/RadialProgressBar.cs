@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class RadialProgressBar : MonoBehaviour
 {
     public GameController gameController;
-    [SerializeField] private float timer = 0f;
+    [SerializeField] private float timer = 0.01f;
     [SerializeField] private float maxTimer = 1.0f;
     [SerializeField] private Image radialImage;
     [SerializeField] private GameObject player;
@@ -29,9 +29,11 @@ public class RadialProgressBar : MonoBehaviour
                     radialImage.enabled = true;
                     UpdateRadialFill();
                 }
-
             }
-
+            else
+            {
+                radialImage.enabled = false;
+            }
         }
         if(canInteract)
         {
@@ -68,12 +70,26 @@ public class RadialProgressBar : MonoBehaviour
 
             if(timer >= maxTimer)
             {
-                timer = 0;
-                radialImage.fillAmount = 0;
+                timer = 0.01f;
+                radialImage.fillAmount = 0.01f;
                 radialImage.enabled = false;
                 canUpdate = false;
                 Debug.Log("done?");
-                //fire function here to move on to next task
+                if(radialType == RadialType.Sink)
+                {
+                    //play done sfx? small ding or something
+                    gameController.currentCheckpoint = 5;
+                }
+                if(radialType == RadialType.Window)
+                {
+                    //play done sfx? small ding or something
+                    gameController.currentCheckpoint = 3;
+                }
+                if(radialType == RadialType.TV)
+                {
+                    //play done sfx? small ding or something
+                    gameController.currentCheckpoint = 7;
+                }
             }
         }
     }
