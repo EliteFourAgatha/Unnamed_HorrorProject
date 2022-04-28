@@ -9,10 +9,14 @@ public class MouseLook : MonoBehaviour
     public Transform playerBody;
 
     float xRotation = 0f;
-
+    public bool canUseMouse = true;
     void Update()
     {
-        LookWithMouse();
+        if(canUseMouse)
+        {
+            LookWithMouse();
+        }
+
     }
     private void LookWithMouse()
     {

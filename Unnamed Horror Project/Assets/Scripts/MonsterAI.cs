@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class MonsterAI : MonoBehaviour
 {
     public GameObject player;
     public NavMeshAgent agent;
     public LevelController levelController;
-    public float moveSpeed = 5f;
-    //float maxDist = 10f;
-    float minDist = 10f;
-    public float catchRange = 5f;
+    public FlashlightToggle flashlightToggle;
+    public AudioSource audioSource;
+    [SerializeField] private float catchRange = 5f;
     [SerializeField] private float flashlightRange = 10f;
+    [SerializeField] private Transform[] levelTwoSpawnPoints;
     private bool playerInLineOfSight = false;
-    private bool awareOfPlayer = false;
+    public bool awareOfPlayer = true;
     float distance;
     bool playerIsHiding;
+    Scene currentScene;
     void Start()
     {
         if(agent == null)
         {
             agent = gameObject.GetComponent<NavMeshAgent>();
         }
-        TeleportIntoQuadrant();
+        currentScene = SceneManager.GetActiveScene();
+        TeleportNearPlayer();
     }
     void Update()
     {
@@ -32,7 +35,11 @@ public class MonsterAI : MonoBehaviour
         {
             awareOfPlayer = false;
         }
-        CheckForFlashlight(distance);
+        if(currentScene.name == "Scene1")
+        {
+            CheckForFlashlight(distance);
+        }
+
         
 
         //Create a trigger collider that acts as a "line of sight" cone.
@@ -45,7 +52,7 @@ public class MonsterAI : MonoBehaviour
         }
         else
         {
-            PatrolCurrentQuadrant();
+            PatrolArea();
         }
     }
     void FollowPlayer()
@@ -59,7 +66,16 @@ public class MonsterAI : MonoBehaviour
     {
         if(distance <= catchRange)
         {
-            levelController.FadeInToLevel(3);
+            audioSource.Play();
+            if(!audioSource.isPlaying)
+            {
+                if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Scene1"))
+                {
+                    levelController.FadeInToLevel(0);
+                }
+
+            }
+
             // I think current best idea is:
             // Player caught, monster disappears / dissolves
             //  Dementor sound? Pleasure / ecstasy as he steals your vital essence?
@@ -80,26 +96,39 @@ public class MonsterAI : MonoBehaviour
             //     each time caught, vision blurrier / move speed slower?
         }
     }
-    void PatrolCurrentQuadrant()
+    void PatrolArea()
     {
 
     }
     void CheckForFlashlight(float distance)
     {
-        if(distance <= flashlightRange)
+        if(flashlightToggle.lightOn)
         {
-            awareOfPlayer = true;
+            if(distance <= flashlightRange)
+            {
+                awareOfPlayer = true;
+            }
         }
     }
-    //Used in Level 2
-    void TeleportIntoQuadrant()
+    void TeleportNearPlayer()
     {
-        //Call function here that gets current quadrant of player.
-        // Example: If player is in red lights room, quadrant = 1. Teleport
-        //  monster to quadrant 1, and start at waypoint 1.
-        
+        //1.) DetermineClosestSpawnPoint
+        //cycle through array of spawn points (shouldnt be too many)
+        // spawn to point that is acceptable distance away from player
+        //  (not too far away, not too close)
 
-        //if playerquadrant = 1,
-        //  transform.position = quadrant1waypoint1
+        //2.) SpawnMonster
+        //spawn at chosen spawn point from above
+        //  Make sure not in player line of sight?
+        //  -or-
+        //  Make all spawn points behind walls / obscured like in L4D?
+        
+    }
+
+    //Start patrolling at waypoint closest to spawn point
+    void DetermineFirstPatrolpoint()
+    {
+        //cycle through array of patrol waypoints
+        // find one closest to gameObject.transform.position
     }
 }

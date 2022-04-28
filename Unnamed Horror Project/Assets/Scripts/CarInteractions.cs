@@ -12,6 +12,7 @@ public class CarInteractions : MonoBehaviour
     public GameObject carEndingUI;
     //The car ending being possible. Available after checkpoint X (first scare)
     private bool sensibleEndingPossible = false;
+    private bool scaredEndingPossible = false;
     private string cantLeaveYetString = "I should see what the job's about first...";
     private string whyLeaveEasyMoneyString = "What's the rush? Easy money to be made";
     private void Awake()
@@ -32,7 +33,7 @@ public class CarInteractions : MonoBehaviour
         {
             //"having barely seen anything / startled by a bump in the night, our
             //   protagonist flees with his tail between his legs."
-            scaredyCatEnding = true;
+            scaredEndingPossible = true;
         }
         else if(gameController.currentCheckpoint == 5)
         {
