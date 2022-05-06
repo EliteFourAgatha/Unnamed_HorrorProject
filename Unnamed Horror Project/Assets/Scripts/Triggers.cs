@@ -8,7 +8,8 @@ public class Triggers : MonoBehaviour
 {
     public Animation playerAnim;
     public AudioSource triggerAudio;
-    public enum TriggerType {NormalObject, ChamberLight, FireScare, CouchHide, TriggerWoodCreak,
+    public MonsterAI monsterAI;
+    public enum TriggerType {NormalObject, LockerHide, FireScare, CouchHide, TriggerWoodCreak,
                                 TriggerBuildingGroan, TriggerPebbleDrop}
     public TriggerType triggerType;
 
@@ -35,7 +36,10 @@ public class Triggers : MonoBehaviour
 
     [Header("Locker Door")]
     public Animator lockerDoorAnim;
-    bool lockerDoorClosed = true;
+    public bool lockerDoorClosed = true;
+
+    [Header("Hiding Trigger")]
+    public GameObject chosenLockerDoor;
 
 
 
@@ -66,11 +70,22 @@ public class Triggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(triggerType == TriggerType.ChamberLight)
+            if(triggerType == TriggerType.LockerHide)
             {
-                if(chamberLightTriggerActive)
+                if(monsterAI.enabled)
                 {
-                    ExecuteChamberLightsTrigger();
+                    var triggerRef = chosenLockerDoor.GetComponent<Triggers>();
+                    
+                    monsterAI.playerIsHiding = true;
+                    /*
+                    //If locker door is closed...
+                    if(triggerRef.lockerDoorClosed)
+                    {   
+                        //Player is hidden from monster's view
+                        monsterAI.playerIsHiding = true;
+                    }
+                    */
+
                 }
             }
             else if(triggerType == TriggerType.FireScare)
@@ -93,6 +108,16 @@ public class Triggers : MonoBehaviour
                 {
                     ExecuteSoundTrigger();
                 }
+            }
+        }
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        if(triggerType == TriggerType.LockerHide)
+        {
+            if(monsterAI.enabled)
+            {
+                monsterAI.playerIsHiding = false;
             }
         }
     }

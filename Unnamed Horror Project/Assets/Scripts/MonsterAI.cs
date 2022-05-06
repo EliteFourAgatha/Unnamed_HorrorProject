@@ -6,58 +6,83 @@ using UnityEngine.SceneManagement;
 
 public class MonsterAI : MonoBehaviour
 {
+    public Transform[] waypoints;
+    private int destinationIndex = 0;
+
     public GameObject player;
-    public NavMeshAgent agent;
+    private NavMeshAgent agent;
     public LevelController levelController;
     public FlashlightToggle flashlightToggle;
-    public AudioSource audioSource;
     [SerializeField] private float catchRange = 5f;
     [SerializeField] private float flashlightRange = 10f;
     [SerializeField] private Transform[] levelTwoSpawnPoints;
-    private bool playerInLineOfSight = false;
-    public bool awareOfPlayer = true;
+    public bool awareOfPlayer = false;
+    public bool playerIsHiding = false;
+    public AudioClip chaseAudio;
+    public AudioClip catchAudio;
     float distance;
-    bool playerIsHiding;
+    AudioSource audioSource;
+
     Scene currentScene;
     void Start()
     {
-        if(agent == null)
-        {
-            agent = gameObject.GetComponent<NavMeshAgent>();
-        }
+        agent = gameObject.GetComponent<NavMeshAgent>();
+        audioSource = gameObject.GetComponent<AudioSource>();
         currentScene = SceneManager.GetActiveScene();
-        TeleportNearPlayer();
+
+        GoToNextPatrolPoint();
+
+        //If level 2,
+        //TeleportNearPlayer(); ??
     }
     void Update()
     {
+        /*
+        if(awareOfPlayer)
+        {
+            Debug.Log("seen!");
+        }
+        else
+        {
+            Debug.Log("hidden!");
+        }
+        */
         distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
         if(playerIsHiding)
         {
             awareOfPlayer = false;
+            audioSource.Stop();
         }
         if(currentScene.name == "Scene1")
         {
             CheckForFlashlight(distance);
         }
 
-        
-
-        //Create a trigger collider that acts as a "line of sight" cone.
-        //  If player collides with this cone, player is seen. Monster behavior changes.
-
         if(awareOfPlayer)
         {
+            audioSource.clip = chaseAudio;
+            audioSource.loop = true;
             FollowPlayer();
             AttemptToCatchPlayer();
         }
         else
         {
-            PatrolArea();
+            //Choose next point when agent gets close enough to current target
+            if(!agent.pathPending && agent.remainingDistance <= 0.5f)
+            {
+                GoToNextPatrolPoint();
+            }
         }
     }
     void FollowPlayer()
     {
         agent.destination = player.transform.position;
+        Debug.Log("chasing");
+        if(!audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
+
 
         //If player not seen again for x number of seconds, disappear?
         //  Can't chase forever, would be too much tension. Need to ebb and flow.
@@ -66,6 +91,10 @@ public class MonsterAI : MonoBehaviour
     {
         if(distance <= catchRange)
         {
+            Debug.Log("caught");
+            /*
+            audioSource.clip = catchAudio;
+            audioSource.loop = false;
             audioSource.Play();
             if(!audioSource.isPlaying)
             {
@@ -73,8 +102,8 @@ public class MonsterAI : MonoBehaviour
                 {
                     levelController.FadeInToLevel(0);
                 }
-
             }
+            */
 
             // I think current best idea is:
             // Player caught, monster disappears / dissolves
@@ -95,10 +124,6 @@ public class MonsterAI : MonoBehaviour
             //    if caught enough times, collapse and die?
             //     each time caught, vision blurrier / move speed slower?
         }
-    }
-    void PatrolArea()
-    {
-
     }
     void CheckForFlashlight(float distance)
     {
@@ -125,10 +150,21 @@ public class MonsterAI : MonoBehaviour
         
     }
 
-    //Start patrolling at waypoint closest to spawn point
-    void DetermineFirstPatrolpoint()
+    //Get next waypoint in array and move agent there
+    //From documentation: https://docs.unity3d.com/Manual/nav-AgentPatrol.html
+    void GoToNextPatrolPoint()
     {
-        //cycle through array of patrol waypoints
-        // find one closest to gameObject.transform.position
+        agent.destination = waypoints[destinationIndex].position;
+
+        //Increment index after movement
+        destinationIndex += 1;
+
+        //If index same as number of elements in array, reset to 0
+        //(Roll over back to 0 when index is equal to (last array value +1))
+        if(destinationIndex == waypoints.Length)
+        {
+            destinationIndex = 0;
+        }
+        Debug.Log("waypoint: " + destinationIndex);
     }
 }

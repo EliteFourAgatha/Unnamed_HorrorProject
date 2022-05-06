@@ -16,7 +16,7 @@ public class Highlights : MonoBehaviour
     Camera mainCamera;
     public GameController gameController;
     private string noKeyFoundString = "It's locked but I see a key hole...";
-    private string doorLockedString = "Locked";
+    //private string doorLockedString = "Locked";
     void Awake()
     {
         if(fpsAnimations == null)
