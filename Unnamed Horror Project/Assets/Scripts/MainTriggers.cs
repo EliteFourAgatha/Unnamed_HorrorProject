@@ -60,10 +60,10 @@ public class MainTriggers : MonoBehaviour
 
 
     [Header("Open Closet")]
+    public GameObject aiMonster;
     public GameObject lockedClosetDoorTrigger;
     public Animator closetDoorAnim;
     private bool closetTriggerActive = true;
-    public Light[] breakLightsArray;
     public Light backroomLightOne;
     public AudioSource lightOneAudioSource;
     public Light backroomLightTwo;
@@ -71,19 +71,16 @@ public class MainTriggers : MonoBehaviour
     public AudioSource closetCreakAudioSource;
     public AudioClip closetCreakAudio;
 
-    [Header("Level 2 - Spawn Ghost")]
-    //Spawn Ghost in level 2
-    public GameObject spawnedGhost;
-    private bool spawnGhostTriggerActive = true;
-
 
     private string paperInstructionString = "Press [Esc] to view objectives";
-    private string laundryToWrenchString = "Find the wrench left for you in storage";
+    private string findFuseString = "Find the fuse for the fuse box in the basement.";
+    private string findToolsString = "Find the wrench left for you in storage";
+    private string fixLaundryWindowString = "Nail the laundry window shut";
     private string pliersString = "Fix bathroom sink leak";
     private string BathroomToFuseBoxString = "Turn off breaker to storage area";
     private string fuseboxString = "Find the pliers left for you in the basement.";
 
-    public enum TriggerType {Darkness, SpawnGhost, Closet, ShadowScare}
+    public enum TriggerType {Escape, Closet, ShadowScare}
     public TriggerType triggerType;
     void Start()
     {
@@ -104,26 +101,11 @@ public class MainTriggers : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            if(triggerType == TriggerType.Darkness)
-            {
-                if(darknessTriggerActive)
-                {
-                    TriggerDarkness();
-                }
-            }
-            else if(triggerType == TriggerType.Closet)
+            if(triggerType == TriggerType.Closet)
             {
                 if(closetTriggerActive)
                 {
                     TriggerFinalCloset();
-                }
-            }
-            //Spawn ghost in final maze. Red light triggers (rename?)
-            else if(triggerType == TriggerType.SpawnGhost)
-            {
-                if(spawnGhostTriggerActive)
-                {
-                    TriggerSpawnGhost();
                 }
             }
             //Shadow scare after fixing light
@@ -150,14 +132,10 @@ public class MainTriggers : MonoBehaviour
             StartCoroutine(WaitAndDisableObject(2, pliers, pliersSFX, pliersString));
         }
     }
-    //Trigger to enter final dungeon scene
-    public void TriggerDungeon()
-    {
-        triggerAudio.Play();
-        levelController.FadeInToLevel(2);
-    }
     public void TriggerFuseBox()
     {
+        //Instead of checking for a checkpoint (makes no sense logically from player pov)
+        // should check to see if player has fuse or fuse has been inserted etc.
         if(gameController.currentCheckpoint == 1)
         {
             if(!triggerAudio.isPlaying)
@@ -173,56 +151,37 @@ public class MainTriggers : MonoBehaviour
             }
         }
     }
-    public void TriggerDarkness()
+    // Trigger in final closet that is win condition for player
+    // If player looking at ladder and presses Interact...
+    public void TriggerEscape()
     {
-        //Set darkness wall active behind player, block escape backwards
-        darknessWall.SetActive(true);
-        darknessWallTwo.SetActive(true);
-        closetDarkTunnel.SetActive(true);
-        closetGrimReaper.SetActive(true);
-
-        closetLightBulb.SetActive(false);
-        fakeCloset.SetActive(false);
-        closetDarkBackdrop.SetActive(false);
-
-
-        //Spooky audio plays, need better SFX
-        triggerAudio.Play();
-
-        darknessTriggerActive = false; //single use, deactivate after
+        StartCoroutine(EnableEscapeCutscene());
     }
-
-    public void FadeToHallucination()  //Animation event after walls close in
+    IEnumerator EnableEscapeCutscene()
     {
+        //levelController.FadeToBlack();
+        yield return new WaitForSeconds(1f);
         levelController.FadeInToLevel(2);
     }
+    //Triggered by player near end of game in basement
+    // Lights go out, door creaks open
+    //  Monster appears and begins to chase player
     public void TriggerFinalCloset()
-    {
+    {        
+        //Enable door at top of stairs
+        // Door fades in as player gets closer, can't escape that way
+        //  Forces them to hide / confront the monster
+        topOfStairsDoor.SetActive(true);
         StartCoroutine(ShatterLightsBeforeCloset());
+        aiMonster.SetActive(true);
         StartCoroutine(OpenClosetAfterDelay(2f));
-        lockedClosetDoorTrigger.SetActive(false); //Trigger on closet door
-
-        
+        //after closet opens, cutscene?
+        // or just set monster chase mode active here, instead of automatically
+        //  when you first spawn it (would be running into door)
+        lockedClosetDoorTrigger.SetActive(false); //Trigger on closet door        
 
         closetTriggerActive = false; //single use, deactivate after
     }
-
-    public void TriggerSpawnGhost()  //spawn ghost in level 2
-    {
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
-        //spawn ghost in first room (starting area)
-        // Then tell ghost which quadrant / room player is currently in.
-
-        //
-        //    **perhaps instead of going in order, can make a few set paths for
-        //     him to travel.**
-        //   Path 1: moves around outside, checks perimeter, moves on if nothing
-        //   Path 2: moves in zig-zag
-    }
-
     public void TriggerFirstScare()
     {
         musicAudioSource.Stop();
@@ -240,18 +199,6 @@ public class MainTriggers : MonoBehaviour
 
         shadowBlurMonster.SetActive(true);
         shadowTriggerActive = false; // single use, deactivate after
-        
-
-        //First scare, blur rushes past.
-        // player given option to leave now.
-        // if player continues (goes into maintenance room, use simple trigger),
-        //  then spawn topofstairsdoor and disable ability to leave.
-
-
-
-        //enable top of stairs door. move this to actual spot later, based on
-        //  flow of logic. (if player doesn't leave by x point, spawn this door)
-        topOfStairsDoor.SetActive(true);
     }
     public void TriggerLockedDrawer()
     {
@@ -299,12 +246,7 @@ public class MainTriggers : MonoBehaviour
     }
 
 
-
-    IEnumerator DelayFadeToLevel(float delayTime, int levelNumber)
-    {
-        yield return new WaitForSeconds(delayTime);
-        levelController.FadeInToLevel(levelNumber);
-    }
+    
     IEnumerator WaitAndDisableObject(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
     {
         AudioSource.PlayClipAtPoint(objectSFX, gameObject.transform.position);
@@ -313,20 +255,18 @@ public class MainTriggers : MonoBehaviour
         yield return new WaitForSeconds(1f);
         disabledObj.SetActive(false);
     }
+    //Closet trigger part 1
+    // Turn off lights in back room of basement
     IEnumerator ShatterLightsBeforeCloset()
     {
-        //disable light on proximity
-        //  if distance between player and one of lights in
-        //  breakLights array < breakDistance, disable/SFX.
-        //   'darkness is walking with you'
         backroomLightOne.enabled = false;
         lightOneAudioSource.Play();
-
-
         yield return new WaitForSeconds(1f);
         backroomLightTwo.enabled = false;
         lightTwoAudioSource.Play();
     }
+    //Closet trigger part 2
+    // Slowly creak door open + sound effect
     IEnumerator OpenClosetAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

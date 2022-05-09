@@ -20,6 +20,12 @@ public class LevelController : MonoBehaviour
         animator.SetTrigger("FadeOut");
         Cursor.lockState = CursorLockMode.Locked;
     }
+    /*
+    public void FadeToBlack()
+    {
+        animator.SetTrigger("FadeIn");
+    }
+    */
 
     public void OnFadeComplete()
     {
