@@ -159,9 +159,9 @@ public class MainTriggers : MonoBehaviour
     }
     IEnumerator EnableEscapeCutscene()
     {
-        //levelController.FadeToBlack();
+        levelController.FadeToBlack();
         yield return new WaitForSeconds(1f);
-        levelController.FadeInToLevel(2);
+        levelController.LoadLevel(2);
     }
     //Triggered by player near end of game in basement
     // Lights go out, door creaks open

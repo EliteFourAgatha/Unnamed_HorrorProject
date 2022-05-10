@@ -15,11 +15,10 @@ public class MonsterAI : MonoBehaviour
     public FlashlightToggle flashlightToggle;
     [SerializeField] private float catchRange = 5f;
     [SerializeField] private float flashlightRange = 10f;
-    [SerializeField] private Transform[] levelTwoSpawnPoints;
     public bool awareOfPlayer = false;
     public bool playerIsHiding = false;
-    public AudioClip chaseAudio;
-    public AudioClip catchAudio;
+    [SerializeField] AudioClip chaseAudio;
+    [SerializeField] AudioClip catchAudio;
     float distance;
     AudioSource audioSource;
 
@@ -31,22 +30,9 @@ public class MonsterAI : MonoBehaviour
         currentScene = SceneManager.GetActiveScene();
 
         GoToNextPatrolPoint();
-
-        //If level 2,
-        //TeleportNearPlayer(); ??
     }
     void Update()
     {
-        /*
-        if(awareOfPlayer)
-        {
-            Debug.Log("seen!");
-        }
-        else
-        {
-            Debug.Log("hidden!");
-        }
-        */
         distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
         if(playerIsHiding)
         {
@@ -104,25 +90,6 @@ public class MonsterAI : MonoBehaviour
                 }
             }
             */
-
-            // I think current best idea is:
-            // Player caught, monster disappears / dissolves
-            //  Dementor sound? Pleasure / ecstasy as he steals your vital essence?
-            //  player caught first time: crippled, can't run, screen distorts. heartbeat plays?
-            //  caught 2nd time: main menu or restart dungeon area
-
-
-
-            //send player to main menu? (tedious, have to replay all previous sections)
-            //send player to beginning of level 2? (low stakes, getting caught needs to be scarier)
-            //some sort of web? player is caught first time, lose sanity / loses vision / crippled / can no longer run?
-            //  2nd time caught: player given actual consequence (main menu, level 2, etc.)
-            //
-            // - or - player loses a bit of sanity each time he is caught
-            //  as if a bit of his essence / soul being lost bit by bit
-            //   savored by dark entity? this is how it feeds?
-            //    if caught enough times, collapse and die?
-            //     each time caught, vision blurrier / move speed slower?
         }
     }
     void CheckForFlashlight(float distance)
@@ -135,19 +102,13 @@ public class MonsterAI : MonoBehaviour
             }
         }
     }
-    void TeleportNearPlayer()
+    //Teleport to set positions while chasing player in maze
+    // Attempt to get ahead of player and appear to be teleporting / extremely fast
+    //  so that player has no idea where it is (not necessarily behind you)
+    public void TeleportToPosition()
     {
-        //1.) DetermineClosestSpawnPoint
-        //cycle through array of spawn points (shouldnt be too many)
-        // spawn to point that is acceptable distance away from player
-        //  (not too far away, not too close)
-
-        //2.) SpawnMonster
-        //spawn at chosen spawn point from above
-        //  Make sure not in player line of sight?
-        //  -or-
-        //  Make all spawn points behind walls / obscured like in L4D?
-        
+        //If player enters trigger area [x], teleport to corresponding
+        // teleport position (make array)
     }
 
     //Get next waypoint in array and move agent there

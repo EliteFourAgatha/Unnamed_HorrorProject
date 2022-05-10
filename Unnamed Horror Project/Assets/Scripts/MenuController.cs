@@ -72,16 +72,10 @@ public class MenuController : MonoBehaviour
     // -- EXPOSITION SCREEN, AFTER 'PLAY' IN MAIN MENU --
     public void EnableExpositionScreen()
     {
+        levelController.FadeToBlack();
         expositionUI.SetActive(true);
         mainMenuUI.SetActive(false);
     }
-    public void StartGameFromExposition()
-    {
-        expositionUI.SetActive(false);
-        levelController.FadeInToLevel(1);
-    }
-    // -- END EXPOSITION --
-
     // -- PAUSE MENU --
     public void ResumeGame()
     {
