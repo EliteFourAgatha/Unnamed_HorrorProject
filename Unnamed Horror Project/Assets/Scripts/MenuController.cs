@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public GameObject optionsMenuUI;
+    public GameObject creditsMenuUI;
     public GameObject pauseMenuUI;
     public GameObject mainMenuUI;
     public GameObject expositionUI;
@@ -23,6 +23,10 @@ public class MenuController : MonoBehaviour
         {
             levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
         }
+    }
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
     }
     void Update()
     {
@@ -57,14 +61,14 @@ public class MenuController : MonoBehaviour
     {
         EnableExpositionScreen();
     }
-    public void EnableOptionsMenu()
+    public void EnableCreditsMenu()
     {
         mainMenuUI.SetActive(false);
-        optionsMenuUI.SetActive(true);
+        creditsMenuUI.SetActive(true);
     }
-    public void DisableOptionsMenu()
+    public void DisableCreditsMenu()
     {
-        optionsMenuUI.SetActive(false);
+        creditsMenuUI.SetActive(false);
         mainMenuUI.SetActive(true);
     }
     // -- END MAIN MENU --

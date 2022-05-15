@@ -14,17 +14,6 @@ public class MainTriggers : MonoBehaviour
     public AudioSource musicAudioSource;
 
 
-    [Header("Darkness Trigger (In Closet)")]
-    public GameObject darknessWall;
-    public GameObject darknessWallTwo;
-    public GameObject closetDarkBackdrop;
-    public GameObject closetDarkTunnel;
-    public GameObject closetGrimReaper;
-    public GameObject closetLightBulb;
-    public GameObject fakeCloset;  
-    private bool darknessTriggerActive = true;
-
-
     [Header("Misc.")]
     public GameObject topOfStairsDoor;
 
@@ -60,6 +49,8 @@ public class MainTriggers : MonoBehaviour
 
 
     [Header("Open Closet")]
+    public GameObject[] disabledObjects;
+    public GameObject sewerMasterObject;
     public GameObject aiMonster;
     public GameObject lockedClosetDoorTrigger;
     public Animator closetDoorAnim;
@@ -151,8 +142,7 @@ public class MainTriggers : MonoBehaviour
             }
         }
     }
-    // Trigger in final closet that is win condition for player
-    // If player looking at ladder and presses Interact...
+    // Trigger on ladder in sewer, win condition
     public void TriggerEscape()
     {
         StartCoroutine(EnableEscapeCutscene());
@@ -161,7 +151,7 @@ public class MainTriggers : MonoBehaviour
     {
         levelController.FadeToBlack();
         yield return new WaitForSeconds(1f);
-        levelController.LoadLevel(2);
+        levelController.LoadLevel(0);
     }
     //Triggered by player near end of game in basement
     // Lights go out, door creaks open
@@ -169,9 +159,20 @@ public class MainTriggers : MonoBehaviour
     public void TriggerFinalCloset()
     {        
         //Enable door at top of stairs
-        // Door fades in as player gets closer, can't escape that way
-        //  Forces them to hide / confront the monster
+        // Door fades in as player gets closer, can't escape
+        //  --Forces them to hide / confront the monster--
         topOfStairsDoor.SetActive(true);
+
+        //Set sewer active
+        sewerMasterObject.SetActive(true);
+
+        //Disable exterior objects that clip with sewer area
+        // Also disable exterior spot lights
+        foreach(GameObject obj in disabledObjects)
+        {
+            obj.SetActive(false);
+        }
+
         StartCoroutine(ShatterLightsBeforeCloset());
         aiMonster.SetActive(true);
         StartCoroutine(OpenClosetAfterDelay(2f));

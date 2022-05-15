@@ -304,29 +304,21 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                
             }
-            // -- LEVEL 2 ONLY OBJECTS --
-            //
-            //      consider putting this in larger if/else to break up function call.
-            //      if level 1... level 2...
-            //
-            // Burn the plant in right dungeon room
-            else if(hitObj.GetComponent<Collider>().gameObject.tag == "BurnPlant")
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "EscapeLadder")
             {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 7f)
+                {
                     HighlightObject(hitObj);
-                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    if(Input.GetKeyDown(KeyCode.E))
                     {
-                        HighlightObject(hitObj);
-                        if(Input.GetKeyDown(KeyCode.E))
-                        {
-                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Level2Triggers>().ExecuteBurnPlant();
-                        }
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerEscape();
                     }
-                    else
-                    {
-                        ClearHighlighted();
-                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                
             }
-
             else
             {
                 ClearHighlighted();
