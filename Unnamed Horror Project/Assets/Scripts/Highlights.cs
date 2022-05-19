@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class Highlights : MonoBehaviour
 {
     GameObject lastHighlightedObject;
-    public FirstPersonAnimations fpsAnimations;
-
 
     public Material highlightMaterialTEST;
     Material originalMat;
@@ -17,13 +15,6 @@ public class Highlights : MonoBehaviour
     public GameController gameController;
     private string noKeyFoundString = "It's locked but I see a key hole...";
     //private string doorLockedString = "Locked";
-    void Awake()
-    {
-        if(fpsAnimations == null)
-        {
-            fpsAnimations = gameObject.GetComponent<FirstPersonAnimations>();
-        }
-    }
     void Start()
     {
         mainCamera = Camera.main;
@@ -145,7 +136,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerLaundryWindow();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().CloseLaundryWindow();
                     }
                 }
                 else
@@ -160,16 +151,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        if(fpsAnimations.isHiding)
-                        {
-                            fpsAnimations.UnhideFromCouch();
-                            fpsAnimations.isHiding = false;
-                        }
-                        else
-                        {
-                            fpsAnimations.HideBehindCouch();
-                            fpsAnimations.isHiding = true;
-                        }
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithCouch();  
                     }
                 }
                 else
@@ -244,7 +226,7 @@ public class Highlights : MonoBehaviour
                     HighlightObject(hitObj);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerLockerDoor();
+                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithLocker();
                     }
                 }
                 else
@@ -261,7 +243,7 @@ public class Highlights : MonoBehaviour
                     {
                         if(!gameController.playerNeedsKey)
                         {
-                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerLockedDrawer();
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithDrawer();
                         }
                         else
                         {

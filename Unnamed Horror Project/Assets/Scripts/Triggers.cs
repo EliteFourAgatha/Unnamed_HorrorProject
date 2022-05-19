@@ -6,25 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class Triggers : MonoBehaviour
 {
+    public GameController gameController;
+    public LevelController levelController;
     public Animation playerAnim;
     public AudioSource triggerAudio;
     public MonsterAI monsterAI;
-    public enum TriggerType {NormalObject, LockerHide, FireScare, CouchHide, TriggerWoodCreak,
+    public enum TriggerType {NormalObject, LockerHide, CouchHide, TriggerWoodCreak,
                                 TriggerBuildingGroan, TriggerPebbleDrop}
     public TriggerType triggerType;
-
-    [Header("Chamber Lights")]
-    private bool chamberLightTriggerActive = true;
-    public GameObject affectedChamberLights;
-    private bool fireScareTriggerActive = true;
-    public GameObject fireScareObject;
-
-    [Header("Laundry Window")]
-    public Animator laundryWindowAnim;
-    private bool laundryWindowOpen = true;
-    public AudioClip openWindowSFX;
-    public AudioClip closeWindowSFX;
-    public AudioSource laundryRainAudio;
 
 
     [Header("Triggerable Sounds")]
@@ -40,6 +29,21 @@ public class Triggers : MonoBehaviour
 
     [Header("Hiding Trigger")]
     public GameObject chosenLockerDoor;
+    
+    [Header("Laundry Window")]
+    public Animator laundryWindowAnim;
+    public AudioSource laundryRainAudio;
+    public AudioClip closedWindowSFX;
+    bool canUseWindow = true;
+
+    [Header("Head Office Locked Drawer")]
+    public Animator lockedDrawerAnim;
+    private bool drawerOpen = false;
+    public AudioClip openDrawerClip;
+    public AudioClip closeDrawerClip;
+
+    [Header("Couch")]
+    bool couchHiding = false;
 
 
 
@@ -86,13 +90,6 @@ public class Triggers : MonoBehaviour
                     }
                     */
 
-                }
-            }
-            else if(triggerType == TriggerType.FireScare)
-            {
-                if(fireScareTriggerActive)
-                {
-                    ExecuteFireScareTrigger();
                 }
             }
             else if(triggerType == TriggerType.TriggerWoodCreak)
@@ -142,26 +139,18 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    public void ExecuteChamberLightsTrigger()
+    public void InteractWithCouch()
     {
-        if(!triggerAudio.isPlaying)
+        if(couchHiding)
         {
-            triggerAudio.Play();
+            StartCoroutine(HideBehindCouch());
         }
-        affectedChamberLights.SetActive(true);
-        chamberLightTriggerActive = false;
-    }
-    public void ExecuteFireScareTrigger()
-    {
-        if(!triggerAudio.isPlaying)
+        else
         {
-            triggerAudio.Play();
+            StartCoroutine(UnhideBehindCouch());
         }
-        affectedChamberLights.SetActive(true);
-        StartCoroutine(FlashFireScareObject());
-        fireScareTriggerActive = false;
     }
-    public void TriggerLockerDoor()
+    public void InteractWithLocker()
     {
         if(lockerDoorAnim == null)
         {
@@ -183,34 +172,53 @@ public class Triggers : MonoBehaviour
             lockerDoorAnim.Play("CloseLockerDoor");
         }
     }
-    public void TriggerLaundryWindow()
+    public void CloseLaundryWindow()
     {
-        if(laundryWindowOpen)
+        if(canUseWindow)
         {
-            triggerAudio.clip = openWindowSFX;
+            canUseWindow = false;
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
             laundryWindowAnim.Play("CloseWindow");
-            laundryWindowOpen = false;
-
             laundryRainAudio.volume = 0.3f; //Muffle outside sfx
         }
         else
         {
-            triggerAudio.clip = closeWindowSFX;
-            laundryWindowAnim.Play("OpenWindow");
-            laundryWindowOpen = true;
+            triggerAudio.clip = closedWindowSFX;
+            //show pop up text "it's nailed shut!" or something
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+        }
 
-            laundryRainAudio.volume = 0.8f; //Reverse above
-        }
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
     }
-    private IEnumerator FlashFireScareObject()
+    public void InteractWithDrawer()
     {
-        fireScareObject.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
-        fireScareObject.SetActive(false);
+        if(drawerOpen)
+        {
+            lockedDrawerAnim.Play("DrawerClose", 0, 0.0f);
+            drawerOpen = false;
+            triggerAudio.clip = closeDrawerClip;
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+        }
+        else
+        {
+            lockedDrawerAnim.Play("DrawerOpen", 0, 0.0f);
+            drawerOpen = true;
+            triggerAudio.clip = openDrawerClip;
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+        }
+        //Once drawer has been opened for first time / used key...
+        gameController.playerNeedsKey = false;
     }
     private IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
     {
@@ -225,5 +233,13 @@ public class Triggers : MonoBehaviour
         soundTriggerCanFire = false;
         yield return new WaitForSeconds(5);
         soundTriggerCanFire = true;
+    }
+    private IEnumerator HideBehindCouch()
+    {
+        levelController.FadeToBlack();
+        //playercontroller.canmove = false;
+        yield return new WaitForSeconds(2f);
+        levelController.FadeInFromBlack();
+        //playercontroller.canmove = true;
     }
 }

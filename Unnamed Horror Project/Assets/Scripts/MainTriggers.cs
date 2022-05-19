@@ -34,12 +34,6 @@ public class MainTriggers : MonoBehaviour
     public GameObject heldKey;
     public GameObject heldKeyUI;
 
-    [Header("Head Office Locked Drawer")]
-    public Animator lockedDrawerAnim;
-    private bool drawerOpen = false;
-    public AudioClip openDrawerClip;
-    public AudioClip closeDrawerClip;
-
 
     [Header("First Scare")]
     public GameObject shadowBlurMonster;
@@ -64,11 +58,11 @@ public class MainTriggers : MonoBehaviour
 
 
     private string paperInstructionString = "Press [Esc] to view objectives";
-    private string findFuseString = "Find the fuse for the fuse box in the basement.";
-    private string findToolsString = "Find the wrench left for you in storage";
-    private string fixLaundryWindowString = "Nail the laundry window shut";
+    //private string findFuseString = "Find the fuse for the fuse box in the basement.";
+    //private string findToolsString = "Find the wrench left for you in storage";
+    //private string fixLaundryWindowString = "Nail the laundry window shut";
     private string pliersString = "Fix bathroom sink leak";
-    private string BathroomToFuseBoxString = "Turn off breaker to storage area";
+    //private string BathroomToFuseBoxString = "Turn off breaker to storage area";
     private string fuseboxString = "Find the pliers left for you in the basement.";
 
     public enum TriggerType {Escape, Closet, ShadowScare}
@@ -201,31 +195,6 @@ public class MainTriggers : MonoBehaviour
         shadowBlurMonster.SetActive(true);
         shadowTriggerActive = false; // single use, deactivate after
     }
-    public void TriggerLockedDrawer()
-    {
-        if(drawerOpen)
-        {
-            lockedDrawerAnim.Play("DrawerClose", 0, 0.0f);
-            drawerOpen = false;
-            triggerAudio.clip = closeDrawerClip;
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-        }
-        else
-        {
-            lockedDrawerAnim.Play("DrawerOpen", 0, 0.0f);
-            drawerOpen = true;
-            triggerAudio.clip = openDrawerClip;
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-        }
-        //Once drawer has been opened for first time / used key...
-        gameController.playerNeedsKey = false;
-    }
     public void TriggerFoundKey()
     {
         if(!triggerAudio.isPlaying)
@@ -239,13 +208,11 @@ public class MainTriggers : MonoBehaviour
     }
 
 
-
     //Consider moving this to new script. Exposition script (not a main trigger)
     public void ExecuteExpositionNote()
     {
         
-    }
-
+    }    
 
     
     IEnumerator WaitAndDisableObject(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)

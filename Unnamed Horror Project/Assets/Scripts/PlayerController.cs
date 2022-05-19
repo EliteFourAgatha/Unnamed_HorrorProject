@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip sprintAudio;
     public CharacterController controller;
     public Camera mainCamera;
+    public bool canMove = true;
     private float moveForward;
     private float moveSide;
     private float gravityValue = 9.8f;
@@ -21,6 +22,11 @@ public class PlayerController : MonoBehaviour
     public float maxStamina = 15f;
     private float currentStamina;
 
+    [Header("Mouse Look")]
+    public float mouseSensitivity = 100f;
+    private Transform playerBody;
+    private float xRotation = 0f;
+
     private void Awake()
     {
         footstepAudioSource = gameObject.GetComponent<AudioSource>();
@@ -31,32 +37,37 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.GetKey(KeyCode.LeftShift))
+        if(canMove)
         {
-            if(canRun)
+            LookWithMouse();
+            if(Input.GetKey(KeyCode.LeftShift))
             {
-                currentSpeed = sprintSpeed;
+                if(canRun)
+                {
+                    currentSpeed = sprintSpeed;
+                }
             }
-        }
-        else
-        {
-            currentSpeed = walkSpeed;
-        }
-        moveSide = Input.GetAxis("Horizontal") * currentSpeed;
-        moveForward = Input.GetAxis("Vertical") * currentSpeed;
+            else
+            {
+                currentSpeed = walkSpeed;
+            }
+            moveSide = Input.GetAxis("Horizontal") * currentSpeed;
+            moveForward = Input.GetAxis("Vertical") * currentSpeed;
 
-        if(moveSide != 0 || moveForward != 0)
-        {
-            MovePlayer();
+            if(moveSide != 0 || moveForward != 0)
+            {
+                MovePlayer();
+            }
+            else
+            {
+                PauseFootstepAudio();
+            }
+            UpdateStamina();
+            Debug.Log("Stamina: " + currentStamina);
         }
-        else
-        {
-            PauseFootstepAudio();
-        }
-        UpdateStamina();
-        Debug.Log("Stamina: " + currentStamina);
+
     }    
-    public void MovePlayer()
+    private void MovePlayer()
     {
         //playerRB.velocity = (moveForward * transform.forward) + (transform.right * moveSide);
         Vector3 move = transform.right * moveSide + transform.forward * moveForward;
@@ -67,7 +78,7 @@ public class PlayerController : MonoBehaviour
         controller.Move(move * Time.deltaTime);
         PlayFootstepAudio();
     }
-    public void PlayFootstepAudio()
+    private void PlayFootstepAudio()
     {
         if(currentSpeed == sprintSpeed)
         {
@@ -86,11 +97,11 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    public void PauseFootstepAudio()
+    private void PauseFootstepAudio()
     {
         footstepAudioSource.Pause();
     }
-    public void UpdateStamina()
+    private void UpdateStamina()
     {
         //No stamina
         if(currentStamina <= 0)
@@ -122,6 +133,22 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+    private void LookWithMouse()
+    {
+        //Mouse Input on X and Y axes, * mouse sensitivity, * delta time so that
+        // you will rotate at the same speed regardless of frame rate (deltaTime = 
+        // time between frames)
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        xRotation -= mouseY;
+        //Clamps camera rotation so you can't look past a certain point 
+        xRotation = Mathf.Clamp(xRotation, -60f, 60f);
+
+        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 }
 
