@@ -5,9 +5,9 @@ using UnityEngine;
 public class FlickeringLight : MonoBehaviour
 {
     private bool isFlickering = false;
-    public float flickerDelay;
-    public Light lightToFlicker;
-    public AudioSource flickerAudio;
+    [SerializeField] private float flickerDelay;
+    [SerializeField] private Light lightToFlicker;
+    [SerializeField] private AudioSource flickerAudio;
     void Awake()
     {
         if(lightToFlicker == null)

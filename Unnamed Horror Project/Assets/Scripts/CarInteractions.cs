@@ -6,34 +6,27 @@ using UnityEngine.UI;
 public class CarInteractions : MonoBehaviour
 {
     private AudioSource audioSource;
-    public AudioClip carEndingAudioClip;
-    public LevelController levelController;
-    private GameController gameController;
-    public GameObject carEndingUI;
+    [SerializeField] private AudioClip carEndingAudioClip;
+    [SerializeField] private LevelController levelController;
+    [SerializeField] private GameController gameController;
+    [SerializeField] private GameObject carEndingUI;
     //The car ending being possible. Available after checkpoint X (first scare)
     private bool sensibleEndingPossible = false;
-    private bool scaredEndingPossible = false;
+    //private bool scaredEndingPossible = false;
     private string cantLeaveYetString = "I should see what the job's about first...";
     private string whyLeaveEasyMoneyString = "What's the rush? Easy money to be made";
-    private void Awake()
+    void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
-        if(gameController == null)
-        {
-            gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-        }
-        if(levelController == null)
-        {
-            levelController = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelController>();
-        }
     }
-    public void Update()
+    void Update()
     {
         if(gameController.currentCheckpoint == 2)
         {
             //"having barely seen anything / startled by a bump in the night, our
             //   protagonist flees with his tail between his legs."
-            scaredEndingPossible = true;
+
+            //scaredEndingPossible = true;
         }
         else if(gameController.currentCheckpoint == 5)
         {
@@ -77,8 +70,7 @@ public class CarInteractions : MonoBehaviour
         //
         //
         //Fade in to "game over screen / stats / endings" screen
-        // "No job is worth this shit" ending
-        levelController.FadeToBlack();        
+        // "No job is worth this shit" ending      
         levelController.LoadLevel(0);
     }
 }

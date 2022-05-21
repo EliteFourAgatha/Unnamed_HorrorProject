@@ -6,44 +6,47 @@ using UnityEngine.SceneManagement;
 
 public class Triggers : MonoBehaviour
 {
-    public GameController gameController;
-    public LevelController levelController;
-    public Animation playerAnim;
-    public AudioSource triggerAudio;
-    public MonsterAI monsterAI;
-    public enum TriggerType {NormalObject, LockerHide, CouchHide, TriggerWoodCreak,
-                                TriggerBuildingGroan, TriggerPebbleDrop}
-    public TriggerType triggerType;
+    [SerializeField] private GameController gameController;
+    [SerializeField] private LevelController levelController;
+    [SerializeField] private GameObject player;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private Transform hideLocation;
+    [SerializeField] private Transform unHideLocation;
+    [SerializeField] private Animation playerAnim;
+    [SerializeField] private MonsterAI monsterAI;
+    private AudioSource triggerAudio;
+
+
+    [SerializeField] private enum TriggerType {NormalObject, LockerHide, StorageHide, WoodCreak, BuildingGroan, PebbleDrop,
+                                 BreathBehind, ShufflingFootsteps}
+    [SerializeField] private TriggerType triggerType;
 
 
     [Header("Triggerable Sounds")]
     bool soundTriggerCanFire = true;
     AudioClip chosenClip;
-    public AudioClip[] woodCreakClips;
-    public AudioClip[] buildingGroanClips;
-    public AudioClip[] pebbleDropClips;
+    [SerializeField] private AudioClip[] woodCreakClips;
+    [SerializeField] private AudioClip[] buildingGroanClips;
+    [SerializeField] private AudioClip[] pebbleDropClips;
 
     [Header("Locker Door")]
-    public Animator lockerDoorAnim;
+    [SerializeField] private Animator lockerDoorAnim;
     public bool lockerDoorClosed = true;
 
     [Header("Hiding Trigger")]
-    public GameObject chosenLockerDoor;
+    [SerializeField] private GameObject chosenLockerDoor;
     
     [Header("Laundry Window")]
-    public Animator laundryWindowAnim;
-    public AudioSource laundryRainAudio;
-    public AudioClip closedWindowSFX;
+    [SerializeField] private Animator laundryWindowAnim;
+    [SerializeField] private AudioSource laundryRainAudio;
+    [SerializeField] private AudioClip closedWindowSFX;
     bool canUseWindow = true;
 
     [Header("Head Office Locked Drawer")]
-    public Animator lockedDrawerAnim;
+    [SerializeField] private Animator lockedDrawerAnim;
     private bool drawerOpen = false;
-    public AudioClip openDrawerClip;
-    public AudioClip closeDrawerClip;
-
-    [Header("Couch")]
-    bool couchHiding = false;
+    [SerializeField] private AudioClip openDrawerClip;
+    [SerializeField] private AudioClip closeDrawerClip;
 
 
 
@@ -51,14 +54,7 @@ public class Triggers : MonoBehaviour
 
     void Start()
     {
-        if(triggerAudio == null)
-        {
-            triggerAudio = gameObject.GetComponent<AudioSource>();
-        }
-        if(playerAnim == null)
-        {
-            playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animation>();
-        }
+        triggerAudio = gameObject.GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -70,10 +66,11 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    public void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
         {
+            //If player inside of locker...
             if(triggerType == TriggerType.LockerHide)
             {
                 if(monsterAI.enabled)
@@ -92,14 +89,20 @@ public class Triggers : MonoBehaviour
 
                 }
             }
-            else if(triggerType == TriggerType.TriggerWoodCreak)
+            //If player in storage hide spot behind couch
+            else if(triggerType == TriggerType.StorageHide)
+            {
+                //if player crouching...
+                monsterAI.playerIsHiding = true;
+            }
+            else if(triggerType == TriggerType.WoodCreak)
             {
                 if(soundTriggerCanFire)
                 {
                     ExecuteSoundTrigger();
                 }
             }
-            else if(triggerType == TriggerType.TriggerPebbleDrop)
+            else if(triggerType == TriggerType.PebbleDrop)
             {
                 if(soundTriggerCanFire)
                 {
@@ -108,9 +111,16 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    public void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         if(triggerType == TriggerType.LockerHide)
+        {
+            if(monsterAI.enabled)
+            {
+                monsterAI.playerIsHiding = false;
+            }
+        }
+        else if(triggerType == TriggerType.StorageHide)
         {
             if(monsterAI.enabled)
             {
@@ -129,25 +139,14 @@ public class Triggers : MonoBehaviour
     {
         if(soundTriggerCanFire)
         {
-            if(triggerType == TriggerType.TriggerWoodCreak)
+            if(triggerType == TriggerType.WoodCreak)
             {
                 StartCoroutine(PlaySoundTriggerAndCooldown(woodCreakClips));
             }
-            else if(triggerType == TriggerType.TriggerPebbleDrop)
+            else if(triggerType == TriggerType.PebbleDrop)
             {
                 StartCoroutine(PlaySoundTriggerAndCooldown(pebbleDropClips));
             }
-        }
-    }
-    public void InteractWithCouch()
-    {
-        if(couchHiding)
-        {
-            StartCoroutine(HideBehindCouch());
-        }
-        else
-        {
-            StartCoroutine(UnhideBehindCouch());
         }
     }
     public void InteractWithLocker()
@@ -220,7 +219,7 @@ public class Triggers : MonoBehaviour
         //Once drawer has been opened for first time / used key...
         gameController.playerNeedsKey = false;
     }
-    private IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
+    IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
     {
         int randInt = Random.Range(0, sourceArray.Length);
         chosenClip = sourceArray[randInt];
@@ -234,12 +233,5 @@ public class Triggers : MonoBehaviour
         yield return new WaitForSeconds(5);
         soundTriggerCanFire = true;
     }
-    private IEnumerator HideBehindCouch()
-    {
-        levelController.FadeToBlack();
-        //playercontroller.canmove = false;
-        yield return new WaitForSeconds(2f);
-        levelController.FadeInFromBlack();
-        //playercontroller.canmove = true;
-    }
+
 }

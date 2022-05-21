@@ -5,7 +5,7 @@ using UnityEngine;
 public class StreetColliders : MonoBehaviour
 {
     private string stopTravelString = "Not crazy about walking in this rain...";
-    private GameController gameController;
+    GameController gameController;
     private void Awake()
     {
         if(gameController == null)
@@ -13,7 +13,7 @@ public class StreetColliders : MonoBehaviour
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         }
     }
-    public void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
         {

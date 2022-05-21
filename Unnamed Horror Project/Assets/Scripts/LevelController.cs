@@ -7,16 +7,12 @@ using UnityEngine.UI;
 public class LevelController : MonoBehaviour
 {
     private Animator animator;
-    private int levelToLoad;
-    public GameObject retryLevelOneScreen;    
-    public GameObject retryLevelTwoScreen;
     Scene currentScene;
-    [SerializeField] private Image blackFadeImage;
-    private void Awake()
+    void Awake()
     {
         animator = gameObject.GetComponent<Animator>();
     }
-    private void Start()
+    void Start()
     {
         currentScene = SceneManager.GetActiveScene();
         if(currentScene.name == "Scene1")
@@ -36,23 +32,10 @@ public class LevelController : MonoBehaviour
     }
     public void FadeToBlack()
     {
-        if(!blackFadeImage.enabled)
-        {
-            blackFadeImage.enabled = true;
-        }
         animator.Play("Fade_Out");
     }
-    public void EnableRetryScreen(int sceneNum)
+    public void FadeInFromBlack()
     {
-        if(sceneNum == 1)
-        {
-            retryLevelOneScreen.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else
-        {
-            retryLevelTwoScreen.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-        }
+        animator.Play("Fade_In");
     }
 }

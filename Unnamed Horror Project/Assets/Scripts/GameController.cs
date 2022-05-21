@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public Text popupText;
-    public Text objectiveText;
-    public Text endingUIText;
+    [SerializeField] private Text popupText;
+    [SerializeField] private Text objectiveText;
+    [SerializeField] private Text endingUIText;
     private AudioSource audioSource;
     public int currentCheckpoint;
     public bool playerNeedsKey = true;

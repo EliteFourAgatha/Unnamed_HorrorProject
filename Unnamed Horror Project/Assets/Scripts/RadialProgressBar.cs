@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class RadialProgressBar : MonoBehaviour
 {
-    public GameController gameController;
+    [SerializeField] private GameController gameController;
     [SerializeField] private float timer = 0.01f;
     [SerializeField] private float maxTimer = 1.0f;
     [SerializeField] private Image radialImage;
@@ -16,8 +16,8 @@ public class RadialProgressBar : MonoBehaviour
     // reference ui object here instead of having this script on ui object
     //  if distance between object and player is small enough, canInteract
     private float distance;
-    public enum RadialType{Window, Sink, TV, BloodChalice};
-    public RadialType radialType;
+    [SerializeField] private enum RadialType{Window, Sink, TV, BloodChalice};
+    [SerializeField] private RadialType radialType;
     void Update()
     {
         if(radialType == RadialType.Sink)

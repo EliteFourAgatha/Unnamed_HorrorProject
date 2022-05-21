@@ -7,17 +7,17 @@ public class Sink : MonoBehaviour
     private AudioSource audioSource;
     private bool sinkWaterOn;
     private bool canChangeSinkState;
-    private void Awake()
+    void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
     }
-    private void Start()
+    void Start()
     {
         sinkWaterOn = false;
         canChangeSinkState = false;
     }
 
-    private void Update()
+    void Update()
     {
         if(canChangeSinkState)
         {
@@ -47,14 +47,14 @@ public class Sink : MonoBehaviour
         sinkWaterOn = false;
         //end VFX
     }
-    public void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
         {
             canChangeSinkState = true;
         }
     }
-    public void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         if(other.tag == "Player")
         {

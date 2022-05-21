@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HeadBobEffect : MonoBehaviour
 {
-    public CharacterController playerController;
-    public Animation anim;
+    [SerializeField] private CharacterController playerController;
+    [SerializeField] private Animation anim;
     private bool isMoving;
     private bool isRunning;
     private bool left;
@@ -23,7 +23,7 @@ public class HeadBobEffect : MonoBehaviour
         //If so, enable head bob effect
         EnableHeadBobEffect();
     }
-    public void EnableHeadBobEffect()
+    void EnableHeadBobEffect()
     {
         if(playerController.isGrounded)
         {
@@ -41,7 +41,7 @@ public class HeadBobEffect : MonoBehaviour
             }
         }
     }
-    public void AlternateLeftRightRun()
+    void AlternateLeftRightRun()
     {
         if(left == true)
         {
@@ -62,7 +62,7 @@ public class HeadBobEffect : MonoBehaviour
             }
         }
     }
-    public void AlternateLeftRightWalk()
+    void AlternateLeftRightWalk()
     {
         if(left == true)
         {
@@ -83,7 +83,8 @@ public class HeadBobEffect : MonoBehaviour
             }
         }
     }
-    public void CheckForMovementInput(){
+    void CheckForMovementInput()
+    {
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
         if(inputX != 0 || inputY != 0){

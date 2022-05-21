@@ -6,13 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class MonsterAI : MonoBehaviour
 {
-    public Transform[] waypoints;
+    [SerializeField] private Transform[] waypoints;
     private int destinationIndex = 0;
 
-    public GameObject player;
+    [SerializeField] private GameObject player;
     private NavMeshAgent agent;
-    public LevelController levelController;
-    public FlashlightToggle flashlightToggle;
+    [SerializeField] private LevelController levelController;
+    [SerializeField] private FlashlightToggle flashlightToggle;
     [SerializeField] private float catchRange = 5f;
     [SerializeField] private float flashlightRange = 10f;
     public bool awareOfPlayer = false;
@@ -101,14 +101,6 @@ public class MonsterAI : MonoBehaviour
                 awareOfPlayer = true;
             }
         }
-    }
-    //Teleport to set positions while chasing player in maze
-    // Attempt to get ahead of player and appear to be teleporting / extremely fast
-    //  so that player has no idea where it is (not necessarily behind you)
-    public void TeleportToPosition()
-    {
-        //If player enters trigger area [x], teleport to corresponding
-        // teleport position (make array)
     }
 
     //Get next waypoint in array and move agent there

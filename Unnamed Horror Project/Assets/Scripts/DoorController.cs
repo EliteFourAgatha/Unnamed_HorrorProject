@@ -8,16 +8,14 @@ using UnityEngine;
 //
 public class DoorController : MonoBehaviour
 {
-    //Serialize field allows you to edit in inspector while keeping private
     [SerializeField] private Animator myDoor;
-    //private AudioSource doorAudioSource;
-    public bool doorClosed = true;
-    public AudioClip doorOpenOne;
-    public AudioClip doorCloseOne;
+    [SerializeField] private bool doorClosed = true;
+    [SerializeField] private AudioClip doorOpenOne;
+    [SerializeField] private AudioClip doorCloseOne;
     //Normal door is most doors
     // Apartment door is main entrance, opens to different angle
-    public enum DoorType {normalDoor, apartmentDoor};
-    public DoorType doorType;
+    [SerializeField] private enum DoorType {normalDoor, apartmentDoor};
+    [SerializeField] private DoorType doorType;
     public void OpenDoor()
     {
         if(doorType == DoorType.normalDoor)

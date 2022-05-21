@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Lightswitch : MonoBehaviour
 {
-    public AudioSource triggerAudio;
-    public GameController gameController;
+    [SerializeField] private AudioSource triggerAudio;
+    [SerializeField] private GameController gameController;
 
-    public Light[] controlledLights;
-    public GameObject lightSwitch;
+    [SerializeField] private Light[] controlledLights;
+    [SerializeField] private GameObject lightSwitch;
     private bool lightsOff = true;
-    public enum LightType {breaker, nonBreaker};
-    public LightType lightType;
+    [SerializeField] private enum LightType {breaker, nonBreaker};
+    [SerializeField] private LightType lightType;
 
     void Start()
     {

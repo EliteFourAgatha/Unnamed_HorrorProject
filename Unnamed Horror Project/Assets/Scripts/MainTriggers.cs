@@ -8,53 +8,53 @@ using UnityEngine.SceneManagement;
 
 public class MainTriggers : MonoBehaviour
 {
-    public GameController gameController;
-    public LevelController levelController;
-    public AudioSource triggerAudio;
-    public AudioSource musicAudioSource;
+    [SerializeField] private GameController gameController;
+    [SerializeField] private LevelController levelController;
+    [SerializeField] private AudioSource triggerAudio;
+    [SerializeField] private AudioSource musicAudioSource;
 
 
     [Header("Misc.")]
-    public GameObject topOfStairsDoor;
+    [SerializeField] private GameObject topOfStairsDoor;
 
 
     [Header("Main Paper")]
-    public GameObject mainPaper;    
-    public AudioClip mainPaperSFX;
+    [SerializeField] private GameObject mainPaper;    
+    [SerializeField] private AudioClip mainPaperSFX;
     
     [Header("Pliers")]
-    public GameObject pliers;    
-    public AudioClip pliersSFX;
+    [SerializeField] private GameObject pliers;    
+    [SerializeField] private AudioClip pliersSFX;
 
     [Header("Fuse Box")]
-    public Light[] breakerLights;
+    [SerializeField] private Light[] breakerLights;
 
 
     [Header("Head Office Key")]
-    public GameObject heldKey;
-    public GameObject heldKeyUI;
+    [SerializeField] private GameObject heldKey;
+    [SerializeField] private GameObject heldKeyUI;
 
 
     [Header("First Scare")]
-    public GameObject shadowBlurMonster;
+    [SerializeField] private GameObject shadowBlurMonster;
     private bool shadowTriggerActive = true;
-    public AudioSource heartBeatAudioSource; 
+    [SerializeField] private AudioSource heartBeatAudioSource; 
 
 
 
     [Header("Open Closet")]
-    public GameObject[] disabledObjects;
-    public GameObject sewerMasterObject;
-    public GameObject aiMonster;
-    public GameObject lockedClosetDoorTrigger;
-    public Animator closetDoorAnim;
+    [SerializeField] private GameObject[] disabledObjects;
+    [SerializeField] private GameObject sewerMasterObject;
+    [SerializeField] private GameObject aiMonster;
+    [SerializeField] private GameObject lockedClosetDoorTrigger;
+    [SerializeField] private Animator closetDoorAnim;
     private bool closetTriggerActive = true;
-    public Light backroomLightOne;
-    public AudioSource lightOneAudioSource;
-    public Light backroomLightTwo;
-    public AudioSource lightTwoAudioSource;
-    public AudioSource closetCreakAudioSource;
-    public AudioClip closetCreakAudio;
+    [SerializeField] private Light backroomLightOne;
+    [SerializeField] private AudioSource lightOneAudioSource;
+    [SerializeField] private Light backroomLightTwo;
+    [SerializeField] private AudioSource lightTwoAudioSource;
+    [SerializeField] private AudioSource closetCreakAudioSource;
+    [SerializeField] private AudioClip closetCreakAudio;
 
 
     private string paperInstructionString = "Press [Esc] to view objectives";
@@ -65,8 +65,8 @@ public class MainTriggers : MonoBehaviour
     //private string BathroomToFuseBoxString = "Turn off breaker to storage area";
     private string fuseboxString = "Find the pliers left for you in the basement.";
 
-    public enum TriggerType {Escape, Closet, ShadowScare}
-    public TriggerType triggerType;
+    [SerializeField] private enum TriggerType {Escape, Closet, ShadowScare}
+    [SerializeField] private TriggerType triggerType;
     void Start()
     {
         if (gameController == null)

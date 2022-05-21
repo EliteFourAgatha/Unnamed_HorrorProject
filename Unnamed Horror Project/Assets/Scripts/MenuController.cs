@@ -6,14 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public GameObject creditsMenuUI;
-    public GameObject pauseMenuUI;
-    public GameObject mainMenuUI;
-    public GameObject expositionUI;
-    public GameObject quitGameOptionUI;
-    public GameObject pressEnterButton;
-    public GameObject expositionText;
-    public LevelController levelController;
+    [SerializeField] private GameObject creditsMenuUI;
+    [SerializeField] private GameObject pauseMenuUI;
+    [SerializeField] private GameObject mainMenuUI;
+    [SerializeField] private GameObject expositionUI;
+    [SerializeField] private GameObject quitGameOptionUI;
+    [SerializeField] private GameObject pressEnterButton;
+    [SerializeField] private GameObject expositionText;
+    [SerializeField] private LevelController levelController;
     public static bool gamePaused = false;
     private bool canPauseGame = false;
 
@@ -89,7 +89,7 @@ public class MenuController : MonoBehaviour
         Time.timeScale = 1f;
         gamePaused = false;
     }
-    void PauseGame()
+    public void PauseGame()
     {
         pauseMenuUI.SetActive(true);
         AudioListener.volume = 0;

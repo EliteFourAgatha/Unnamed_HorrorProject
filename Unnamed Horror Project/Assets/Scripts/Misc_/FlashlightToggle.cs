@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class FlashlightToggle : MonoBehaviour
 {
-    public GameController gameController;
-    public GameObject lightGO; //light gameObject to work with
+    [SerializeField] private GameController gameController;
+    [SerializeField] private GameObject lightGO; //light gameObject to work with
     public bool lightOn = false;
     private string flashlightBrokenString = "The flashlight won't turn on..";
     Scene currentScene;

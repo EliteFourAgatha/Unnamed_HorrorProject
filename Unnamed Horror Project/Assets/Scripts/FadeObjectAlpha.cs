@@ -53,24 +53,22 @@ public class FadeObjectAlpha : MonoBehaviour
         }
 
     }
-    public void FadeOutAlphaByDistance()
+    void FadeOutAlphaByDistance()
     {
         Color tempColor = testRenderer.material.color;        
         tempColor.a = 1 - (Mathf.InverseLerp (closetProximity, 0.1f,
         Vector3.Distance (playerPosition, fakeCloset.transform.position)));
         FadeMultipleObjects(tempColor);
     }
-    public void FadeInAlphaByDistance()
+    void FadeInAlphaByDistance()
     {
         Color tempColor = testRenderer.material.color;
         float distance = Vector3.Distance(topOfStairsDoor.transform.position, playerPosition);
         tempColor.a = doorProximity / distance;
         FadeMultipleObjects(tempColor);
-
-        //doorTransparentMat.color = tempColor;
     }
     //Change all mesh renderer object alphas at once
-    public void FadeMultipleObjects(Color newColor)
+    void FadeMultipleObjects(Color newColor)
     {
         foreach (MeshRenderer meshRend in meshRenderers)
         {

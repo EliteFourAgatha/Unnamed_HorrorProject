@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private bool mouseOver = false;
-    public Button playButton;
-    public Text playButtonText;
+    [SerializeField] private Button playButton;
+    [SerializeField] private Text playButtonText;
     private Color buttonOnColor = new Color(0.25f, 0.25f, 0.25f, 1);
     private Color textOnColor = new Color(0.9f, 0.8f, 0.3f, 1);
     private Color buttonOffColor = new Color(0.25f, 0.25f, 0.25f, 0);

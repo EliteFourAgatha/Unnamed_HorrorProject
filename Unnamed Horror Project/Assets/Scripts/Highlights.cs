@@ -7,12 +7,9 @@ public class Highlights : MonoBehaviour
 {
     GameObject lastHighlightedObject;
 
-    public Material highlightMaterialTEST;
-    Material originalMat;
-
-    public Image UIInteractImage;
+    [SerializeField] private Image UIInteractImage;
     Camera mainCamera;
-    public GameController gameController;
+    [SerializeField] private GameController gameController;
     private string noKeyFoundString = "It's locked but I see a key hole...";
     //private string doorLockedString = "Locked";
     void Start()
@@ -143,22 +140,7 @@ public class Highlights : MonoBehaviour
                 {
                     ClearHighlighted();
                 }                                
-            }
-            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Couch")
-            {
-                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 2f)
-                {
-                    HighlightObject(hitObj);
-                    if(Input.GetKeyDown(KeyCode.E))
-                    {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithCouch();  
-                    }
-                }
-                else
-                {
-                    ClearHighlighted();
-                }                
-            }            
+            }       
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "MainPaper")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
