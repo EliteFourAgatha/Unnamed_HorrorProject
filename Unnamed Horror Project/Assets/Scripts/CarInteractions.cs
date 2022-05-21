@@ -19,7 +19,7 @@ public class CarInteractions : MonoBehaviour
     {
         audioSource = gameObject.GetComponent<AudioSource>();
     }
-    void Update()
+    public void AttemptToUseCar()
     {
         if(gameController.currentCheckpoint == 2)
         {
@@ -34,9 +34,6 @@ public class CarInteractions : MonoBehaviour
             //  our protagonist makes the sensible decision to leave and consider other employment."
             sensibleEndingPossible = true;
         }
-    }
-    public void AttemptToUseCar()
-    {
         Debug.Log("CARCARCAR");
         if(sensibleEndingPossible)
         {

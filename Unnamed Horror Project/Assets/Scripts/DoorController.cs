@@ -9,7 +9,7 @@ using UnityEngine;
 public class DoorController : MonoBehaviour
 {
     [SerializeField] private Animator myDoor;
-    [SerializeField] private bool doorClosed = true;
+    public bool doorClosed = true;
     [SerializeField] private AudioClip doorOpenOne;
     [SerializeField] private AudioClip doorCloseOne;
     //Normal door is most doors

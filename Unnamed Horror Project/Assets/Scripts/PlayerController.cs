@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     private AudioSource footstepAudioSource;
-    public AudioClip walkAudio;
-    public AudioClip sprintAudio;
+    [SerializeField] private AudioSource windedAudioSource;
+    public AudioClip concreteWalkSFX;
+    public AudioClip concreteSprintSFX;
     public CharacterController controller;
     public Camera mainCamera;
     public bool canMove = true;
@@ -19,32 +20,36 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 5f;
     public float sprintSpeed = 10f;
     private bool canRun = true;
-    public float maxStamina = 15f;
+    public float maxStamina = 5f;
     private float currentStamina;
-
-    private void Awake()
+    void Awake()
     {
         footstepAudioSource = gameObject.GetComponent<AudioSource>();
     }
-    private void Start()
+    void Start()
     {
         currentStamina = maxStamina;
     }
-    private void Update()
+    void Update()
     {
         if(canMove)
         {
-            if(Input.GetKey(KeyCode.LeftShift))
+            if(canRun)
             {
-                if(canRun)
+                if(Input.GetKey(KeyCode.LeftShift))
                 {
                     currentSpeed = sprintSpeed;
+                }
+                else
+                {
+                    currentSpeed = walkSpeed;
                 }
             }
             else
             {
                 currentSpeed = walkSpeed;
             }
+
             moveSide = Input.GetAxis("Horizontal") * currentSpeed;
             moveForward = Input.GetAxis("Vertical") * currentSpeed;
 
@@ -76,7 +81,7 @@ public class PlayerController : MonoBehaviour
     {
         if(currentSpeed == sprintSpeed)
         {
-            footstepAudioSource.clip = sprintAudio;
+            footstepAudioSource.clip = concreteSprintSFX;
             if(!footstepAudioSource.isPlaying)
             {
                 footstepAudioSource.Play();
@@ -84,7 +89,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            footstepAudioSource.clip = walkAudio;
+            footstepAudioSource.clip = concreteWalkSFX;
             if(!footstepAudioSource.isPlaying)
             {
                 footstepAudioSource.Play();
@@ -97,34 +102,28 @@ public class PlayerController : MonoBehaviour
     }
     private void UpdateStamina()
     {
-        //No stamina
         if(currentStamina <= 0)
         {
-            //Player winded, play SFX
+            windedAudioSource.Play();
             canRun = false;
         }
-        //Max stamina
         else if(currentStamina >= maxStamina)
         {
             currentStamina = maxStamina;
             canRun = true;
         }
-        //Repair stamina
-        else if(currentStamina <= maxStamina)
+        //If player moving
+        if(moveSide != 0 || moveForward != 0)
         {
-            //If player moving
-            if(moveSide != 0 || moveForward != 0)
+            //Sprinting, lose stamina
+            if(currentSpeed == sprintSpeed)
             {
-                //Sprinting, lose stamina
-                if(currentSpeed == sprintSpeed)
-                {
-                    currentStamina -= Time.deltaTime;
-                }
-                //Walking, repair stamina
-                else
-                {
-                    currentStamina += Time.deltaTime;
-                }
+                currentStamina -= 1 * Time.deltaTime;
+            }
+            //Walking, repair stamina
+            else
+            {
+                currentStamina += 1 * Time.deltaTime;
             }
         }
     }
