@@ -1,11 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//
-//
-//Consider moving this to trigger class as well, now that it's just 1 trigger
-//
-//
+
 public class DoorController : MonoBehaviour
 {
     [SerializeField] private Animator myDoor;

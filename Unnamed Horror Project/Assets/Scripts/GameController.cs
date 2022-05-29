@@ -107,22 +107,11 @@ public class GameController : MonoBehaviour
             // "...you make the sensible decision..."
             endingUIText.text = "sensibleending";
         }
-        else if(ending == "caught")
+        else if(ending == "escaped")
         {
-            
-        }
-        else if(ending == "hallucinationfail")
-        {
-                //player choked to death or basically didn't escape the coccoon.
-                // back to main menu? restart hallucination?
-                //  for sure dont go back to start of level 1.
-                //   best is probably some sort of sfx/vfx that is cryptic and
-                //   maybe doesnt fully explain what happened. But it shouldnt
-                //   just dump the player back at main menu. Should be some screen
-                //   or feedback to show they failed an objective.
-                //   -or-
-                //   agonizing scream or somethign to show you obviously died
-                //   "maintenance help wanted" ad posted somewhere.
+            //player escaped the monster (made it to ladder)
+            //
+            endingUIText.text = "escapedending";
         }
     }
 

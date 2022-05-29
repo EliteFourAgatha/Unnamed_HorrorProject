@@ -7,7 +7,7 @@ public class RadialProgressBar : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
     [SerializeField] private float timer = 0.01f;
-    [SerializeField] private float maxTimer = 1.0f;
+    [SerializeField] private float maxTimer = 5.0f;
     [SerializeField] private Image radialImage;
     [SerializeField] private GameObject player;
     private bool canUpdate = true;

@@ -6,13 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    [SerializeField] private GameObject creditsMenuUI;
+    [SerializeField] private GameObject creditsUI;
+    [SerializeField] private GameObject endingUI;
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject expositionUI;
     [SerializeField] private GameObject quitGameOptionUI;
-    [SerializeField] private GameObject pressEnterButton;
-    [SerializeField] private GameObject expositionText;
     [SerializeField] private LevelController levelController;
     public static bool gamePaused = false;
     private bool canPauseGame = false;
@@ -55,32 +54,31 @@ public class MenuController : MonoBehaviour
             }
         }
     }
-    // -- MAIN MENU BUTTONS --
+
     //Main Menu: Play Button
     public void MenuPlayButton()
     {
         EnableExpositionScreen();
     }
-    public void EnableCreditsMenu()
+    public void GoToCreditsMenu()
     {
-        mainMenuUI.SetActive(false);
-        creditsMenuUI.SetActive(true);
+        endingUI.SetActive(false);
+        creditsUI.SetActive(true);
     }
-    public void DisableCreditsMenu()
+    public void GoToMainMenu()
     {
-        creditsMenuUI.SetActive(false);
-        mainMenuUI.SetActive(true);
+        levelController.LoadLevel(0);
     }
-    // -- END MAIN MENU --
 
-    // -- EXPOSITION SCREEN, AFTER 'PLAY' IN MAIN MENU --
     public void EnableExpositionScreen()
     {
         levelController.FadeToBlack();
         expositionUI.SetActive(true);
         mainMenuUI.SetActive(false);
     }
+    //
     // -- PAUSE MENU --
+    //
     public void ResumeGame()
     {
         pauseMenuUI.SetActive(false);

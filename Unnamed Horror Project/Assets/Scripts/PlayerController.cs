@@ -6,22 +6,37 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     private AudioSource footstepAudioSource;
-    [SerializeField] private AudioSource windedAudioSource;
-    public AudioClip concreteWalkSFX;
-    public AudioClip concreteSprintSFX;
-    public CharacterController controller;
-    public Camera mainCamera;
+    [SerializeField] private AudioClip concreteWalkSFX;
+    [SerializeField] private AudioClip concreteSprintSFX;
+    [SerializeField] private CharacterController controller;
+    [SerializeField] private Camera mainCamera;
+
+
+    [Header("Movement Parameters")]
+    [SerializeField, Range(1, 10)] private float walkSpeed = 5f;
+    [SerializeField, Range(1, 20)] private float sprintSpeed = 10f;
+    [SerializeField, Range(1, 5)] private float crouchSpeed = 2.5f;
+    private float currentSpeed;
+    private float gravityValue = 9.8f;
+    private float verticalSpeed;
     public bool canMove = true;
     private float moveForward;
     private float moveSide;
-    private float gravityValue = 9.8f;
-    private float verticalSpeed;
-    private float currentSpeed;
-    public float walkSpeed = 5f;
-    public float sprintSpeed = 10f;
     private bool canRun = true;
-    public float maxStamina = 5f;
-    private float currentStamina;
+
+    [Header("Crouch Parameters")]
+    [SerializeField] private float crouchHeight = 0.5f;
+    [SerializeField] private float standingHeight = 2.1f;
+    [SerializeField] private float timeToCrouch = 0.25f;
+    private bool isCrouching;
+    private bool duringCrouchAnimation;
+    private bool canCrouch = true;
+
+    [Header("Stamina")]
+    [SerializeField, Range(1, 20)] private float maxStamina = 10f;
+    [SerializeField] private AudioSource windedAudioSource;
+    float currentStamina;
+
     void Awake()
     {
         footstepAudioSource = gameObject.GetComponent<AudioSource>();
@@ -45,6 +60,10 @@ public class PlayerController : MonoBehaviour
                     currentSpeed = walkSpeed;
                 }
             }
+            else if(isCrouching)
+            {
+                currentSpeed = crouchSpeed;
+            }
             else
             {
                 currentSpeed = walkSpeed;
@@ -61,8 +80,12 @@ public class PlayerController : MonoBehaviour
             {
                 PauseFootstepAudio();
             }
-            UpdateStamina();
-            Debug.Log("Stamina: " + currentStamina);
+            /*
+            if(canCrouch)
+            {
+                AttemptToCrouch();
+            }
+            */
         }
 
     }    
@@ -76,6 +99,7 @@ public class PlayerController : MonoBehaviour
         
         controller.Move(move * Time.deltaTime);
         PlayFootstepAudio();
+        UpdateStamina();
     }
     private void PlayFootstepAudio()
     {
@@ -99,6 +123,45 @@ public class PlayerController : MonoBehaviour
     public void PauseFootstepAudio()
     {
         footstepAudioSource.Pause();
+    }
+    public void AttemptToCrouch()
+    {
+        if(!duringCrouchAnimation && controller.isGrounded)
+        {
+            if(Input.GetKeyDown(KeyCode.C))
+            {
+                StartCoroutine(CrouchOrStand());
+            }
+        }
+    }
+
+    private IEnumerator CrouchOrStand()
+    {
+        duringCrouchAnimation = true;
+
+        float timeElapsed = 0f;
+        float currentHeight = controller.height;
+        float targetHeight;
+        if(isCrouching)
+        {
+            targetHeight = standingHeight;
+            isCrouching = false;
+        }
+        else
+        {
+            targetHeight = crouchHeight;
+            isCrouching = true;
+        }
+
+        while(timeElapsed > timeToCrouch)
+        {
+            controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / timeToCrouch);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        controller.height = targetHeight;
+
+        duringCrouchAnimation = false;
     }
     private void UpdateStamina()
     {
@@ -126,6 +189,7 @@ public class PlayerController : MonoBehaviour
                 currentStamina += 1 * Time.deltaTime;
             }
         }
+        Debug.Log("Stamina: " + currentStamina);
     }
 }
 

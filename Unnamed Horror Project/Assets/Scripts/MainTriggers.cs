@@ -14,10 +14,6 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioSource musicAudioSource;
 
 
-    [Header("Misc.")]
-    [SerializeField] private GameObject topOfStairsDoor;
-
-
     [Header("Main Paper")]
     [SerializeField] private GameObject mainPaper;    
     [SerializeField] private AudioClip mainPaperSFX;
@@ -38,11 +34,12 @@ public class MainTriggers : MonoBehaviour
     [Header("First Scare")]
     [SerializeField] private GameObject shadowBlurMonster;
     private bool shadowTriggerActive = true;
-    [SerializeField] private AudioSource heartBeatAudioSource; 
+    [SerializeField] private AudioSource heartBeatAudioSource;
+    [SerializeField] private AudioSource gurglingAudioSource;
 
 
 
-    [Header("Open Closet")]
+    [Header("Final Closet")]
     [SerializeField] private GameObject[] disabledObjects;
     [SerializeField] private GameObject sewerMasterObject;
     [SerializeField] private GameObject aiMonster;
@@ -55,6 +52,7 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioSource lightTwoAudioSource;
     [SerializeField] private AudioSource closetCreakAudioSource;
     [SerializeField] private AudioClip closetCreakAudio;
+    [SerializeField] private GameObject topOfStairsDoor;
 
 
     private string paperInstructionString = "Press [Esc] to view objectives";
@@ -136,47 +134,8 @@ public class MainTriggers : MonoBehaviour
             }
         }
     }
-    // Trigger on ladder in sewer, win condition
-    public void TriggerEscape()
-    {
-        StartCoroutine(EnableEscapeCutscene());
-    }
-    IEnumerator EnableEscapeCutscene()
-    {
-        levelController.FadeToBlack();
-        yield return new WaitForSeconds(1f);
-        levelController.LoadLevel(0);
-    }
-    //Triggered by player near end of game in basement
-    // Lights go out, door creaks open
-    //  Monster appears and begins to chase player
-    public void TriggerFinalCloset()
-    {        
-        //Enable door at top of stairs
-        // Door fades in as player gets closer, can't escape
-        //  --Forces them to hide / confront the monster--
-        topOfStairsDoor.SetActive(true);
 
-        //Set sewer active
-        sewerMasterObject.SetActive(true);
 
-        //Disable exterior objects that clip with sewer area
-        // Also disable exterior spot lights
-        foreach(GameObject obj in disabledObjects)
-        {
-            obj.SetActive(false);
-        }
-
-        StartCoroutine(ShatterLightsBeforeCloset());
-        aiMonster.SetActive(true);
-        StartCoroutine(OpenClosetAfterDelay(2f));
-        //after closet opens, cutscene?
-        // or just set monster chase mode active here, instead of automatically
-        //  when you first spawn it (would be running into door)
-        lockedClosetDoorTrigger.SetActive(false); //Trigger on closet door        
-
-        closetTriggerActive = false; //single use, deactivate after
-    }
     public void TriggerFirstScare()
     {
         musicAudioSource.Stop();
@@ -184,6 +143,7 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
+        shadowBlurMonster.SetActive(true);
 
         //Remember to turn this off somewhere. Loses effect the longer it stays on.
         //  Should be for tense moments, then fade out
@@ -191,8 +151,10 @@ public class MainTriggers : MonoBehaviour
         {
             heartBeatAudioSource.Play();
         }
-
-        shadowBlurMonster.SetActive(true);
+        if(!gurglingAudioSource.isPlaying)
+        {
+            gurglingAudioSource.Play();
+        }
         shadowTriggerActive = false; // single use, deactivate after
     }
     public void TriggerFoundKey()
@@ -223,6 +185,32 @@ public class MainTriggers : MonoBehaviour
         yield return new WaitForSeconds(1f);
         disabledObj.SetActive(false);
     }
+
+    //Triggered by player near end of game in basement
+    // Lights go out, door creaks open
+    //  Monster appears and begins to chase player
+    public void TriggerFinalCloset()
+    {        
+        //Enable door at top of stairs
+        //  --Forces them to hide / confront the monster--
+        topOfStairsDoor.SetActive(true);
+
+        sewerMasterObject.SetActive(true);
+        aiMonster.SetActive(true);
+
+        //Disable exterior objects that clip with sewer area
+        foreach(GameObject obj in disabledObjects)
+        {
+            obj.SetActive(false);
+        }
+
+        StartCoroutine(ShatterLightsBeforeCloset());
+        StartCoroutine(OpenClosetAfterDelay(2f));
+
+        lockedClosetDoorTrigger.SetActive(false); //Trigger on closet door        
+
+        closetTriggerActive = false; //single use, deactivate after
+    }
     //Closet trigger part 1
     // Turn off lights in back room of basement
     IEnumerator ShatterLightsBeforeCloset()
@@ -249,5 +237,16 @@ public class MainTriggers : MonoBehaviour
         yield return new WaitForSeconds(delay);
         item.SetActive(false);
         text.SetActive(false);
+    }
+    // Trigger on ladder in sewer, win condition
+    public void TriggerEscape()
+    {
+        StartCoroutine(EnableEscapeCutscene());
+    }
+    IEnumerator EnableEscapeCutscene()
+    {
+        levelController.FadeToBlack();
+        yield return new WaitForSeconds(1f);
+        levelController.LoadLevel(0);
     }
 }

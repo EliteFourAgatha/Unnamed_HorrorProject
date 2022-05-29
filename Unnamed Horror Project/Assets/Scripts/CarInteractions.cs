@@ -61,13 +61,7 @@ public class CarInteractions : MonoBehaviour
         audioSource.clip = carEndingAudioClip;
         audioSource.Play();
         carEndingUI.SetActive(false);
-        Time.timeScale = 1;
-        //
-        //Keep track of car ending having been found (2/4 endings found)
-        //
-        //
-        //Fade in to "game over screen / stats / endings" screen
-        // "No job is worth this shit" ending      
-        levelController.LoadLevel(0);
+        Time.timeScale = 1;   
+        levelController.LoadLevel(2);
     }
 }
