@@ -9,18 +9,13 @@ public class Triggers : MonoBehaviour
     [SerializeField] private GameController gameController;
     [SerializeField] private LevelController levelController;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject monsterObjectRef;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Transform hideLocation;
     [SerializeField] private Transform unHideLocation;
     [SerializeField] private Animation playerAnim;
     [SerializeField] private MonsterAI monsterAI;
     private AudioSource triggerAudio;
-
-
-    [SerializeField] private enum TriggerType {NormalObject, LockerHide, StorageHide, WoodCreak, BuildingGroan, PebbleDrop,
-                                 BreathBehind, ShufflingFootsteps}
-    [SerializeField] private TriggerType triggerType;
-
 
     [Header("Triggerable Sounds")]
     bool soundTriggerCanFire = true;
@@ -32,6 +27,7 @@ public class Triggers : MonoBehaviour
     [Header("Locker Door")]
     [SerializeField] private Animator lockerDoorAnim;
     public bool lockerDoorClosed = true;
+
 
     [Header("Hiding Trigger")]
     [SerializeField] private GameObject chosenLockerDoor;
@@ -47,6 +43,10 @@ public class Triggers : MonoBehaviour
     private bool drawerOpen = false;
     [SerializeField] private AudioClip openDrawerClip;
     [SerializeField] private AudioClip closeDrawerClip;
+
+    [SerializeField] private enum TriggerType {NormalObject, LockerHide, WoodCreak, BuildingGroan, PebbleDrop,
+                                BreathBehind, ShufflingFootsteps, Exposition1, Exposition2}
+    [SerializeField] private TriggerType triggerType;
 
 
 
@@ -78,22 +78,16 @@ public class Triggers : MonoBehaviour
                     var triggerRef = chosenLockerDoor.GetComponent<Triggers>();
                     
                     monsterAI.playerIsHiding = true;
-                    /*
                     //If locker door is closed...
                     if(triggerRef.lockerDoorClosed)
-                    {   
-                        //Player is hidden from monster's view
-                        monsterAI.playerIsHiding = true;
+                    {
+                        if(monsterAI.playerCanHide)
+                        {
+                            //Player is hidden from monster's view
+                            monsterAI.playerIsHiding = true;
+                        }
                     }
-                    */
-
                 }
-            }
-            //If player in storage hide spot behind couch
-            else if(triggerType == TriggerType.StorageHide)
-            {
-                //if player crouching...
-                monsterAI.playerIsHiding = true;
             }
             else if(triggerType == TriggerType.WoodCreak)
             {
@@ -114,13 +108,6 @@ public class Triggers : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if(triggerType == TriggerType.LockerHide)
-        {
-            if(monsterAI.enabled)
-            {
-                monsterAI.playerIsHiding = false;
-            }
-        }
-        else if(triggerType == TriggerType.StorageHide)
         {
             if(monsterAI.enabled)
             {
@@ -192,8 +179,8 @@ public class Triggers : MonoBehaviour
                 triggerAudio.Play();
             }
         }
-
     }
+
     public void InteractWithDrawer()
     {
         if(drawerOpen)
@@ -219,7 +206,27 @@ public class Triggers : MonoBehaviour
         //Once drawer has been opened for first time / used key...
         gameController.playerNeedsKey = false;
     }
-    IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
+
+    //Exposition note #1 in head office
+    public void InteractWithExpositionNote()
+    {
+        if(triggerType == TriggerType.Exposition1)
+        {
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }
+        }
+        else if(triggerType == TriggerType.Exposition2)
+        {
+            if(!triggerAudio.isPlaying)
+            {
+                triggerAudio.Play();
+            }            
+        }
+    }
+
+    private IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
     {
         int randInt = Random.Range(0, sourceArray.Length);
         chosenClip = sourceArray[randInt];

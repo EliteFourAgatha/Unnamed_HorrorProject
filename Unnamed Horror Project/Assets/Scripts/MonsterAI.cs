@@ -2,47 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement;
 
 public class MonsterAI : MonoBehaviour
 {
     [SerializeField] private Transform[] waypoints;
-    private int destinationIndex = 0;
-
     [SerializeField] private GameObject player;
-    private NavMeshAgent agent;
     [SerializeField] private LevelController levelController;
     [SerializeField] private FlashlightToggle flashlightToggle;
     [SerializeField] private float catchRange = 5f;
     [SerializeField] private float flashlightRange = 10f;
+    [SerializeField] private AudioClip chaseAudio;
+    [SerializeField] private AudioClip catchAudio;
+
     public bool awareOfPlayer = false;
     public bool playerIsHiding = false;
-    [SerializeField] AudioClip chaseAudio;
-    [SerializeField] AudioClip catchAudio;
-    float distance;
-    AudioSource audioSource;
+    public bool playerCanHide = true;
+    
+    private NavMeshAgent agent;
+    private float distance;
+    private AudioSource audioSource;
+    private int destinationIndex = 0;
 
-    Scene currentScene;
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
         audioSource = gameObject.GetComponent<AudioSource>();
-        currentScene = SceneManager.GetActiveScene();
 
         GoToNextPatrolPoint();
     }
     void Update()
     {
         distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
+        if(distance <= 5)
+        {
+            playerCanHide = false;
+            Debug.Log("Player can't hide");
+        }
+        else
+        {
+            playerCanHide = true;
+            Debug.Log("Player hideable");
+        }
         if(playerIsHiding)
         {
             awareOfPlayer = false;
+            Debug.Log("Player HIDDEN");
             audioSource.Stop();
         }
-        if(currentScene.name == "Scene1")
-        {
-            CheckForFlashlight(distance);
-        }
+        CheckForFlashlight(distance);
 
         if(awareOfPlayer)
         {

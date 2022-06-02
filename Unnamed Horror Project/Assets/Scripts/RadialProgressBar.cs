@@ -10,6 +10,13 @@ public class RadialProgressBar : MonoBehaviour
     [SerializeField] private float maxTimer = 5.0f;
     [SerializeField] private Image radialImage;
     [SerializeField] private GameObject player;
+
+
+    [Header("Sink")]
+    [SerializeField] private AudioSource sinkScareAudioSource;
+    [SerializeField] private AudioSource sinkDripAudioSource;
+    [SerializeField] private AudioSource ratchetAudioSource;
+    [SerializeField] private GameObject waterDripEffect;
     private bool canUpdate = true;
     private bool canInteract = false;
     //put script on empty object that is where you want player to interact
@@ -65,8 +72,41 @@ public class RadialProgressBar : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.E))
         {
-            timer += Time.deltaTime;
+            timer += Time.deltaTime / 2;
             radialImage.fillAmount = timer;
+
+            if(radialType == RadialType.Sink)
+            {
+                if(!ratchetAudioSource.isPlaying)
+                {
+                    ratchetAudioSource.Play();
+                }
+            }
+            if(radialType == RadialType.Window)
+            {
+                
+            }
+            if(radialType == RadialType.TV)
+            {
+                
+            }
+
+            if(timer == maxTimer / 3)
+            {
+                if(radialType == RadialType.Sink)
+                {
+                    sinkScareAudioSource.Play();
+                    Debug.Log("spooked");
+                }
+                if(radialType == RadialType.Window)
+                {
+                    
+                }
+                if(radialType == RadialType.TV)
+                {
+                    
+                }
+            }
 
             if(timer >= maxTimer)
             {
@@ -77,6 +117,11 @@ public class RadialProgressBar : MonoBehaviour
                 Debug.Log("done?");
                 if(radialType == RadialType.Sink)
                 {
+                    sinkDripAudioSource.Stop();
+                    waterDripEffect.SetActive(false);
+
+                    ratchetAudioSource.Stop();
+
                     //play done sfx? small ding or something
                     gameController.currentCheckpoint = 5;
                 }
@@ -90,6 +135,22 @@ public class RadialProgressBar : MonoBehaviour
                     //play done sfx? small ding or something
                     gameController.currentCheckpoint = 7;
                 }
+            }
+        }
+        else
+        {
+            if(radialType == RadialType.Sink)
+            {
+                ratchetAudioSource.Pause();
+                Debug.Log("pause audio asdfasdfasdf");
+            }
+            if(radialType == RadialType.Window)
+            {
+                
+            }
+            if(radialType == RadialType.TV)
+            {
+                
             }
         }
     }

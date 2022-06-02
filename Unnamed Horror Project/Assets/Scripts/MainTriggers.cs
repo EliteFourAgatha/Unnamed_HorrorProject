@@ -168,15 +168,7 @@ public class MainTriggers : MonoBehaviour
         //Reset object tag to disable interactions
         gameObject.tag = "Untagged";
     }
-
-
-    //Consider moving this to new script. Exposition script (not a main trigger)
-    public void ExecuteExpositionNote()
-    {
-        
-    }    
-
-    
+   
     IEnumerator WaitAndDisableObject(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
     {
         AudioSource.PlayClipAtPoint(objectSFX, gameObject.transform.position);
