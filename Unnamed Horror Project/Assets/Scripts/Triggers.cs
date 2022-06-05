@@ -40,9 +40,14 @@ public class Triggers : MonoBehaviour
 
     [Header("Head Office Locked Drawer")]
     [SerializeField] private Animator lockedDrawerAnim;
-    private bool drawerOpen = false;
-    [SerializeField] private AudioClip openDrawerClip;
-    [SerializeField] private AudioClip closeDrawerClip;
+    [SerializeField] private Collider drawerBoxCollider;
+    [SerializeField] private GameObject underDrawerCollider;
+    [SerializeField] private GameObject noteOne;
+    [SerializeField] private GameObject noteTwo;
+    [SerializeField] private GameObject expositionUIOne;
+    [SerializeField] private GameObject expositionUITwo;
+    [SerializeField] private MeshRenderer noteOneMeshRenderer;
+    [SerializeField] private MeshRenderer noteTwoMeshRenderer;
 
     [SerializeField] private enum TriggerType {NormalObject, LockerHide, WoodCreak, BuildingGroan, PebbleDrop,
                                 BreathBehind, ShufflingFootsteps, Exposition1, Exposition2}
@@ -183,28 +188,13 @@ public class Triggers : MonoBehaviour
 
     public void InteractWithDrawer()
     {
-        if(drawerOpen)
+        lockedDrawerAnim.Play("DrawerOpen", 0, 0.0f);
+        if(!triggerAudio.isPlaying)
         {
-            lockedDrawerAnim.Play("DrawerClose", 0, 0.0f);
-            drawerOpen = false;
-            triggerAudio.clip = closeDrawerClip;
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
+            triggerAudio.Play();
         }
-        else
-        {
-            lockedDrawerAnim.Play("DrawerOpen", 0, 0.0f);
-            drawerOpen = true;
-            triggerAudio.clip = openDrawerClip;
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-        }
-        //Once drawer has been opened for first time / used key...
-        gameController.playerNeedsKey = false;
+        underDrawerCollider.SetActive(true);
+        drawerBoxCollider.enabled = false;
     }
 
     //Exposition note #1 in head office
@@ -216,13 +206,23 @@ public class Triggers : MonoBehaviour
             {
                 triggerAudio.Play();
             }
+            noteOneMeshRenderer.enabled = false;
+            expositionUIOne.SetActive(true);
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            noteOne.tag = "Untagged";
         }
         else if(triggerType == TriggerType.Exposition2)
         {
             if(!triggerAudio.isPlaying)
             {
                 triggerAudio.Play();
-            }            
+            }
+            noteTwoMeshRenderer.enabled = false;
+            expositionUITwo.SetActive(true);
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            noteTwo.tag = "Untagged";
         }
     }
 

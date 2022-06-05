@@ -10,7 +10,9 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject endingUI;
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private GameObject expositionUI;
+    [SerializeField] private GameObject mainMenuExposition;
+    [SerializeField] private GameObject expositionUIOne;
+    [SerializeField] private GameObject expositionUITwo;
     [SerializeField] private GameObject quitGameOptionUI;
     [SerializeField] private LevelController levelController;
     public static bool gamePaused = false;
@@ -58,7 +60,7 @@ public class MenuController : MonoBehaviour
     //Main Menu: Play Button
     public void MenuPlayButton()
     {
-        EnableExpositionScreen();
+        EnableMainMenuExposition();
     }
     public void GoToCreditsMenu()
     {
@@ -70,11 +72,24 @@ public class MenuController : MonoBehaviour
         levelController.LoadLevel(0);
     }
 
-    public void EnableExpositionScreen()
+    public void EnableMainMenuExposition()
     {
         levelController.FadeToBlack();
-        expositionUI.SetActive(true);
+        mainMenuExposition.SetActive(true);
         mainMenuUI.SetActive(false);
+    }
+
+    public void DisableExpositionNoteOne()
+    {
+        expositionUIOne.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+    public void DisableExpositionNoteTwo()
+    {
+        expositionUITwo.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
     }
     //
     // -- PAUSE MENU --

@@ -25,12 +25,6 @@ public class MainTriggers : MonoBehaviour
     [Header("Fuse Box")]
     [SerializeField] private Light[] breakerLights;
 
-
-    [Header("Head Office Key")]
-    [SerializeField] private GameObject heldKey;
-    [SerializeField] private GameObject heldKeyUI;
-
-
     [Header("First Scare")]
     [SerializeField] private GameObject shadowBlurMonster;
     private bool shadowTriggerActive = true;
@@ -54,6 +48,7 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioClip closetCreakAudio;
     [SerializeField] private GameObject topOfStairsDoor;
 
+    private string keyString = "There's a small key hidden in the book";
 
     private string paperInstructionString = "Press [Esc] to view objectives";
     //private string findFuseString = "Find the fuse for the fuse box in the basement.";
@@ -163,7 +158,7 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        StartCoroutine(ShowItemAndText(heldKey, heldKeyUI, 4f));
+        StartCoroutine(gameController.ShowPopupMessage(keyString, 3f));
         gameController.playerNeedsKey = false;
         //Reset object tag to disable interactions
         gameObject.tag = "Untagged";
@@ -221,14 +216,6 @@ public class MainTriggers : MonoBehaviour
         closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
-    }
-    IEnumerator ShowItemAndText(GameObject item, GameObject text, float delay)
-    {
-        item.SetActive(true);
-        text.SetActive(true);
-        yield return new WaitForSeconds(delay);
-        item.SetActive(false);
-        text.SetActive(false);
     }
     // Trigger on ladder in sewer, win condition
     public void TriggerEscape()

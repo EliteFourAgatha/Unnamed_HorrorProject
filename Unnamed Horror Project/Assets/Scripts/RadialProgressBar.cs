@@ -10,6 +10,7 @@ public class RadialProgressBar : MonoBehaviour
     [SerializeField] private float maxTimer = 5.0f;
     [SerializeField] private Image radialImage;
     [SerializeField] private GameObject player;
+    [SerializeField] private AudioSource radialDoneAudioSource;
 
 
     [Header("Sink")]
@@ -17,31 +18,31 @@ public class RadialProgressBar : MonoBehaviour
     [SerializeField] private AudioSource sinkDripAudioSource;
     [SerializeField] private AudioSource ratchetAudioSource;
     [SerializeField] private GameObject waterDripEffect;
-    private bool canUpdate = true;
+    public bool canUpdate = false;
     private bool canInteract = false;
     //put script on empty object that is where you want player to interact
     // reference ui object here instead of having this script on ui object
     //  if distance between object and player is small enough, canInteract
     private float distance;
-    [SerializeField] private enum RadialType{Window, Sink, TV, BloodChalice};
-    [SerializeField] private RadialType radialType;
+    public enum RadialType{Window, Sink, TV, BloodChalice};
+    public RadialType radialType;
     void Update()
     {
         if(radialType == RadialType.Sink)
         {
-            if(Vector3.Distance(gameObject.transform.position, player.transform.position) <= 3f)
+            /*
+            if(canUpdate)
             {
-                if(canUpdate)
-                {
-                    radialImage.enabled = true;
-                    UpdateRadialFill();
-                }
+                radialImage.enabled = true;
+                UpdateRadialFill();
             }
             else
             {
                 radialImage.enabled = false;
             }
+            */
         }
+        /*
         if(canInteract)
         {
             radialImage.enabled = true;
@@ -67,12 +68,13 @@ public class RadialProgressBar : MonoBehaviour
                 }
             }
         }
+        */
     }
     private void UpdateRadialFill()
     {
         if(Input.GetKey(KeyCode.E))
         {
-            timer += Time.deltaTime / 2;
+            timer += Time.deltaTime / 4;
             radialImage.fillAmount = timer;
 
             if(radialType == RadialType.Sink)
@@ -114,16 +116,17 @@ public class RadialProgressBar : MonoBehaviour
                 radialImage.fillAmount = 0.01f;
                 radialImage.enabled = false;
                 canUpdate = false;
-                Debug.Log("done?");
+                radialDoneAudioSource.Play();
+
                 if(radialType == RadialType.Sink)
                 {
+                    //Disable sink VFX + SFX
                     sinkDripAudioSource.Stop();
                     waterDripEffect.SetActive(false);
-
                     ratchetAudioSource.Stop();
 
-                    //play done sfx? small ding or something
                     gameController.currentCheckpoint = 5;
+
                 }
                 if(radialType == RadialType.Window)
                 {
@@ -142,7 +145,6 @@ public class RadialProgressBar : MonoBehaviour
             if(radialType == RadialType.Sink)
             {
                 ratchetAudioSource.Pause();
-                Debug.Log("pause audio asdfasdfasdf");
             }
             if(radialType == RadialType.Window)
             {

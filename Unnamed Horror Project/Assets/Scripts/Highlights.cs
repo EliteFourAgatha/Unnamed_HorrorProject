@@ -20,19 +20,17 @@ public class Highlights : MonoBehaviour
     {
         HighlightObjectInCenterOfCam();
     }
-    void HighlightObject(GameObject gameObject)
+    void HighlightObject(GameObject gameObject, bool uiEnabled)
     {
         if (lastHighlightedObject != gameObject)
         {
             ClearHighlighted();
 
-            //originalMat = gameObject.GetComponent<MeshRenderer>().material;
-            //gameObject.GetComponent<MeshRenderer>().material = highlightMaterialTEST;
-
-
-
             lastHighlightedObject = gameObject;
-            UIInteractImage.enabled = true;
+            if(uiEnabled)
+            {
+                UIInteractImage.enabled = true;
+            }
         }
     } 
     void ClearHighlighted()
@@ -61,7 +59,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Lightswitch>().UseLightSwitch();
@@ -76,7 +74,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerAudioOnly();
@@ -91,7 +89,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         var doorScript = hitObj.GetComponent<Collider>().gameObject.GetComponent<DoorController>();
@@ -115,7 +113,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerAudioOnly();
@@ -126,11 +124,31 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                                
             }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "SinkLeak")
+            {
+                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj, false);
+                    //radialRef.canUpdate = true;
+                    Debug.Log("true");
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        //hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().CloseLaundryWindow();
+                    }
+                }
+                else
+                {
+                    radialRef.canUpdate = false;
+                    Debug.Log("false");
+                    ClearHighlighted();
+                }                                
+            }  
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "LaundryWindow")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 4f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().CloseLaundryWindow();
@@ -145,7 +163,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpMainPaper();
@@ -160,7 +178,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpPliers();
@@ -175,7 +193,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<CarInteractions>().AttemptToUseCar();
@@ -190,7 +208,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerFuseBox();
@@ -205,7 +223,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithLocker();
@@ -220,7 +238,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         if(!gameController.playerNeedsKey)
@@ -242,7 +260,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerFoundKey();
@@ -257,7 +275,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithExpositionNote();
@@ -272,7 +290,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 7f)
                 {
-                    HighlightObject(hitObj);
+                    HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
                     {
                         hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerEscape();
