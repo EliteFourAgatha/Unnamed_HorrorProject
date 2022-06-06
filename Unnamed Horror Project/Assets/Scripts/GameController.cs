@@ -45,25 +45,29 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 1)
         {
-            objectiveText.text = "Turn on the power breaker";
+            objectiveText.text = "Fix the laundry room window";
         }
         else if(currentCheckpoint == 2)
         {
-            objectiveText.text = "Fix the laundry room window and make sure it stays closed.";
+            objectiveText.text = "Find the pliers left for you in the back room";
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Find the pliers left for you in the back room";
+            objectiveText.text = "Repair leak in the bathroom sink";
         }
         else if(currentCheckpoint == 4)
         {
-            objectiveText.text = "Repair leak in the bathroom sink";
+            objectiveText.text = "Fix TV in open storage room";
         }
         else if(currentCheckpoint == 5)
         {
-            objectiveText.text = "Fix TV in open storage room";
+            objectiveText.text = "Find extra fuse in back room";
         }
         else if(currentCheckpoint == 6)
+        {
+            objectiveText.text = "Fix the fuse box and restore power";
+        }
+        else if(currentCheckpoint == 7)
         {
             objectiveText.text = "Turn off breaker and lock up before you leave";
         }
@@ -74,7 +78,6 @@ public class GameController : MonoBehaviour
         popupText.enabled = true;
         yield return new WaitForSeconds(delay);
         popupText.enabled = false;
-        //StartCoroutine(FadeOutPopupText(popupText, 4f));
     }
     /*
     private IEnumerator FadeOutPopupText(Text popupText, float fadeTime)
@@ -89,30 +92,4 @@ public class GameController : MonoBehaviour
         yield return null;
     }
     */
-    public void DisplayEndingText(string ending)
-    {
-        if(ending == "scaredyCat")
-        {
-            //"having barely seen anything / startled by a bump in the night, our
-            //   protagonist flees with his tail between his legs."
-            // -or-
-            //"...you flee with your tail between your legs."
-            endingUIText.text = "scaredycatending";
-        }
-        else if(ending == "sensible")
-        {
-            //"considering the unearthly sounds emanating from the basement, 
-            //  our protagonist makes the sensible decision to leave and consider other employment."
-            // -or-
-            // "...you make the sensible decision..."
-            endingUIText.text = "sensibleending";
-        }
-        else if(ending == "escaped")
-        {
-            //player escaped the monster (made it to ladder)
-            //
-            endingUIText.text = "escapedending";
-        }
-    }
-
 }

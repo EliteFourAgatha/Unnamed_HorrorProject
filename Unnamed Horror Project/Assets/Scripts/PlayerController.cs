@@ -189,7 +189,6 @@ public class PlayerController : MonoBehaviour
                 currentStamina += 1 * Time.deltaTime;
             }
         }
-        Debug.Log("Stamina: " + currentStamina);
     }
 }
 

@@ -10,9 +10,10 @@ public class CarInteractions : MonoBehaviour
     [SerializeField] private LevelController levelController;
     [SerializeField] private GameController gameController;
     [SerializeField] private GameObject carEndingUI;
-    //The car ending being possible. Available after checkpoint X (first scare)
+
+
     private bool sensibleEndingPossible = false;
-    //private bool scaredEndingPossible = false;
+    private bool scaredEndingPossible = false;
     private string cantLeaveYetString = "I should see what the job's about first...";
     private string whyLeaveEasyMoneyString = "What's the rush? Easy money to be made";
     void Awake()
@@ -23,21 +24,28 @@ public class CarInteractions : MonoBehaviour
     {
         if(gameController.currentCheckpoint == 2)
         {
-            //"having barely seen anything / startled by a bump in the night, our
-            //   protagonist flees with his tail between his legs."
-
-            //scaredEndingPossible = true;
+            scaredEndingPossible = true;
         }
-        else if(gameController.currentCheckpoint == 5)
+        else
         {
-            //"considering the unearthly sounds emanating from the basement, 
-            //  our protagonist makes the sensible decision to leave and consider other employment."
+            scaredEndingPossible = false;
+        }
+        if(gameController.currentCheckpoint == 4 || gameController.currentCheckpoint == 5)
+        {
             sensibleEndingPossible = true;
         }
-        Debug.Log("CARCARCAR");
-        if(sensibleEndingPossible)
+        else
         {
-            StartCarEnding();
+            sensibleEndingPossible = false;
+        }
+        Debug.Log("ATTEMPTING TO USE CAR");
+        if(scaredEndingPossible)
+        {
+            StartCarEnding(2);
+        }
+        else if(sensibleEndingPossible)
+        {
+            StartCarEnding(3);
         }
         else
         {
@@ -56,12 +64,24 @@ public class CarInteractions : MonoBehaviour
         }
     }
     //Called by choosing "Yes" in Car Ending UI screen
-    public void StartCarEnding()
+    public void StartCarEnding(int endingNumber)
     {
         audioSource.clip = carEndingAudioClip;
         audioSource.Play();
         carEndingUI.SetActive(false);
-        Time.timeScale = 1;   
-        levelController.LoadLevel(2);
+        Time.timeScale = 1;
+        if(endingNumber == 2)
+        {
+            levelController.LoadLevel(2);
+        }
+        else if(endingNumber == 3)
+        {
+            levelController.LoadLevel(3);
+        }
+        else if(endingNumber == 4)
+        {
+            levelController.LoadLevel(4);
+        }
+
     }
 }

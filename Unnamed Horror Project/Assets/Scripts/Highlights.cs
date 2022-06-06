@@ -130,32 +130,40 @@ public class Highlights : MonoBehaviour
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
                     HighlightObject(hitObj, false);
-                    //radialRef.canUpdate = true;
+                    radialRef.canUpdateSink = true;
                     Debug.Log("true");
-                    if(Input.GetKeyDown(KeyCode.E))
-                    {
-                        //hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().CloseLaundryWindow();
-                    }
                 }
                 else
                 {
-                    radialRef.canUpdate = false;
+                    radialRef.canUpdateSink = false;
                     Debug.Log("false");
                     ClearHighlighted();
                 }                                
             }  
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "LaundryWindow")
             {
-                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 4f)
+                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                var triggerRef = hitObj.gameObject.GetComponent<Triggers>();
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 5f)
                 {
-                    HighlightObject(hitObj, true);
-                    if(Input.GetKeyDown(KeyCode.E))
+                    if(triggerRef.canCloseWindow)
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().CloseLaundryWindow();
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            triggerRef.CloseLaundryWindow();
+                        }
+                    }
+                    else
+                    {
+                        radialRef.canUpdateWindow = true;
+                        Debug.Log("window-true");
                     }
                 }
                 else
                 {
+                    radialRef.canUpdateWindow = false;
+                    Debug.Log("window-false");
                     ClearHighlighted();
                 }                                
             }       

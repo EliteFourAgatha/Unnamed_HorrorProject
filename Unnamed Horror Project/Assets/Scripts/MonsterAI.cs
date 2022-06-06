@@ -41,7 +41,7 @@ public class MonsterAI : MonoBehaviour
         else
         {
             playerCanHide = true;
-            Debug.Log("Player hideable");
+            //Debug.Log("Player hideable");
         }
         if(playerIsHiding)
         {

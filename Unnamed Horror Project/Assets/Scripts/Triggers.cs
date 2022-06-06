@@ -36,7 +36,8 @@ public class Triggers : MonoBehaviour
     [SerializeField] private Animator laundryWindowAnim;
     [SerializeField] private AudioSource laundryRainAudio;
     [SerializeField] private AudioClip closedWindowSFX;
-    bool canUseWindow = true;
+    public bool canCloseWindow = true;
+    public bool windowFixed = false;
 
     [Header("Head Office Locked Drawer")]
     [SerializeField] private Animator lockedDrawerAnim;
@@ -165,25 +166,13 @@ public class Triggers : MonoBehaviour
     }
     public void CloseLaundryWindow()
     {
-        if(canUseWindow)
+        canCloseWindow = false;
+        if(!triggerAudio.isPlaying)
         {
-            canUseWindow = false;
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-            laundryWindowAnim.Play("CloseWindow");
-            laundryRainAudio.volume = 0.3f; //Muffle outside sfx
+            triggerAudio.Play();
         }
-        else
-        {
-            triggerAudio.clip = closedWindowSFX;
-            //show pop up text "it's nailed shut!" or something
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-        }
+        laundryWindowAnim.Play("CloseWindow");
+        laundryRainAudio.volume = 0.3f; //Muffle outside sfx
     }
 
     public void InteractWithDrawer()

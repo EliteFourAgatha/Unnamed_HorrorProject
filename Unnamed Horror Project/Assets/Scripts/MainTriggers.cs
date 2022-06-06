@@ -226,6 +226,6 @@ public class MainTriggers : MonoBehaviour
     {
         levelController.FadeToBlack();
         yield return new WaitForSeconds(1f);
-        levelController.LoadLevel(0);
+        levelController.LoadLevel(4);
     }
 }
