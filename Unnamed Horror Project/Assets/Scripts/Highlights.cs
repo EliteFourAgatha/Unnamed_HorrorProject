@@ -296,7 +296,7 @@ public class Highlights : MonoBehaviour
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "EscapeLadder")
             {
-                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 7f)
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 5f)
                 {
                     HighlightObject(hitObj, true);
                     if(Input.GetKeyDown(KeyCode.E))
@@ -311,11 +311,24 @@ public class Highlights : MonoBehaviour
             }
             else
             {
+                if(hitObj.GetComponent<Collider>().gameObject.tag == "SinkLeak")
+                {
+                    var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                    radialRef.canUpdateSink = false;
+                    Debug.Log("adsfasdf");
+                }
                 ClearHighlighted();
             }
         }
         else
         {
+            /*
+            if(hitObj.GetComponent<Collider>().gameObject.tag == "SinkLeak")
+            {
+                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                radialRef.canUpdateSink = false;
+            }
+            */
             ClearHighlighted();
         }
     }

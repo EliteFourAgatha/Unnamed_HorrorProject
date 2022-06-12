@@ -33,10 +33,10 @@ public class MonsterAI : MonoBehaviour
     void Update()
     {
         distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
-        if(distance <= 5)
+        if(distance <= 6)
         {
             playerCanHide = false;
-            Debug.Log("Player can't hide");
+            awareOfPlayer = true;
         }
         else
         {
@@ -46,7 +46,7 @@ public class MonsterAI : MonoBehaviour
         if(playerIsHiding)
         {
             awareOfPlayer = false;
-            Debug.Log("Player HIDDEN");
+            //Debug.Log("Player HIDDEN");
             audioSource.Stop();
         }
         CheckForFlashlight(distance);
@@ -91,10 +91,7 @@ public class MonsterAI : MonoBehaviour
             audioSource.Play();
             if(!audioSource.isPlaying)
             {
-                if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Scene1"))
-                {
-                    levelController.FadeInToLevel(0);
-                }
+                StartCoroutine(RestartAtBasementCheckpoint());
             }
             */
         }
@@ -107,7 +104,7 @@ public class MonsterAI : MonoBehaviour
             {
                 awareOfPlayer = true;
             }
-        }
+        } 
     }
 
     //Get next waypoint in array and move agent there
@@ -126,5 +123,15 @@ public class MonsterAI : MonoBehaviour
             destinationIndex = 0;
         }
         Debug.Log("waypoint: " + destinationIndex);
+    }
+    private IEnumerator RestartAtBasementCheckpoint()
+    {
+        //Reset:
+        //-monster in closet
+        //-closet door to shut
+        //-closet door trigger on
+        //-player at bottom of stairs, looking towards back room
+        //-turn off top of stairs door (it gets turned on by closet trigger)
+        yield return null;
     }
 }

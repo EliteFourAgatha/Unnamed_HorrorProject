@@ -11,25 +11,16 @@ public class CarInteractions : MonoBehaviour
     [SerializeField] private GameController gameController;
     [SerializeField] private GameObject carEndingUI;
 
-
     private bool sensibleEndingPossible = false;
-    private bool scaredEndingPossible = false;
     private string cantLeaveYetString = "I should see what the job's about first...";
-    private string whyLeaveEasyMoneyString = "What's the rush? Easy money to be made";
+    private string betterOffHereString = "I'd rather stay and make money than drive home in this rain...";
+    
     void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
     }
     public void AttemptToUseCar()
     {
-        if(gameController.currentCheckpoint == 2)
-        {
-            scaredEndingPossible = true;
-        }
-        else
-        {
-            scaredEndingPossible = false;
-        }
         if(gameController.currentCheckpoint == 4 || gameController.currentCheckpoint == 5)
         {
             sensibleEndingPossible = true;
@@ -38,14 +29,9 @@ public class CarInteractions : MonoBehaviour
         {
             sensibleEndingPossible = false;
         }
-        Debug.Log("ATTEMPTING TO USE CAR");
-        if(scaredEndingPossible)
+        if(sensibleEndingPossible)
         {
-            StartCarEnding(2);
-        }
-        else if(sensibleEndingPossible)
-        {
-            StartCarEnding(3);
+            StartCarEnding();
         }
         else
         {
@@ -59,29 +45,18 @@ public class CarInteractions : MonoBehaviour
             }
             else
             {
-                StartCoroutine(gameController.ShowPopupMessage(whyLeaveEasyMoneyString, 2));                
+                StartCoroutine(gameController.ShowPopupMessage(betterOffHereString, 2));                
             }
         }
     }
+    
     //Called by choosing "Yes" in Car Ending UI screen
-    public void StartCarEnding(int endingNumber)
+    public void StartCarEnding()
     {
         audioSource.clip = carEndingAudioClip;
         audioSource.Play();
         carEndingUI.SetActive(false);
         Time.timeScale = 1;
-        if(endingNumber == 2)
-        {
-            levelController.LoadLevel(2);
-        }
-        else if(endingNumber == 3)
-        {
-            levelController.LoadLevel(3);
-        }
-        else if(endingNumber == 4)
-        {
-            levelController.LoadLevel(4);
-        }
-
+        levelController.LoadLevel(2);
     }
 }

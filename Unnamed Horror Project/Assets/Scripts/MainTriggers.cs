@@ -37,7 +37,6 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private GameObject[] disabledObjects;
     [SerializeField] private GameObject sewerMasterObject;
     [SerializeField] private GameObject aiMonster;
-    [SerializeField] private GameObject lockedClosetDoorTrigger;
     [SerializeField] private Animator closetDoorAnim;
     private bool closetTriggerActive = true;
     [SerializeField] private Light backroomLightOne;
@@ -130,7 +129,6 @@ public class MainTriggers : MonoBehaviour
         }
     }
 
-
     public void TriggerFirstScare()
     {
         musicAudioSource.Stop();
@@ -190,28 +188,17 @@ public class MainTriggers : MonoBehaviour
         {
             obj.SetActive(false);
         }
-
-        StartCoroutine(ShatterLightsBeforeCloset());
         StartCoroutine(OpenClosetAfterDelay(2f));
-
-        lockedClosetDoorTrigger.SetActive(false); //Trigger on closet door        
 
         closetTriggerActive = false; //single use, deactivate after
     }
-    //Closet trigger part 1
-    // Turn off lights in back room of basement
-    IEnumerator ShatterLightsBeforeCloset()
-    {
-        backroomLightOne.enabled = false;
-        lightOneAudioSource.Play();
-        yield return new WaitForSeconds(1f);
-        backroomLightTwo.enabled = false;
-        lightTwoAudioSource.Play();
-    }
-    //Closet trigger part 2
     // Slowly creak door open + sound effect
     IEnumerator OpenClosetAfterDelay(float delay)
     {
+        backroomLightOne.enabled = false;
+        lightOneAudioSource.Play();
+        backroomLightTwo.enabled = false;
+        lightTwoAudioSource.Play();
         yield return new WaitForSeconds(delay);
         closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();

@@ -35,7 +35,6 @@ public class Triggers : MonoBehaviour
     [Header("Laundry Window")]
     [SerializeField] private Animator laundryWindowAnim;
     [SerializeField] private AudioSource laundryRainAudio;
-    [SerializeField] private AudioClip closedWindowSFX;
     public bool canCloseWindow = true;
     public bool windowFixed = false;
 
@@ -50,27 +49,18 @@ public class Triggers : MonoBehaviour
     [SerializeField] private MeshRenderer noteOneMeshRenderer;
     [SerializeField] private MeshRenderer noteTwoMeshRenderer;
 
-    [SerializeField] private enum TriggerType {NormalObject, LockerHide, WoodCreak, BuildingGroan, PebbleDrop,
-                                BreathBehind, ShufflingFootsteps, Exposition1, Exposition2}
+    [SerializeField] private enum TriggerType {NormalObject, LockerHide, WoodCreak, PebbleDrop,
+                                ShufflingFootsteps, Exposition1, Exposition2}
     [SerializeField] private TriggerType triggerType;
 
 
 
     private bool canInteractWithObject = false;
+  
 
     void Start()
     {
         triggerAudio = gameObject.GetComponent<AudioSource>();
-    }
-    void Update()
-    {
-        if(canInteractWithObject)
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                TriggerAudioOnly();
-            }
-        }
     }
     void OnTriggerEnter(Collider other)
     {
@@ -120,6 +110,7 @@ public class Triggers : MonoBehaviour
                 monsterAI.playerIsHiding = false;
             }
         }
+
     }
     public void TriggerAudioOnly() //Interact with objects + sfx only (locked door)
     {
@@ -215,6 +206,7 @@ public class Triggers : MonoBehaviour
         }
     }
 
+    // For 
     private IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
     {
         int randInt = Random.Range(0, sourceArray.Length);

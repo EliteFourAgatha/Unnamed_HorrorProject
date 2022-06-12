@@ -6,9 +6,7 @@ using UnityEngine.UI;
 public class RadialProgressBar : MonoBehaviour
 {
     [SerializeField] private GameController gameController;
-    [SerializeField] private float timer = 0.01f;
     [SerializeField] private float maxTimer = 5.0f;
-    public Image radialImage;
     [SerializeField] private GameObject player;
     [SerializeField] private AudioSource radialDoneAudioSource;
     [SerializeField] private AudioSource toolAudioSource;
@@ -17,137 +15,174 @@ public class RadialProgressBar : MonoBehaviour
 
 
     [Header("Sink")]
+    public Image sinkRadialImage;
     [SerializeField] private AudioSource sinkScareAudioSource;
     [SerializeField] private AudioSource sinkDripAudioSource;
     [SerializeField] private GameObject waterDripEffect;
     [SerializeField] private GameObject sinkObj;
     public bool canUpdateSink = false;
-    public bool canUpdateWindow = false;
-    public bool canUpdateTV = false;
-    private bool canInteract = false;
+    private float sinkTimer = 0.01f;
+    private float sinkDelayValue = 4f;
 
     [Header("Window + TV")]
+    public Image windowRadialImage;
+    public Image tvRadialImage;
     [SerializeField] private GameObject tvObj;
     [SerializeField] private GameObject windowObj;
-    //put script on empty object that is where you want player to interact
-    // reference ui object here instead of having this script on ui object
-    //  if distance between object and player is small enough, canInteract
-    public enum RadialType {TV, Window, Sink};
-    public RadialType radialType;
+    public bool canUpdateWindow = false;
+    public bool canUpdateTV = false;
+    private float windowTimer = 0.01f;
+    private float windowDelayValue = 4f;
+    private float tvTimer = 0.01f;
+    private float tvDelayValue = 4f;
+
     private float distance;
+
     void Update()
     {
+        Debug.Log("sink status: " + canUpdateSink);
         if(canUpdateSink)
         {
-            radialImage.enabled = true;
+            sinkRadialImage.enabled = true;
             if(Input.GetKey(KeyCode.E))
             {
-                UpdateRadialFill();
-            }
-        }
-        else if(canUpdateWindow)
-        {
-            radialImage.enabled = true;
-            if(Input.GetKey(KeyCode.E))
-            {
-                UpdateRadialFill();
-            }
-        }
-        else if(canUpdateTV)
-        {
-            radialImage.enabled = true;
-            if(Input.GetKey(KeyCode.E))
-            {
-                UpdateRadialFill();
+                UpdateSinkRadialFill();
             }
         }
         else
         {
-            //radialImage.enabled = false;
+            sinkRadialImage.enabled = false;
+        }
+        if(canUpdateWindow)
+        {
+            windowRadialImage.enabled = true;
+            if(Input.GetKey(KeyCode.E))
+            {
+                UpdateWindowRadialFill();
+            }
+        }
+        else
+        {
+            windowRadialImage.enabled = false;
+        }
+        if(canUpdateTV)
+        {
+            tvRadialImage.enabled = true;
+            if(Input.GetKey(KeyCode.E))
+            {
+                UpdateTVRadialFill();
+            }
+        }
+        else
+        {
+            tvRadialImage.enabled = false;
         }
     }
-    public void UpdateRadialFill()
-    {
-        timer += Time.deltaTime;
-        radialImage.fillAmount = timer;
 
-        if(radialType == RadialType.Sink)
+    public void UpdateSinkRadialFill()
+    {
+        sinkTimer += Time.deltaTime / sinkDelayValue;
+        sinkRadialImage.fillAmount = sinkTimer;
+        toolAudioSource.clip = ratchetClip;
+        Debug.Log("sinkTimer:" + sinkTimer);
+        Debug.Log("radial%:" + sinkRadialImage.fillAmount);
+
+        if(!toolAudioSource.isPlaying)
         {
-            toolAudioSource.clip = ratchetClip;
-            if(!toolAudioSource.isPlaying)
-            {
-                toolAudioSource.Play();
-            }
-        }
-        if(radialType == RadialType.Window)
-        {
-            toolAudioSource.clip = hammerClip;
-            if(!toolAudioSource.isPlaying)
-            {
-                toolAudioSource.Play();
-            }            
-        }
-        if(radialType == RadialType.TV)
-        {
-            toolAudioSource.clip = ratchetClip;
-            if(!toolAudioSource.isPlaying)
-            {
-                toolAudioSource.Play();
-            }            
+            toolAudioSource.Play();
         }
         //spooky audio mid animation
-        if(timer == maxTimer / 3)
+        if(sinkTimer == maxTimer / 3)
         {
-            if(radialType == RadialType.Sink)
-            {
-                sinkScareAudioSource.Play();
-                Debug.Log("spooked");
-            }
-            if(radialType == RadialType.Window)
-            {
-                
-            }
-            if(radialType == RadialType.TV)
-            {
-                
-            }
+            sinkScareAudioSource.Play();
+            Debug.Log("spooked");
         }
-
-        Debug.Log("timer:" + timer + "/" + maxTimer);
-        if(timer >= maxTimer)
+        if(sinkTimer >= 1)
         {
             Debug.Log("Done");
-            timer = 0.01f;
-            radialImage.fillAmount = 0.01f;
-            radialImage.enabled = false;
+            sinkTimer = 0.01f;
+            sinkRadialImage.fillAmount = 0.01f;
+            sinkRadialImage.enabled = false;
             radialDoneAudioSource.Play();
 
-            if(radialType == RadialType.Sink)
-            {
-                //Disable sink VFX + SFX
-                sinkDripAudioSource.Stop();
-                waterDripEffect.SetActive(false);
-                toolAudioSource.Stop();
-                canUpdateSink = false;
-                sinkObj.tag = "Untagged";
+            //Disable sink VFX + SFX
+            sinkDripAudioSource.Stop();
+            waterDripEffect.SetActive(false);
+            toolAudioSource.Stop();
+            canUpdateSink = false;
+            sinkObj.tag = "Untagged";
 
-                gameController.currentCheckpoint = 4;
+            gameController.currentCheckpoint = 4;
+        }
+        else
+        {
+            toolAudioSource.Pause();
+        }
+    }
 
-            }
-            if(radialType == RadialType.Window)
-            {
-                toolAudioSource.Stop();
-                canUpdateWindow = false;
-                windowObj.tag = "Untagged";
+    public void UpdateWindowRadialFill()
+    {
+        windowTimer += Time.deltaTime;
+        windowRadialImage.fillAmount = windowTimer;
 
-                gameController.currentCheckpoint = 2;
-            }
-            if(radialType == RadialType.TV)
-            {
-                tvObj.tag = "Untagged";
-                canUpdateTV = false;
-                gameController.currentCheckpoint = 7;
-            }
+        toolAudioSource.clip = hammerClip;
+        if(!toolAudioSource.isPlaying)
+        {
+            toolAudioSource.Play();
+        }            
+        //spooky audio mid animation
+        if(windowTimer == maxTimer / 3)
+        {
+            Debug.Log("spooked");
+        }
+
+        if(windowTimer >= maxTimer)
+        {
+            Debug.Log("Done");
+            windowTimer = 0.01f;
+            windowRadialImage.fillAmount = 0.01f;
+            windowRadialImage.enabled = false;
+            radialDoneAudioSource.Play();
+
+            toolAudioSource.Stop();
+            canUpdateWindow = false;
+            windowObj.tag = "Untagged";
+
+            gameController.currentCheckpoint = 2;
+        }
+        else
+        {
+            toolAudioSource.Pause();
+        }
+    }
+
+    public void UpdateTVRadialFill()
+    {
+        tvTimer += Time.deltaTime;
+        tvRadialImage.fillAmount = tvTimer;
+
+        toolAudioSource.clip = ratchetClip;
+        if(!toolAudioSource.isPlaying)
+        {
+            toolAudioSource.Play();
+        }
+        //spooky audio mid animation
+        if(tvTimer == maxTimer / 3)
+        {
+            Debug.Log("spooked");
+        }
+
+        if(tvTimer >= maxTimer)
+        {
+            Debug.Log("Done");
+            tvTimer = 0.01f;
+            tvRadialImage.fillAmount = 0.01f;
+            tvRadialImage.enabled = false;
+            radialDoneAudioSource.Play();
+
+            tvObj.tag = "Untagged";
+            canUpdateTV = false;
+            gameController.currentCheckpoint = 7;
         }
         else
         {
