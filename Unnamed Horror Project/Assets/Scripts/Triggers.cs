@@ -17,20 +17,10 @@ public class Triggers : MonoBehaviour
     [SerializeField] private MonsterAI monsterAI;
     private AudioSource triggerAudio;
 
-    [Header("Triggerable Sounds")]
-    bool soundTriggerCanFire = true;
-    AudioClip chosenClip;
-    [SerializeField] private AudioClip[] woodCreakClips;
-    [SerializeField] private AudioClip[] buildingGroanClips;
-    [SerializeField] private AudioClip[] pebbleDropClips;
-
     [Header("Locker Door")]
     [SerializeField] private Animator lockerDoorAnim;
-    public bool lockerDoorClosed = true;
-
-
-    [Header("Hiding Trigger")]
     [SerializeField] private GameObject chosenLockerDoor;
+    public bool lockerDoorClosed = true;
     
     [Header("Laundry Window")]
     [SerializeField] private Animator laundryWindowAnim;
@@ -49,14 +39,12 @@ public class Triggers : MonoBehaviour
     [SerializeField] private MeshRenderer noteOneMeshRenderer;
     [SerializeField] private MeshRenderer noteTwoMeshRenderer;
 
-    [SerializeField] private enum TriggerType {NormalObject, LockerHide, WoodCreak, PebbleDrop,
-                                ShufflingFootsteps, Exposition1, Exposition2}
+    [SerializeField] private enum TriggerType {NormalObject, LockerHide, Exposition1, Exposition2,
+                                                SewerWater}
     [SerializeField] private TriggerType triggerType;
 
 
-
-    private bool canInteractWithObject = false;
-  
+    private bool canInteractWithObject = false;  
 
     void Start()
     {
@@ -85,19 +73,9 @@ public class Triggers : MonoBehaviour
                     }
                 }
             }
-            else if(triggerType == TriggerType.WoodCreak)
+            else if(triggerType == TriggerType.SewerWater)
             {
-                if(soundTriggerCanFire)
-                {
-                    ExecuteSoundTrigger();
-                }
-            }
-            else if(triggerType == TriggerType.PebbleDrop)
-            {
-                if(soundTriggerCanFire)
-                {
-                    ExecuteSoundTrigger();
-                }
+                playerController.playerInWater = true;
             }
         }
     }
@@ -110,27 +88,16 @@ public class Triggers : MonoBehaviour
                 monsterAI.playerIsHiding = false;
             }
         }
-
+        else if(triggerType == TriggerType.SewerWater)
+        {
+            playerController.playerInWater = false;
+        }
     }
     public void TriggerAudioOnly() //Interact with objects + sfx only (locked door)
     {
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
-        }
-    }
-    public void ExecuteSoundTrigger() //Triggerable sound with cooldown
-    {
-        if(soundTriggerCanFire)
-        {
-            if(triggerType == TriggerType.WoodCreak)
-            {
-                StartCoroutine(PlaySoundTriggerAndCooldown(woodCreakClips));
-            }
-            else if(triggerType == TriggerType.PebbleDrop)
-            {
-                StartCoroutine(PlaySoundTriggerAndCooldown(pebbleDropClips));
-            }
         }
     }
     public void InteractWithLocker()
@@ -177,7 +144,6 @@ public class Triggers : MonoBehaviour
         drawerBoxCollider.enabled = false;
     }
 
-    //Exposition note #1 in head office
     public void InteractWithExpositionNote()
     {
         if(triggerType == TriggerType.Exposition1)
@@ -206,20 +172,6 @@ public class Triggers : MonoBehaviour
         }
     }
 
-    // For 
-    private IEnumerator PlaySoundTriggerAndCooldown(AudioClip[] sourceArray)
-    {
-        int randInt = Random.Range(0, sourceArray.Length);
-        chosenClip = sourceArray[randInt];
-        triggerAudio.clip = chosenClip;
 
-        if(!triggerAudio.isPlaying)
-        {
-            triggerAudio.Play();
-        }
-        soundTriggerCanFire = false;
-        yield return new WaitForSeconds(5);
-        soundTriggerCanFire = true;
-    }
 
 }

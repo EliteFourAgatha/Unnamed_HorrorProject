@@ -12,8 +12,9 @@ public class GameController : MonoBehaviour
     private AudioSource audioSource;
     public int currentCheckpoint;
     public bool playerNeedsKey = true;
+    public bool playerHasFuse = false;
     public bool breakerOn = false;
-    public bool playerHasPliers = false;
+    public bool playerHasToolBox = false;
     Scene currentScene;
     private void Awake()
     {
@@ -45,27 +46,27 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 1)
         {
-            objectiveText.text = "Fix the laundry room window";
+            objectiveText.text = "Find extra fuse in back room";
         }
         else if(currentCheckpoint == 2)
         {
-            objectiveText.text = "Find the pliers left for you in the back room";
+            objectiveText.text = "Restore power to the basement";
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Repair leak in the bathroom sink";
+            objectiveText.text = "Find the toolbox left for you in the back room";
         }
         else if(currentCheckpoint == 4)
         {
-            objectiveText.text = "Fix TV in open storage room";
+            objectiveText.text = "Fix the laundry room window";
         }
         else if(currentCheckpoint == 5)
         {
-            objectiveText.text = "Find extra fuse in back room";
+            objectiveText.text = "Repair leak in the bathroom sink";
         }
         else if(currentCheckpoint == 6)
         {
-            objectiveText.text = "Fix the fuse box and restore power";
+            objectiveText.text = "Fix TV in open storage room";
         }
         else if(currentCheckpoint == 7)
         {

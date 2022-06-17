@@ -40,7 +40,13 @@ public class RadialProgressBar : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("sink status: " + canUpdateSink);
+        //
+        // Instead of enable/disable image consider doing setactive the object itself
+        //
+        //
+
+
+        //Debug.Log("sink status: " + canUpdateSink);
         if(canUpdateSink)
         {
             sinkRadialImage.enabled = true;
@@ -84,8 +90,8 @@ public class RadialProgressBar : MonoBehaviour
         sinkTimer += Time.deltaTime / sinkDelayValue;
         sinkRadialImage.fillAmount = sinkTimer;
         toolAudioSource.clip = ratchetClip;
-        Debug.Log("sinkTimer:" + sinkTimer);
-        Debug.Log("radial%:" + sinkRadialImage.fillAmount);
+        //Debug.Log("sinkTimer:" + sinkTimer);
+        //Debug.Log("radial%:" + sinkRadialImage.fillAmount);
 
         if(!toolAudioSource.isPlaying)
         {
@@ -174,7 +180,7 @@ public class RadialProgressBar : MonoBehaviour
 
         if(tvTimer >= maxTimer)
         {
-            Debug.Log("Done");
+            Debug.Log("TV Done");
             tvTimer = 0.01f;
             tvRadialImage.fillAmount = 0.01f;
             tvRadialImage.enabled = false;
@@ -183,6 +189,14 @@ public class RadialProgressBar : MonoBehaviour
             tvObj.tag = "Untagged";
             canUpdateTV = false;
             gameController.currentCheckpoint = 7;
+
+            //disable basement lights (lights go out moment)
+            //enable blur scare trigger in hallway
+            //enable final closet trigger
+
+            //ultimatum moment
+            //-If player goes right, can leave and sensible ending possible
+            //-If player goes left, trigger final closet and top of stairs door
         }
         else
         {

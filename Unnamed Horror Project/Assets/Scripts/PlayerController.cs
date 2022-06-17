@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     private AudioSource footstepAudioSource;
     [SerializeField] private AudioClip concreteWalkSFX;
     [SerializeField] private AudioClip concreteSprintSFX;
+    [SerializeField] private AudioClip waterWalkSFX;
+    [SerializeField] private AudioClip waterSprintSFX;
     [SerializeField] private CharacterController controller;
     [SerializeField] private Camera mainCamera;
 
@@ -24,6 +26,13 @@ public class PlayerController : MonoBehaviour
     private float moveSide;
     private bool canRun = true;
 
+    [Header("Stamina")]
+    [SerializeField, Range(1, 20)] private float maxStamina = 10f;
+    [SerializeField] private AudioSource windedAudioSource;
+    float currentStamina;
+    
+    public bool playerInWater = false;
+    /*
     [Header("Crouch Parameters")]
     [SerializeField] private float crouchHeight = 0.5f;
     [SerializeField] private float standingHeight = 2.1f;
@@ -31,11 +40,7 @@ public class PlayerController : MonoBehaviour
     private bool isCrouching;
     private bool duringCrouchAnimation;
     private bool canCrouch = true;
-
-    [Header("Stamina")]
-    [SerializeField, Range(1, 20)] private float maxStamina = 10f;
-    [SerializeField] private AudioSource windedAudioSource;
-    float currentStamina;
+    */
 
     void Awake()
     {
@@ -60,10 +65,12 @@ public class PlayerController : MonoBehaviour
                     currentSpeed = walkSpeed;
                 }
             }
+            /*
             else if(isCrouching)
             {
                 currentSpeed = crouchSpeed;
             }
+            */
             else
             {
                 currentSpeed = walkSpeed;
@@ -105,7 +112,15 @@ public class PlayerController : MonoBehaviour
     {
         if(currentSpeed == sprintSpeed)
         {
-            footstepAudioSource.clip = concreteSprintSFX;
+            if(playerInWater)
+            {
+                footstepAudioSource.clip = waterSprintSFX;
+            }
+            else
+            {
+                footstepAudioSource.clip = concreteSprintSFX;
+            }
+
             if(!footstepAudioSource.isPlaying)
             {
                 footstepAudioSource.Play();
@@ -113,7 +128,15 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            footstepAudioSource.clip = concreteWalkSFX;
+            if(playerInWater)
+            {
+                footstepAudioSource.clip = waterWalkSFX;
+            }
+            else
+            {
+                footstepAudioSource.clip = concreteWalkSFX;
+            }
+
             if(!footstepAudioSource.isPlaying)
             {
                 footstepAudioSource.Play();
@@ -124,6 +147,36 @@ public class PlayerController : MonoBehaviour
     {
         footstepAudioSource.Pause();
     }
+
+    private void UpdateStamina()
+    {
+        if(currentStamina <= 0)
+        {
+            windedAudioSource.Play();
+            canRun = false;
+        }
+        else if(currentStamina >= maxStamina)
+        {
+            currentStamina = maxStamina;
+            canRun = true;
+        }
+        //If player moving
+        if(moveSide != 0 || moveForward != 0)
+        {
+            //Sprinting, lose stamina
+            if(currentSpeed == sprintSpeed)
+            {
+                currentStamina -= 1 * Time.deltaTime;
+            }
+            //Walking, repair stamina
+            else
+            {
+                currentStamina += 1 * Time.deltaTime;
+            }
+        }
+    }
+    //Not used in this game
+    /*
     public void AttemptToCrouch()
     {
         if(!duringCrouchAnimation && controller.isGrounded)
@@ -134,7 +187,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
     private IEnumerator CrouchOrStand()
     {
         duringCrouchAnimation = true;
@@ -163,33 +215,7 @@ public class PlayerController : MonoBehaviour
 
         duringCrouchAnimation = false;
     }
-    private void UpdateStamina()
-    {
-        if(currentStamina <= 0)
-        {
-            windedAudioSource.Play();
-            canRun = false;
-        }
-        else if(currentStamina >= maxStamina)
-        {
-            currentStamina = maxStamina;
-            canRun = true;
-        }
-        //If player moving
-        if(moveSide != 0 || moveForward != 0)
-        {
-            //Sprinting, lose stamina
-            if(currentSpeed == sprintSpeed)
-            {
-                currentStamina -= 1 * Time.deltaTime;
-            }
-            //Walking, repair stamina
-            else
-            {
-                currentStamina += 1 * Time.deltaTime;
-            }
-        }
-    }
+    */
 }
 
 

@@ -13,14 +13,13 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioSource triggerAudio;
     [SerializeField] private AudioSource musicAudioSource;
 
-
-    [Header("Main Paper")]
+    [Header("Collectibles")]
+    [SerializeField] private GameObject toolBox;
+    [SerializeField] private GameObject fuse;
+    [SerializeField] private AudioClip collectedSFX;
     [SerializeField] private GameObject mainPaper;    
-    [SerializeField] private AudioClip mainPaperSFX;
-    
-    [Header("Pliers")]
-    [SerializeField] private GameObject pliers;    
-    [SerializeField] private AudioClip pliersSFX;
+    [SerializeField] private AudioClip mainPaperSFX;  
+
 
     [Header("Fuse Box")]
     [SerializeField] private Light[] breakerLights;
@@ -37,6 +36,8 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private GameObject[] disabledObjects;
     [SerializeField] private GameObject sewerMasterObject;
     [SerializeField] private GameObject aiMonster;
+    [SerializeField] private GameObject aiMonsterTwo;
+    [SerializeField] private GameObject aiMonsterThree;
     [SerializeField] private Animator closetDoorAnim;
     private bool closetTriggerActive = true;
     [SerializeField] private Light backroomLightOne;
@@ -51,11 +52,10 @@ public class MainTriggers : MonoBehaviour
 
     private string paperInstructionString = "Press [Esc] to view objectives";
     //private string findFuseString = "Find the fuse for the fuse box in the basement.";
-    //private string findToolsString = "Find the wrench left for you in storage";
-    //private string fixLaundryWindowString = "Nail the laundry window shut";
-    private string pliersString = "Fix bathroom sink leak";
+    private string useFuseString = "Restore power to the basement";
+    private string toolBoxString = "Nail the laundry window shut";
     //private string BathroomToFuseBoxString = "Turn off breaker to storage area";
-    private string fuseboxString = "Find the pliers left for you in the basement.";
+    private string fuseboxString = "Find the tools left for you in the basement";
 
     [SerializeField] private enum TriggerType {Escape, Closet, ShadowScare}
     [SerializeField] private TriggerType triggerType;
@@ -100,32 +100,33 @@ public class MainTriggers : MonoBehaviour
         gameController.currentCheckpoint = 1;
         StartCoroutine(WaitAndDisableObject(1, mainPaper, mainPaperSFX, paperInstructionString));
     }
-    public void PickUpPliers() // Pliers in basement
+    
+    public void PickUpToolBox()
     {
-        if(gameController.currentCheckpoint == 2)
-        {
-            gameController.currentCheckpoint = 3;
-            gameController.playerHasPliers = true;
-            StartCoroutine(WaitAndDisableObject(2, pliers, pliersSFX, pliersString));
-        }
+        gameController.currentCheckpoint = 4;
+        gameController.playerHasToolBox = true;
+        StartCoroutine(WaitAndDisableObject(2, toolBox, collectedSFX, toolBoxString));
     }
-    public void TriggerFuseBox()
+
+    public void PickUpFuse()
     {
-        //Instead of checking for a checkpoint (makes no sense logically from player pov)
-        // should check to see if player has fuse or fuse has been inserted etc.
-        if(gameController.currentCheckpoint == 1)
+        gameController.currentCheckpoint = 2;
+        gameController.playerHasFuse = true;
+        StartCoroutine(WaitAndDisableObject(2, fuse, collectedSFX, useFuseString));
+    }
+
+    public void InteractWithFuseBox()
+    {
+        if(!triggerAudio.isPlaying)
         {
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-            gameController.currentCheckpoint = 2;
-            StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
-            gameController.breakerOn = true;
-            foreach(Light light in breakerLights)
-            {
-                light.enabled = true;
-            }
+            triggerAudio.Play();
+        }
+        gameController.currentCheckpoint = 3;
+        StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
+        gameController.breakerOn = true;
+        foreach(Light light in breakerLights)
+        {
+            light.enabled = true;
         }
     }
 
@@ -172,8 +173,6 @@ public class MainTriggers : MonoBehaviour
     }
 
     //Triggered by player near end of game in basement
-    // Lights go out, door creaks open
-    //  Monster appears and begins to chase player
     public void TriggerFinalCloset()
     {        
         //Enable door at top of stairs
@@ -181,7 +180,7 @@ public class MainTriggers : MonoBehaviour
         topOfStairsDoor.SetActive(true);
 
         sewerMasterObject.SetActive(true);
-        aiMonster.SetActive(true);
+
 
         //Disable exterior objects that clip with sewer area
         foreach(GameObject obj in disabledObjects)
@@ -190,8 +189,11 @@ public class MainTriggers : MonoBehaviour
         }
         StartCoroutine(OpenClosetAfterDelay(2f));
 
+        gameController.currentCheckpoint = 8;
+        
         closetTriggerActive = false; //single use, deactivate after
     }
+    
     // Slowly creak door open + sound effect
     IEnumerator OpenClosetAfterDelay(float delay)
     {
@@ -203,6 +205,10 @@ public class MainTriggers : MonoBehaviour
         closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
+        yield return new WaitForSeconds(2f);
+        aiMonster.SetActive(true);
+        aiMonsterTwo.SetActive(true);
+        aiMonsterThree.SetActive(true);
     }
     // Trigger on ladder in sewer, win condition
     public void TriggerEscape()
@@ -213,6 +219,6 @@ public class MainTriggers : MonoBehaviour
     {
         levelController.FadeToBlack();
         yield return new WaitForSeconds(1f);
-        levelController.LoadLevel(4);
+        levelController.LoadLevel(3);
     }
 }

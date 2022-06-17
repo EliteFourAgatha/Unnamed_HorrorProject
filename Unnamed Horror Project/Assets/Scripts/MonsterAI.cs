@@ -13,6 +13,11 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float flashlightRange = 10f;
     [SerializeField] private AudioClip chaseAudio;
     [SerializeField] private AudioClip catchAudio;
+    [SerializeField] private Transform monsterResetLocation;
+    [SerializeField] private Transform playerResetLocation;
+    [SerializeField] private Light[] disabledBasementLights;
+    [SerializeField] private Light backroomLightOne;
+    [SerializeField] private Light backroomLightTwo;
 
     public bool awareOfPlayer = false;
     public bool playerIsHiding = false;
@@ -22,6 +27,7 @@ public class MonsterAI : MonoBehaviour
     private float distance;
     private AudioSource audioSource;
     private int destinationIndex = 0;
+    private bool monsterCanMove = true;
 
     void Start()
     {
@@ -32,38 +38,39 @@ public class MonsterAI : MonoBehaviour
     }
     void Update()
     {
-        distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
-        if(distance <= 6)
+        if(monsterCanMove)
         {
-            playerCanHide = false;
-            awareOfPlayer = true;
-        }
-        else
-        {
-            playerCanHide = true;
-            //Debug.Log("Player hideable");
-        }
-        if(playerIsHiding)
-        {
-            awareOfPlayer = false;
-            //Debug.Log("Player HIDDEN");
-            audioSource.Stop();
-        }
-        CheckForFlashlight(distance);
-
-        if(awareOfPlayer)
-        {
-            audioSource.clip = chaseAudio;
-            audioSource.loop = true;
-            FollowPlayer();
-            AttemptToCatchPlayer();
-        }
-        else
-        {
-            //Choose next point when agent gets close enough to current target
-            if(!agent.pathPending && agent.remainingDistance <= 0.5f)
+            distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
+            if(distance <= 6)
             {
-                GoToNextPatrolPoint();
+                playerCanHide = false;
+                awareOfPlayer = true;
+            }
+            else
+            {
+                playerCanHide = true;
+            }
+            if(playerIsHiding)
+            {
+                awareOfPlayer = false;
+                audioSource.Stop();
+            }
+            CheckForFlashlight(distance);
+
+            if(awareOfPlayer)
+            {
+                audioSource.clip = chaseAudio;
+                audioSource.loop = true;
+                FollowPlayer();
+                AttemptToCatchPlayer();
+            }
+            else
+            {
+                //Choose next point when agent gets close enough to current target
+                if(!agent.pathPending && agent.remainingDistance <= 0.5f)
+                {
+                    GoToNextPatrolPoint();
+                }
             }
         }
     }
@@ -75,27 +82,24 @@ public class MonsterAI : MonoBehaviour
         {
             audioSource.Play();
         }
-
-
-        //If player not seen again for x number of seconds, disappear?
-        //  Can't chase forever, would be too much tension. Need to ebb and flow.
+        // If outside of follow radius, start timer
+        // if timer reaches x, stop following
+        // if player back in radius, stop and reset timer value
     }
     void AttemptToCatchPlayer()
     {
         if(distance <= catchRange)
         {
             Debug.Log("caught");
+            awareOfPlayer = false;
+            StartCoroutine(RestartAtBasementCheckpoint());
+            //Turn off monster movement here. it's clipping player into walls / moving player
             /*
-            audioSource.clip = catchAudio;
-            audioSource.loop = false;
-            audioSource.Play();
-            if(!audioSource.isPlaying)
-            {
-                StartCoroutine(RestartAtBasementCheckpoint());
-            }
+
             */
         }
     }
+
     void CheckForFlashlight(float distance)
     {
         if(flashlightToggle.lightOn)
@@ -126,12 +130,26 @@ public class MonsterAI : MonoBehaviour
     }
     private IEnumerator RestartAtBasementCheckpoint()
     {
-        //Reset:
-        //-monster in closet
-        //-closet door to shut
-        //-closet door trigger on
-        //-player at bottom of stairs, looking towards back room
-        //-turn off top of stairs door (it gets turned on by closet trigger)
-        yield return null;
+        monsterCanMove = false;
+        gameObject.transform.position = monsterResetLocation.position;
+        player.transform.position = playerResetLocation.position;
+
+        foreach(Light light in disabledBasementLights)
+        {
+            light.enabled = false;
+        }
+        backroomLightOne.enabled = true;
+        backroomLightTwo.enabled = true;
+
+        audioSource.clip = catchAudio;
+        if(!audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
+
+        yield return new WaitForSeconds(1.5f);
+        //jump scare / monster appears in front of screen slowly and fades to black
+        levelController.FadeInFromBlack();
+        monsterCanMove = true;
     }
 }

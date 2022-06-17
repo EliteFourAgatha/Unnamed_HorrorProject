@@ -182,14 +182,17 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                
             }
-            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Pliers")
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "ToolBox")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj, true);
-                    if(Input.GetKeyDown(KeyCode.E))
+                    if(gameController.currentCheckpoint == 3 && !gameController.playerHasToolBox)
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpPliers();
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpToolBox();
+                        }
                     }
                 }
                 else
@@ -212,14 +215,35 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                
             }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "Fuse")
+            {
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    if(gameController.currentCheckpoint == 1)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpFuse();
+                        }
+                    }
+                }
+                else
+                {
+                    ClearHighlighted();
+                }                
+            }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "FuseBox")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    HighlightObject(hitObj, true);
-                    if(Input.GetKeyDown(KeyCode.E))
+                    if(gameController.currentCheckpoint == 2 && gameController.playerHasFuse)
                     {
-                        hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerFuseBox();
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().InteractWithFuseBox();
+                        }
                     }
                 }
                 else
