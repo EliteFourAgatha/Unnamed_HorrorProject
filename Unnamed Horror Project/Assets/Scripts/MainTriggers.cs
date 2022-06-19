@@ -28,7 +28,6 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private GameObject shadowBlurMonster;
     private bool shadowTriggerActive = true;
     [SerializeField] private AudioSource heartBeatAudioSource;
-    [SerializeField] private AudioSource gurglingAudioSource;
 
 
 
@@ -57,7 +56,7 @@ public class MainTriggers : MonoBehaviour
     //private string BathroomToFuseBoxString = "Turn off breaker to storage area";
     private string fuseboxString = "Find the tools left for you in the basement";
 
-    [SerializeField] private enum TriggerType {Escape, Closet, ShadowScare}
+    [SerializeField] private enum TriggerType {Escape, Closet, ShadowScare, BlownFuse}
     [SerializeField] private TriggerType triggerType;
     void Start()
     {
@@ -83,6 +82,14 @@ public class MainTriggers : MonoBehaviour
                 if(closetTriggerActive)
                 {
                     TriggerFinalCloset();
+                }
+            }
+            //Before blur scare, lights go out
+            else if(triggerType == TriggerType.BlownFuse)
+            {
+                if(shadowTriggerActive)
+                {
+                    TriggerBlownFuse();
                 }
             }
             //Shadow scare after fixing light
@@ -145,12 +152,17 @@ public class MainTriggers : MonoBehaviour
         {
             heartBeatAudioSource.Play();
         }
-        if(!gurglingAudioSource.isPlaying)
-        {
-            gurglingAudioSource.Play();
-        }
+
         shadowTriggerActive = false; // single use, deactivate after
     }
+
+    public void TriggerBlownFuse()
+    {
+        //lights go out (all except laundry + bathroom? or all?)
+        //ominous sfx or rumble
+        //blownFuseTriggerActive = false;
+    }
+
     public void TriggerFoundKey()
     {
         if(!triggerAudio.isPlaying)

@@ -44,27 +44,45 @@ public class GameController : MonoBehaviour
         {
             objectiveText.text = "Get task list from head office";
         }
-        else if(currentCheckpoint == 1)
+        //Shouldn't be fuse right away.
+        // Lights are on initially.
+        // Fuse is blown when player finishes fixing TV
+        // -Only lights to main storage area affected
+        // --Laundry lights still on / function (on if player left them on)
+        // --Same for bathroom light
+        // Do shadow scare as planned
+        // Instead of ultimatum moment, it's a tension moment.
+        // -Realized game lacks tension. Need this moment earlier.
+        // -"Crap looks like I blew a fuse. Better go find a replacement"
+        // Later on, when final closet moment happens, all lights in basement go out at once.
+        // More of a supernatural feel to it.
+        //
+        // - great idea for better final closet trigger placement
+        // -final fix is actually laundry window
+        // -player fixes window, goes to leave room, and lights to out. door creaks open.
+        // -player scared, most will hide in the lockers you placed there. perfect.
+
+        else if(currentCheckpoint == 4)
         {
             objectiveText.text = "Find extra fuse in back room";
         }
-        else if(currentCheckpoint == 2)
+        else if(currentCheckpoint == 5)
         {
             objectiveText.text = "Restore power to the basement";
         }
-        else if(currentCheckpoint == 3)
+        else if(currentCheckpoint == 1)
         {
             objectiveText.text = "Find the toolbox left for you in the back room";
         }
-        else if(currentCheckpoint == 4)
+        else if(currentCheckpoint == 6)
         {
             objectiveText.text = "Fix the laundry room window";
         }
-        else if(currentCheckpoint == 5)
+        else if(currentCheckpoint == 2)
         {
             objectiveText.text = "Repair leak in the bathroom sink";
         }
-        else if(currentCheckpoint == 6)
+        else if(currentCheckpoint == 3)
         {
             objectiveText.text = "Fix TV in open storage room";
         }

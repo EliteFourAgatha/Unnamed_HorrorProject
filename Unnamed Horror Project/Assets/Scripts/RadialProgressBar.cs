@@ -10,33 +10,37 @@ public class RadialProgressBar : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private AudioSource radialDoneAudioSource;
     [SerializeField] private AudioSource toolAudioSource;
+    public enum RadialType{Sink, Window, TV}
+    public RadialType radialType;
     public AudioClip ratchetClip;
     public AudioClip hammerClip;
+    private float distance;
 
 
     [Header("Sink")]
     public Image sinkRadialImage;
-    [SerializeField] private AudioSource sinkScareAudioSource;
-    [SerializeField] private AudioSource sinkDripAudioSource;
-    [SerializeField] private GameObject waterDripEffect;
     [SerializeField] private GameObject sinkObj;
+    [SerializeField] private GameObject sinkLeakObject;
     public bool canUpdateSink = false;
     private float sinkTimer = 0.01f;
     private float sinkDelayValue = 4f;
 
-    [Header("Window + TV")]
+    [Header("Laundry Window")]
     public Image windowRadialImage;
-    public Image tvRadialImage;
-    [SerializeField] private GameObject tvObj;
     [SerializeField] private GameObject windowObj;
     public bool canUpdateWindow = false;
-    public bool canUpdateTV = false;
     private float windowTimer = 0.01f;
     private float windowDelayValue = 4f;
+
+
+    [Header("TV")]
+    public Image tvRadialImage;
+    [SerializeField] private GameObject tvObj;
+    public bool canUpdateTV = false;
     private float tvTimer = 0.01f;
     private float tvDelayValue = 4f;
-
-    private float distance;
+    [SerializeField] private GameObject blownFuseTrigger;
+    [SerializeField] private GameObject shadowBlurTrigger;
 
     void Update()
     {
@@ -47,41 +51,52 @@ public class RadialProgressBar : MonoBehaviour
 
 
         //Debug.Log("sink status: " + canUpdateSink);
-        if(canUpdateSink)
+        if(radialType == RadialType.Sink)
         {
-            sinkRadialImage.enabled = true;
-            if(Input.GetKey(KeyCode.E))
+            if(canUpdateSink)
             {
-                UpdateSinkRadialFill();
+                sinkRadialImage.enabled = true;
+                if(Input.GetKey(KeyCode.E))
+                {
+                    UpdateSinkRadialFill();
+                }
+            }
+            else
+            {
+                sinkRadialImage.enabled = false;
             }
         }
-        else
+
+        if(radialType == RadialType.Window)
         {
-            sinkRadialImage.enabled = false;
-        }
-        if(canUpdateWindow)
-        {
-            windowRadialImage.enabled = true;
-            if(Input.GetKey(KeyCode.E))
+            if(canUpdateWindow)
             {
-                UpdateWindowRadialFill();
+                windowRadialImage.enabled = true;
+                if(Input.GetKey(KeyCode.E))
+                {
+                    UpdateWindowRadialFill();
+                }
+            }
+            else
+            {
+                windowRadialImage.enabled = false;
             }
         }
-        else
+
+        if(radialType == RadialType.TV)
         {
-            windowRadialImage.enabled = false;
-        }
-        if(canUpdateTV)
-        {
-            tvRadialImage.enabled = true;
-            if(Input.GetKey(KeyCode.E))
+            if(canUpdateTV)
             {
-                UpdateTVRadialFill();
+                tvRadialImage.enabled = true;
+                if(Input.GetKey(KeyCode.E))
+                {
+                    UpdateTVRadialFill();
+                }
             }
-        }
-        else
-        {
-            tvRadialImage.enabled = false;
+            else
+            {
+                tvRadialImage.enabled = false;
+            }
         }
     }
 
@@ -97,12 +112,6 @@ public class RadialProgressBar : MonoBehaviour
         {
             toolAudioSource.Play();
         }
-        //spooky audio mid animation
-        if(sinkTimer == maxTimer / 3)
-        {
-            sinkScareAudioSource.Play();
-            Debug.Log("spooked");
-        }
         if(sinkTimer >= 1)
         {
             Debug.Log("Done");
@@ -112,8 +121,7 @@ public class RadialProgressBar : MonoBehaviour
             radialDoneAudioSource.Play();
 
             //Disable sink VFX + SFX
-            sinkDripAudioSource.Stop();
-            waterDripEffect.SetActive(false);
+            sinkLeakObject.SetActive(false);
             toolAudioSource.Stop();
             canUpdateSink = false;
             sinkObj.tag = "Untagged";
@@ -135,11 +143,6 @@ public class RadialProgressBar : MonoBehaviour
         if(!toolAudioSource.isPlaying)
         {
             toolAudioSource.Play();
-        }            
-        //spooky audio mid animation
-        if(windowTimer == maxTimer / 3)
-        {
-            Debug.Log("spooked");
         }
 
         if(windowTimer >= maxTimer)
@@ -171,11 +174,6 @@ public class RadialProgressBar : MonoBehaviour
         if(!toolAudioSource.isPlaying)
         {
             toolAudioSource.Play();
-        }
-        //spooky audio mid animation
-        if(tvTimer == maxTimer / 3)
-        {
-            Debug.Log("spooked");
         }
 
         if(tvTimer >= maxTimer)
