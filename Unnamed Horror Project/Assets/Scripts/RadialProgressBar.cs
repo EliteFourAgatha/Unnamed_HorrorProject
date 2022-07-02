@@ -24,6 +24,7 @@ public class RadialProgressBar : MonoBehaviour
     public bool canUpdateSink = false;
     private float sinkTimer = 0.01f;
     private float sinkDelayValue = 4f;
+    private string sinkMessage = "' Fix my broken TV in the open storage unit '";
 
     [Header("Laundry Window")]
     public Image windowRadialImage;
@@ -53,17 +54,20 @@ public class RadialProgressBar : MonoBehaviour
         //Debug.Log("sink status: " + canUpdateSink);
         if(radialType == RadialType.Sink)
         {
-            if(canUpdateSink)
+            if(gameController.currentCheckpoint == 2)
             {
-                sinkRadialImage.enabled = true;
-                if(Input.GetKey(KeyCode.E))
+                if(canUpdateSink)
                 {
-                    UpdateSinkRadialFill();
+                    sinkRadialImage.enabled = true;
+                    if(Input.GetKey(KeyCode.E))
+                    {
+                        UpdateSinkRadialFill();
+                    }
                 }
-            }
-            else
-            {
-                sinkRadialImage.enabled = false;
+                else
+                {
+                    sinkRadialImage.enabled = false;
+                }
             }
         }
 
@@ -114,7 +118,7 @@ public class RadialProgressBar : MonoBehaviour
         }
         if(sinkTimer >= 1)
         {
-            Debug.Log("Done");
+            Debug.Log("sink Done");
             sinkTimer = 0.01f;
             sinkRadialImage.fillAmount = 0.01f;
             sinkRadialImage.enabled = false;
@@ -125,8 +129,10 @@ public class RadialProgressBar : MonoBehaviour
             toolAudioSource.Stop();
             canUpdateSink = false;
             sinkObj.tag = "Untagged";
+            
+            StartCoroutine(gameController.ShowPopupMessage(sinkMessage, 2f));
 
-            gameController.currentCheckpoint = 4;
+            gameController.currentCheckpoint = 3;
         }
         else
         {
@@ -186,7 +192,7 @@ public class RadialProgressBar : MonoBehaviour
 
             tvObj.tag = "Untagged";
             canUpdateTV = false;
-            gameController.currentCheckpoint = 7;
+            gameController.currentCheckpoint = 4;
 
             //disable basement lights (lights go out moment)
             //enable blur scare trigger in hallway

@@ -13,12 +13,19 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioSource triggerAudio;
     [SerializeField] private AudioSource musicAudioSource;
 
-    [Header("Collectibles")]
+    [Header("ToolBox")]
     [SerializeField] private GameObject toolBox;
+    private string toolBoxString = "'Tighten the nuts on the bathroom sink and stop the leak'";
+
+    [Header("Fuse")]
     [SerializeField] private GameObject fuse;
+    private string useFuseString = "Restore power to the basement.";
+
     [SerializeField] private AudioClip collectedSFX;
+    [Header("MainPaper")]
     [SerializeField] private GameObject mainPaper;    
-    [SerializeField] private AudioClip mainPaperSFX;  
+    [SerializeField] private AudioClip mainPaperSFX;
+    private string mainPaperString = "'Find the tools I left for you in the basement'";
 
 
     [Header("Fuse Box")]
@@ -47,17 +54,12 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioClip closetCreakAudio;
     [SerializeField] private GameObject topOfStairsDoor;
 
-    private string keyString = "There's a small key hidden in the book";
-
-    private string paperInstructionString = "Press [Esc] to view objectives";
-    //private string findFuseString = "Find the fuse for the fuse box in the basement.";
-    private string useFuseString = "Restore power to the basement";
-    private string toolBoxString = "Nail the laundry window shut";
-    //private string BathroomToFuseBoxString = "Turn off breaker to storage area";
-    private string fuseboxString = "Find the tools left for you in the basement";
+    private string keyString = "There's a small key hidden in the book.";
+    private string fuseboxString = "'Nail the laundry window shut until I can find a better solution'";
 
     [SerializeField] private enum TriggerType {Escape, Closet, ShadowScare, BlownFuse}
     [SerializeField] private TriggerType triggerType;
+
     void Start()
     {
         if (gameController == null)
@@ -97,29 +99,24 @@ public class MainTriggers : MonoBehaviour
             {
                 if(shadowTriggerActive)
                 {
-                    TriggerFirstScare();
+                    TriggerBlurMotionScare();
                 }
             }
         }
     }
-    public void PickUpMainPaper() // Main paper in head office
+    public void PickUpMainPaper()
     {
-        gameController.currentCheckpoint = 1;
-        StartCoroutine(WaitAndDisableObject(1, mainPaper, mainPaperSFX, paperInstructionString));
-    }
-    
+        StartCoroutine(PickUpKeyItem(1, mainPaper, mainPaperSFX, mainPaperString));
+    }    
     public void PickUpToolBox()
     {
-        gameController.currentCheckpoint = 4;
         gameController.playerHasToolBox = true;
-        StartCoroutine(WaitAndDisableObject(2, toolBox, collectedSFX, toolBoxString));
+        StartCoroutine(PickUpKeyItem(2, toolBox, collectedSFX, toolBoxString));
     }
-
     public void PickUpFuse()
     {
-        gameController.currentCheckpoint = 2;
         gameController.playerHasFuse = true;
-        StartCoroutine(WaitAndDisableObject(2, fuse, collectedSFX, useFuseString));
+        StartCoroutine(PickUpKeyItem(5, fuse, collectedSFX, useFuseString));
     }
 
     public void InteractWithFuseBox()
@@ -128,7 +125,7 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        gameController.currentCheckpoint = 3;
+        gameController.currentCheckpoint = 6;
         StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
         gameController.breakerOn = true;
         foreach(Light light in breakerLights)
@@ -137,7 +134,7 @@ public class MainTriggers : MonoBehaviour
         }
     }
 
-    public void TriggerFirstScare()
+    public void TriggerBlurMotionScare()
     {
         musicAudioSource.Stop();
         if(!triggerAudio.isPlaying)
@@ -146,8 +143,9 @@ public class MainTriggers : MonoBehaviour
         }
         shadowBlurMonster.SetActive(true);
 
-        //Remember to turn this off somewhere. Loses effect the longer it stays on.
-        //  Should be for tense moments, then fade out
+        //Fade out heartbeat after x number of seconds
+        // Follow tutorial 
+        //https://forum.unity.com/threads/how-to-make-audio-fade-out-and-then-stop.737915/
         if(!heartBeatAudioSource.isPlaying)
         {
             heartBeatAudioSource.Play();
@@ -175,12 +173,12 @@ public class MainTriggers : MonoBehaviour
         gameObject.tag = "Untagged";
     }
    
-    IEnumerator WaitAndDisableObject(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
+    IEnumerator PickUpKeyItem(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
     {
         AudioSource.PlayClipAtPoint(objectSFX, gameObject.transform.position);
         gameController.currentCheckpoint = nextCheckpoint;
-        StartCoroutine(gameController.ShowPopupMessage(textMessage, 1f));
-        yield return new WaitForSeconds(1f);
+        StartCoroutine(gameController.ShowPopupMessage(textMessage, 2f));
+        yield return new WaitForSeconds(2f);
         disabledObj.SetActive(false);
     }
 

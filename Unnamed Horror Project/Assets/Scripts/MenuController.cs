@@ -10,6 +10,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject endingUI;
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject mainMenuUI;
+    [SerializeField] private GameObject mainMenuSinkDripObject;
     [SerializeField] private GameObject mainMenuExposition;
     [SerializeField] private GameObject expositionUIOne;
     [SerializeField] private GameObject expositionUITwo;
@@ -74,7 +75,7 @@ public class MenuController : MonoBehaviour
 
     public void EnableMainMenuExposition()
     {
-        levelController.FadeToBlack();
+        mainMenuSinkDripObject.SetActive(false);
         mainMenuExposition.SetActive(true);
         mainMenuUI.SetActive(false);
     }

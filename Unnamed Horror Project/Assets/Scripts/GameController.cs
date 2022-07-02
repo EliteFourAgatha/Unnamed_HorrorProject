@@ -44,6 +44,18 @@ public class GameController : MonoBehaviour
         {
             objectiveText.text = "Get task list from head office";
         }
+        else if(currentCheckpoint == 1)
+        {
+            objectiveText.text = "Find the tools left for you in the basement";
+        }
+        else if(currentCheckpoint == 2)
+        {
+            objectiveText.text = "Repair leak in the bathroom sink";
+        }
+        else if(currentCheckpoint == 3)
+        {
+            objectiveText.text = "Fix TV in open storage room";
+        }
         //Shouldn't be fuse right away.
         // Lights are on initially.
         // Fuse is blown when player finishes fixing TV
@@ -70,21 +82,9 @@ public class GameController : MonoBehaviour
         {
             objectiveText.text = "Restore power to the basement";
         }
-        else if(currentCheckpoint == 1)
-        {
-            objectiveText.text = "Find the toolbox left for you in the back room";
-        }
         else if(currentCheckpoint == 6)
         {
             objectiveText.text = "Fix the laundry room window";
-        }
-        else if(currentCheckpoint == 2)
-        {
-            objectiveText.text = "Repair leak in the bathroom sink";
-        }
-        else if(currentCheckpoint == 3)
-        {
-            objectiveText.text = "Fix TV in open storage room";
         }
         else if(currentCheckpoint == 7)
         {

@@ -11,7 +11,7 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private FlashlightToggle flashlightToggle;
     [SerializeField] private float catchRange = 5f;
     [SerializeField] private float flashlightRange = 10f;
-    [SerializeField] private AudioClip chaseAudio;
+    [SerializeField] private AudioSource musicAudioSource;
     [SerializeField] private AudioClip catchAudio;
     [SerializeField] private Transform monsterResetLocation;
     [SerializeField] private Transform playerResetLocation;
@@ -59,13 +59,13 @@ public class MonsterAI : MonoBehaviour
 
             if(awareOfPlayer)
             {
-                audioSource.clip = chaseAudio;
-                audioSource.loop = true;
+                agent.speed = 3.5f;
                 FollowPlayer();
                 AttemptToCatchPlayer();
             }
             else
             {
+                agent.speed = 2f;
                 //Choose next point when agent gets close enough to current target
                 if(!agent.pathPending && agent.remainingDistance <= 0.5f)
                 {
@@ -76,12 +76,11 @@ public class MonsterAI : MonoBehaviour
     }
     void FollowPlayer()
     {
-        agent.destination = player.transform.position;
-        Debug.Log("chasing");
-        if(!audioSource.isPlaying)
-        {
-            audioSource.Play();
-        }
+        agent.destination = player.transform.position;        
+        
+        //Instead of playing catch audio, music cuts out. Silence.
+        musicAudioSource.Pause();
+        
         // If outside of follow radius, start timer
         // if timer reaches x, stop following
         // if player back in radius, stop and reset timer value
@@ -90,13 +89,8 @@ public class MonsterAI : MonoBehaviour
     {
         if(distance <= catchRange)
         {
-            Debug.Log("caught");
             awareOfPlayer = false;
             StartCoroutine(RestartAtBasementCheckpoint());
-            //Turn off monster movement here. it's clipping player into walls / moving player
-            /*
-
-            */
         }
     }
 
@@ -141,13 +135,15 @@ public class MonsterAI : MonoBehaviour
         backroomLightOne.enabled = true;
         backroomLightTwo.enabled = true;
 
+        levelController.FadeToBlack();
+        
         audioSource.clip = catchAudio;
         if(!audioSource.isPlaying)
         {
             audioSource.Play();
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
         //jump scare / monster appears in front of screen slowly and fades to black
         levelController.FadeInFromBlack();
         monsterCanMove = true;

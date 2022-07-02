@@ -40,11 +40,12 @@ public class Triggers : MonoBehaviour
     [SerializeField] private MeshRenderer noteTwoMeshRenderer;
 
     [SerializeField] private enum TriggerType {NormalObject, LockerHide, Exposition1, Exposition2,
-                                                SewerWater}
+                                                SewerWater, InhaleScare}
     [SerializeField] private TriggerType triggerType;
 
 
-    private bool canInteractWithObject = false;  
+    private bool canInteractWithObject = false;
+    private bool canInteractWithInhaleTrigger = true;
 
     void Start()
     {
@@ -77,6 +78,10 @@ public class Triggers : MonoBehaviour
             {
                 playerController.playerInWater = true;
             }
+            else if(triggerType == TriggerType.InhaleScare)
+            {
+
+            }
         }
     }
     void OnTriggerExit(Collider other)
@@ -106,11 +111,12 @@ public class Triggers : MonoBehaviour
         {
             lockerDoorAnim = gameObject.GetComponent<Animator>();
         }
-        //randomized, at least 3 clips (4-6 ideal)
+
         if(!triggerAudio.isPlaying)
         {
             triggerAudio.Play();
         }
+
         if(lockerDoorClosed)
         {
             lockerDoorClosed = false;

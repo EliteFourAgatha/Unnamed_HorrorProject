@@ -139,7 +139,21 @@ public class Highlights : MonoBehaviour
                     Debug.Log("false");
                     ClearHighlighted();
                 }                                
-            }  
+            }
+            else if(hitObj.GetComponent<Collider>().gameObject.tag == "FixableTV")
+            {
+                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                {
+                    HighlightObject(hitObj, false);
+                    radialRef.canUpdateTV = true;
+                }
+                else
+                {
+                    radialRef.canUpdateTV = false;
+                    ClearHighlighted();
+                }                                
+            }    
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "LaundryWindow")
             {
                 var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
@@ -186,7 +200,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    if(gameController.currentCheckpoint == 3 && !gameController.playerHasToolBox)
+                    if(gameController.currentCheckpoint == 1 && !gameController.playerHasToolBox)
                     {
                         HighlightObject(hitObj, true);
                         if(Input.GetKeyDown(KeyCode.E))
@@ -219,7 +233,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    if(gameController.currentCheckpoint == 1)
+                    if(gameController.currentCheckpoint == 4)
                     {
                         HighlightObject(hitObj, true);
                         if(Input.GetKeyDown(KeyCode.E))
@@ -237,7 +251,7 @@ public class Highlights : MonoBehaviour
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    if(gameController.currentCheckpoint == 2 && gameController.playerHasFuse)
+                    if(gameController.currentCheckpoint == 5 && gameController.playerHasFuse)
                     {
                         HighlightObject(hitObj, true);
                         if(Input.GetKeyDown(KeyCode.E))

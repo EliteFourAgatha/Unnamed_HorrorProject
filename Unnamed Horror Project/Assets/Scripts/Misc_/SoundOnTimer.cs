@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmbientSoundOnTimer : MonoBehaviour
+public class SoundOnTimer : MonoBehaviour
 {
     [SerializeField] private AudioClip thunderAudioClip;
     [SerializeField] private AudioClip[] woodCreakClips;
     [SerializeField] private AudioClip[] buildingGroanClips;
+    [SerializeField] private AudioClip[] monsterWheezeClips;
     [SerializeField] private AudioSource audioSource;
     
 
     [SerializeField] private int[] thunderWaitTimes = {120, 150, 180};
     [SerializeField] private int[] woodWaitTimes = {15, 25, 35};
-    public enum SoundType {Thunder, WoodGroaning}
+    [SerializeField] private int[] wheezeWaitTimes = {10, 15, 20};
+    public enum SoundType {Thunder, WoodGroaning, MonsterWheeze}
     public SoundType soundType;
 
 
@@ -55,12 +57,19 @@ public class AmbientSoundOnTimer : MonoBehaviour
             timerIndex = Random.Range(0, woodWaitTimes.Length);
             waitTime = woodWaitTimes[timerIndex];
         }
+        else if(soundType == SoundType.MonsterWheeze)
+        {
+            clipIndex = Random.Range(0, monsterWheezeClips.Length);
+            audioSource.clip = monsterWheezeClips[clipIndex];
+
+            timerIndex = Random.Range(0, wheezeWaitTimes.Length);
+            waitTime = wheezeWaitTimes[timerIndex];
+        }
 
         if(!audioSource.isPlaying)
         {
             audioSource.Play();
         }
-
         yield return new WaitForSeconds(waitTime);
         canPlayAudio = true;
     }
