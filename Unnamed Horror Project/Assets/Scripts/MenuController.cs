@@ -6,18 +6,27 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    [SerializeField] private GameObject creditsUI;
-    [SerializeField] private GameObject endingUI;
     [SerializeField] private GameObject pauseMenuUI;
-    [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private GameObject mainMenuSinkDripObject;
-    [SerializeField] private GameObject mainMenuExposition;
-    [SerializeField] private GameObject expositionUIOne;
-    [SerializeField] private GameObject expositionUITwo;
+    [SerializeField] private GameObject journalUIOne;
+    [SerializeField] private GameObject journalUITwo;
     [SerializeField] private GameObject quitGameOptionUI;
     [SerializeField] private LevelController levelController;
+
+    [Header ("Main Menu Only")]
+    [SerializeField] private GameObject mainMenuUI;
+    [SerializeField] private GameObject invisibleFullscreenButton;
+    [SerializeField] private GameObject garageObject;
+    [SerializeField] private GameObject mainMenuExposition;
+    [SerializeField] private GameObject expositionTextOne;
+    [SerializeField] private GameObject expositionTextTwo;
+    [SerializeField] private GameObject expositionTextThree;
+    [SerializeField] private GameObject expositionTextFour;
+    [SerializeField] private GameObject playGameButton;
+    [SerializeField] private float textDelayTimer;
     public static bool gamePaused = false;
     private bool canPauseGame = false;
+    private bool canClickToContinue = false;
+    private int currentText;
 
     void Awake()
     {
@@ -32,6 +41,10 @@ public class MenuController : MonoBehaviour
     }
     void Update()
     {
+        if(canClickToContinue)
+        {
+            invisibleFullscreenButton.SetActive(true);
+        }
         Scene currentScene = SceneManager.GetActiveScene();
         int buildIndex = currentScene.buildIndex;
         if(buildIndex == 0)
@@ -63,11 +76,6 @@ public class MenuController : MonoBehaviour
     {
         EnableMainMenuExposition();
     }
-    public void GoToCreditsMenu()
-    {
-        endingUI.SetActive(false);
-        creditsUI.SetActive(true);
-    }
     public void GoToMainMenu()
     {
         levelController.LoadLevel(0);
@@ -75,26 +83,33 @@ public class MenuController : MonoBehaviour
 
     public void EnableMainMenuExposition()
     {
-        mainMenuSinkDripObject.SetActive(false);
-        mainMenuExposition.SetActive(true);
+        garageObject.SetActive(false);
         mainMenuUI.SetActive(false);
+
+        mainMenuExposition.SetActive(true);
+        StartCoroutine(DelayClickTimer());
+        expositionTextOne.SetActive(true);
+        currentText = 0;
     }
 
-    public void DisableExpositionNoteOne()
+    
+    //If "flip journal page" button clicked while reading journal
+    public void EnableExpositionNoteTwo()
     {
-        expositionUIOne.SetActive(false);
+        journalUIOne.SetActive(false);
+        journalUITwo.SetActive(true);
+    }
+
+    //If "close journal" button clicked while reading journal
+    public void DisableExpositionJournal()
+    {
+        journalUIOne.SetActive(false);
+        journalUITwo.SetActive(false);
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
     }
-    public void DisableExpositionNoteTwo()
-    {
-        expositionUITwo.SetActive(false);
-        Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-    //
-    // -- PAUSE MENU --
-    //
+
+
     public void ResumeGame()
     {
         pauseMenuUI.SetActive(false);
@@ -111,20 +126,53 @@ public class MenuController : MonoBehaviour
         Time.timeScale = 0f;
         gamePaused = true;
     }
-    //Pause Menu: Quit Button
+
+    // Invisible button to move to next exposition
+    public void ProgressExpositionText()
+    {
+        invisibleFullscreenButton.SetActive(false);
+        if(currentText == 0)
+        {
+            expositionTextOne.SetActive(false);
+            expositionTextTwo.SetActive(true);
+            StartCoroutine(DelayClickTimer());
+            currentText = 1;
+        }
+        else if(currentText == 1)
+        {
+            expositionTextTwo.SetActive(false);
+            expositionTextThree.SetActive(true);
+            StartCoroutine(DelayClickTimer());
+            currentText = 2;
+        }
+        else if(currentText == 2)
+        {
+            expositionTextThree.SetActive(false);
+            expositionTextFour.SetActive(true);
+            canClickToContinue = false;
+            playGameButton.SetActive(true);
+        }
+    }
+
+    private IEnumerator DelayClickTimer()
+    {
+        canClickToContinue = false;
+        yield return new WaitForSeconds(textDelayTimer);
+        canClickToContinue = true;
+    }
+
+    
+
     public void EnableQuitGameOption()
     {
         quitGameOptionUI.SetActive(true);
-    }    
-    //Quit option: No
+    }
     public void DeclineQuitGame()
     {
         quitGameOptionUI.SetActive(false);
     }
-    //Quit option: Yes
     public void ConfirmQuitGame()
     {
         Application.Quit();
     }
-    // -- END PAUSE MENU --
 }

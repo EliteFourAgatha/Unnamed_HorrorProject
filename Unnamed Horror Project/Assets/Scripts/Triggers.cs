@@ -32,14 +32,9 @@ public class Triggers : MonoBehaviour
     [SerializeField] private Animator lockedDrawerAnim;
     [SerializeField] private Collider drawerBoxCollider;
     [SerializeField] private GameObject underDrawerCollider;
-    [SerializeField] private GameObject noteOne;
-    [SerializeField] private GameObject noteTwo;
     [SerializeField] private GameObject expositionUIOne;
-    [SerializeField] private GameObject expositionUITwo;
-    [SerializeField] private MeshRenderer noteOneMeshRenderer;
-    [SerializeField] private MeshRenderer noteTwoMeshRenderer;
 
-    [SerializeField] private enum TriggerType {NormalObject, LockerHide, Exposition1, Exposition2,
+    [SerializeField] private enum TriggerType {NormalObject, LockerHide, ExpositionJournal,
                                                 SewerWater, InhaleScare}
     [SerializeField] private TriggerType triggerType;
 
@@ -152,32 +147,16 @@ public class Triggers : MonoBehaviour
 
     public void InteractWithExpositionNote()
     {
-        if(triggerType == TriggerType.Exposition1)
+        if(triggerType == TriggerType.ExpositionJournal)
         {
             if(!triggerAudio.isPlaying)
             {
                 triggerAudio.Play();
             }
-            noteOneMeshRenderer.enabled = false;
             expositionUIOne.SetActive(true);
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
-            noteOne.tag = "Untagged";
-        }
-        else if(triggerType == TriggerType.Exposition2)
-        {
-            if(!triggerAudio.isPlaying)
-            {
-                triggerAudio.Play();
-            }
-            noteTwoMeshRenderer.enabled = false;
-            expositionUITwo.SetActive(true);
-            Time.timeScale = 0f;
-            Cursor.lockState = CursorLockMode.None;
-            noteTwo.tag = "Untagged";
+            Cursor.visible = true;
         }
     }
-
-
-
 }
