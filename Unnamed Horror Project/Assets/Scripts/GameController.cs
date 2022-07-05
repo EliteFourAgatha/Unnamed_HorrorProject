@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour
     public bool playerHasFuse = false;
     public bool breakerOn = false;
     public bool playerHasToolBox = false;
+    public bool playerHasPickUpBox = false;
+    
     Scene currentScene;
     private void Awake()
     {
@@ -54,11 +56,19 @@ public class GameController : MonoBehaviour
         }
         else if(currentCheckpoint == 3)
         {
-            objectiveText.text = "Fix TV in open storage room";
+            objectiveText.text = "Fix the broken vending machine in the lobby";
+        }
+        else if(currentCheckpoint == 4)
+        {
+            objectiveText.text = "Get box from storage unit";
+        }
+        else if(currentCheckpoint == 5)
+        {
+            objectiveText.text = "Put box on coffee table in head office";
         }
         //Shouldn't be fuse right away.
         // Lights are on initially.
-        // Fuse is blown when player finishes fixing TV
+        // Fuse is blown when player leaves storage unit with box in hand
         // -Only lights to main storage area affected
         // --Laundry lights still on / function (on if player left them on)
         // --Same for bathroom light
@@ -74,19 +84,19 @@ public class GameController : MonoBehaviour
         // -player fixes window, goes to leave room, and lights to out. door creaks open.
         // -player scared, most will hide in the lockers you placed there. perfect.
 
-        else if(currentCheckpoint == 4)
+        else if(currentCheckpoint == 6)
         {
             objectiveText.text = "Find extra fuse in back room";
         }
-        else if(currentCheckpoint == 5)
+        else if(currentCheckpoint == 7)
         {
             objectiveText.text = "Restore power to the basement";
         }
-        else if(currentCheckpoint == 6)
+        else if(currentCheckpoint == 8)
         {
             objectiveText.text = "Fix the laundry room window";
         }
-        else if(currentCheckpoint == 7)
+        else if(currentCheckpoint == 9)
         {
             objectiveText.text = "Turn off breaker and lock up before you leave";
         }

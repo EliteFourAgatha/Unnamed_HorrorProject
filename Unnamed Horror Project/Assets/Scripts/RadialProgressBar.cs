@@ -10,7 +10,7 @@ public class RadialProgressBar : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private AudioSource radialDoneAudioSource;
     [SerializeField] private AudioSource toolAudioSource;
-    public enum RadialType{Sink, Window, TV}
+    public enum RadialType{Sink, Window, VendMachine}
     public RadialType radialType;
     public AudioClip ratchetClip;
     public AudioClip hammerClip;
@@ -24,7 +24,7 @@ public class RadialProgressBar : MonoBehaviour
     public bool canUpdateSink = false;
     private float sinkTimer = 0.01f;
     private float sinkDelayValue = 4f;
-    private string sinkMessage = "' Fix my broken TV in the open storage unit '";
+    private string sinkMessage = "'Fix the broken vending machine in the lobby'";
 
     [Header("Laundry Window")]
     public Image windowRadialImage;
@@ -34,14 +34,13 @@ public class RadialProgressBar : MonoBehaviour
     private float windowDelayValue = 4f;
 
 
-    [Header("TV")]
-    public Image tvRadialImage;
-    [SerializeField] private GameObject tvObj;
-    public bool canUpdateTV = false;
-    private float tvTimer = 0.01f;
-    private float tvDelayValue = 4f;
-    [SerializeField] private GameObject blownFuseTrigger;
-    [SerializeField] private GameObject shadowBlurTrigger;
+    [Header("VendMachine")]
+    public Image VendMachineRadialImage;
+    [SerializeField] private GameObject VendMachineObj;
+    public bool canUpdateVendMachine = false;
+    private float VendMachineTimer = 0.01f;
+    private float VendMachineDelayValue = 4f;
+
 
     void Update()
     {
@@ -73,33 +72,39 @@ public class RadialProgressBar : MonoBehaviour
 
         if(radialType == RadialType.Window)
         {
-            if(canUpdateWindow)
+            if(gameController.currentCheckpoint == 7)
             {
-                windowRadialImage.enabled = true;
-                if(Input.GetKey(KeyCode.E))
+                if(canUpdateWindow)
                 {
-                    UpdateWindowRadialFill();
+                    windowRadialImage.enabled = true;
+                    if(Input.GetKey(KeyCode.E))
+                    {
+                        UpdateWindowRadialFill();
+                    }
                 }
-            }
-            else
-            {
-                windowRadialImage.enabled = false;
+                else
+                {
+                    windowRadialImage.enabled = false;
+                } 
             }
         }
 
-        if(radialType == RadialType.TV)
+        if(radialType == RadialType.VendMachine)
         {
-            if(canUpdateTV)
+            if(gameController.currentCheckpoint == 3)
             {
-                tvRadialImage.enabled = true;
-                if(Input.GetKey(KeyCode.E))
+                if(canUpdateVendMachine)
                 {
-                    UpdateTVRadialFill();
+                    VendMachineRadialImage.enabled = true;
+                    if(Input.GetKey(KeyCode.E))
+                    {
+                        UpdateVendMachineRadialFill();
+                    }
                 }
-            }
-            else
-            {
-                tvRadialImage.enabled = false;
+                else
+                {
+                    VendMachineRadialImage.enabled = false;
+                }
             }
         }
     }
@@ -171,10 +176,10 @@ public class RadialProgressBar : MonoBehaviour
         }
     }
 
-    public void UpdateTVRadialFill()
+    public void UpdateVendMachineRadialFill()
     {
-        tvTimer += Time.deltaTime;
-        tvRadialImage.fillAmount = tvTimer;
+        VendMachineTimer += Time.deltaTime;
+        VendMachineRadialImage.fillAmount = VendMachineTimer;
 
         toolAudioSource.clip = ratchetClip;
         if(!toolAudioSource.isPlaying)
@@ -182,25 +187,17 @@ public class RadialProgressBar : MonoBehaviour
             toolAudioSource.Play();
         }
 
-        if(tvTimer >= maxTimer)
+        if(VendMachineTimer >= maxTimer)
         {
-            Debug.Log("TV Done");
-            tvTimer = 0.01f;
-            tvRadialImage.fillAmount = 0.01f;
-            tvRadialImage.enabled = false;
+            Debug.Log("VendMachine Done");
+            VendMachineTimer = 0.01f;
+            VendMachineRadialImage.fillAmount = 0.01f;
+            VendMachineRadialImage.enabled = false;
             radialDoneAudioSource.Play();
 
-            tvObj.tag = "Untagged";
-            canUpdateTV = false;
+            VendMachineObj.tag = "Untagged";
+            canUpdateVendMachine = false;
             gameController.currentCheckpoint = 4;
-
-            //disable basement lights (lights go out moment)
-            //enable blur scare trigger in hallway
-            //enable final closet trigger
-
-            //ultimatum moment
-            //-If player goes right, can leave and sensible ending possible
-            //-If player goes left, trigger final closet and top of stairs door
         }
         else
         {

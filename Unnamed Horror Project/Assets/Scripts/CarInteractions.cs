@@ -9,7 +9,6 @@ public class CarInteractions : MonoBehaviour
     [SerializeField] private AudioClip carEndingAudioClip;
     [SerializeField] private LevelController levelController;
     [SerializeField] private GameController gameController;
-    [SerializeField] private GameObject carEndingUI;
 
     private string cantLeaveYetString = "I should see what the job's about first...";
     private string betterOffHereString = "I drove all the way here might as well make some money";
@@ -43,7 +42,6 @@ public class CarInteractions : MonoBehaviour
     {
         audioSource.clip = carEndingAudioClip;
         audioSource.Play();
-        carEndingUI.SetActive(false);
         Time.timeScale = 1;
         levelController.LoadLevel(2);
     }

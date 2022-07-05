@@ -12,16 +12,28 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private LevelController levelController;
     [SerializeField] private AudioSource triggerAudio;
     [SerializeField] private AudioSource musicAudioSource;
+    [SerializeField] private AudioClip collectedSFX;
 
     [Header("ToolBox")]
     [SerializeField] private GameObject toolBox;
     private string toolBoxString = "'Tighten the nuts on the bathroom sink and stop the leak'";
+    
+    [Header("PickUpBox")]
+    [SerializeField] private GameObject pickUpBox;
+    [SerializeField] private GameObject heldCardboardBox;
+    [SerializeField] private GameObject cardboardBoxOnTable;
+    [SerializeField] private GameObject blownFuseTrigger;
+    [SerializeField] private GameObject shadowBlurTrigger;
+    private bool blownFuseTriggerActive = true;
+    private string cardboardBoxString = "'Put the box in the head office'";
+    private string coffeeTableString = "Find an extra fuse for the fuse box";
 
     [Header("Fuse")]
     [SerializeField] private GameObject fuse;
-    private string useFuseString = "Restore power to the basement.";
+    private string useFuseString = "Restore power to the basement";
 
-    [SerializeField] private AudioClip collectedSFX;
+
+
     [Header("MainPaper")]
     [SerializeField] private GameObject mainPaper;    
     [SerializeField] private AudioClip mainPaperSFX;
@@ -89,7 +101,7 @@ public class MainTriggers : MonoBehaviour
             //Before blur scare, lights go out
             else if(triggerType == TriggerType.BlownFuse)
             {
-                if(shadowTriggerActive)
+                if(blownFuseTriggerActive)
                 {
                     TriggerBlownFuse();
                 }
@@ -113,10 +125,26 @@ public class MainTriggers : MonoBehaviour
         gameController.playerHasToolBox = true;
         StartCoroutine(PickUpKeyItem(2, toolBox, collectedSFX, toolBoxString));
     }
+    public void PickUpCardboardBox()
+    {
+        gameController.playerHasPickUpBox = true;
+        StartCoroutine(PickUpKeyItem(5, pickUpBox, collectedSFX, cardboardBoxString));
+        heldCardboardBox.SetActive(true);
+        blownFuseTrigger.SetActive(true);        
+    }
     public void PickUpFuse()
     {
         gameController.playerHasFuse = true;
-        StartCoroutine(PickUpKeyItem(5, fuse, collectedSFX, useFuseString));
+        StartCoroutine(PickUpKeyItem(7, fuse, collectedSFX, useFuseString));
+    }
+
+    //Coffee table where you place box
+    public void InteractWithCoffeeTable()
+    {
+        gameController.currentCheckpoint = 6;
+        StartCoroutine(gameController.ShowPopupMessage(coffeeTableString, 2));
+        heldCardboardBox.SetActive(false);
+        cardboardBoxOnTable.SetActive(true);
     }
 
     public void InteractWithFuseBox()
@@ -125,7 +153,7 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        gameController.currentCheckpoint = 6;
+        gameController.currentCheckpoint = 8;
         StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
         gameController.breakerOn = true;
         foreach(Light light in breakerLights)
@@ -133,6 +161,7 @@ public class MainTriggers : MonoBehaviour
             light.enabled = true;
         }
     }
+
 
     public void TriggerBlurMotionScare()
     {
@@ -143,9 +172,6 @@ public class MainTriggers : MonoBehaviour
         }
         shadowBlurMonster.SetActive(true);
 
-        //Fade out heartbeat after x number of seconds
-        // Follow tutorial 
-        //https://forum.unity.com/threads/how-to-make-audio-fade-out-and-then-stop.737915/
         if(!heartBeatAudioSource.isPlaying)
         {
             heartBeatAudioSource.Play();
@@ -156,9 +182,19 @@ public class MainTriggers : MonoBehaviour
 
     public void TriggerBlownFuse()
     {
-        //lights go out (all except laundry + bathroom? or all?)
-        //ominous sfx or rumble
-        //blownFuseTriggerActive = false;
+        //Disable all lights? Or leave bathroom/ laundry?
+        foreach(Light light in breakerLights)
+        {
+            light.enabled = false;
+        }
+        if(!triggerAudio.isPlaying)
+        {
+            triggerAudio.Play();
+        }
+        shadowBlurTrigger.SetActive(true);
+
+        blownFuseTriggerActive = false; // single use, deactivate after
+
     }
 
     public void TriggerFoundKey()
