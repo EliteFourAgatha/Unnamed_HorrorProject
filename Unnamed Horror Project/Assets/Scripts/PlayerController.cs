@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Parameters")]
     [SerializeField, Range(1, 10)] private float walkSpeed = 5f;
     [SerializeField, Range(1, 20)] private float sprintSpeed = 10f;
-    [SerializeField, Range(1, 5)] private float crouchSpeed = 2.5f;
     private float currentSpeed;
     private float gravityValue = 9.8f;
     private float verticalSpeed;
@@ -37,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float crouchHeight = 0.5f;
     [SerializeField] private float standingHeight = 2.1f;
     [SerializeField] private float timeToCrouch = 0.25f;
+    [SerializeField, Range(1, 5)] private float crouchSpeed = 2.5f;
     private bool isCrouching;
     private bool duringCrouchAnimation;
     private bool canCrouch = true;

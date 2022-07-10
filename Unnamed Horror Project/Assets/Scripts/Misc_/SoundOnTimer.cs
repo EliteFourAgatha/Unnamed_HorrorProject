@@ -37,7 +37,6 @@ public class SoundOnTimer : MonoBehaviour
     private IEnumerator PlaySoundThenWait()
     {
         canPlayAudio = false;
-        AudioClip chosenClip;
         int clipIndex;
         int timerIndex;
         int waitTime = 0;

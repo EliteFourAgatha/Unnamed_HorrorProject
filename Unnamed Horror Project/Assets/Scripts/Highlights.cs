@@ -8,8 +8,12 @@ public class Highlights : MonoBehaviour
     GameObject lastHighlightedObject;
 
     [SerializeField] private Image cursorUI;
+    [SerializeField] private AudioSource toolAudioSource;
     [SerializeField] private Sprite normalCursor;
     [SerializeField] private Sprite interactCursor;
+    [SerializeField] private Image sinkProgressImage;
+    [SerializeField] private Image windowProgressImage;
+    [SerializeField] private Image vendMachineProgressImage;
     Camera mainCamera;
     [SerializeField] private GameController gameController;
     private string noKeyFoundString = "It's locked but I see a key hole...";
@@ -88,12 +92,360 @@ public class Highlights : MonoBehaviour
                         ClearHighlighted();
                     }
                     break;
+                case "OpenableDoor":
+                    HighlightObject(hitObj, true);
+                    if(Input.GetKeyDown(KeyCode.E))
+                    {
+                        var doorScript = hitObj.GetComponent<Collider>().gameObject.GetComponent<DoorController>();
+                        var doorClosed = doorScript.doorClosed;
+                        if(doorClosed)
+                        {
+                            doorScript.OpenDoor();
+                        }
+                        else
+                        {
+                            doorScript.CloseDoor();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "KnockOnDoor":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerAudioOnly();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "Snacks":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().TriggerAudioOnly();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "ToolBox":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        if(gameController.currentCheckpoint == 1 && !gameController.playerHasToolBox)
+                        {
+                            HighlightObject(hitObj, true);
+                            if(Input.GetKeyDown(KeyCode.E))
+                            {
+                                hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpToolBox();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "PickUpBox":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        if(gameController.currentCheckpoint == 4)
+                        {
+                            if(!gameController.playerHasPickUpBox)
+                            {
+                                HighlightObject(hitObj, true);
+                                if(Input.GetKeyDown(KeyCode.E))
+                                {
+                                    hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpCardboardBox();
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "CoffeeTable":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        if(gameController.playerHasPickUpBox)
+                        {
+                            HighlightObject(hitObj, true);
+                            if(Input.GetKeyDown(KeyCode.E))
+                            {
+                                hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().InteractWithCoffeeTable();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "MainCar":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<CarInteractions>().AttemptToUseCar();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "Fuse":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        if(gameController.currentCheckpoint == 6)
+                        {
+                            HighlightObject(hitObj, true);
+                            if(Input.GetKeyDown(KeyCode.E))
+                            {
+                                hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpFuse();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "FuseBox":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        if(gameController.currentCheckpoint == 7 && gameController.playerHasFuse)
+                        {
+                            HighlightObject(hitObj, true);
+                            if(Input.GetKeyDown(KeyCode.E))
+                            {
+                                hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().InteractWithFuseBox();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "Locker":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithLocker();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "MainPaper":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpMainPaper();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "EscapeLadder":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 6f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerEscape();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "ExpositionNote":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithExpositionNote();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "HiddenKey":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().TriggerFoundKey();
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "LockedDrawer":
+                    if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                    {
+                        HighlightObject(hitObj, true);
+                        if(Input.GetKeyDown(KeyCode.E))
+                        {
+                            if(!gameController.playerNeedsKey)
+                            {
+                                hitObj.GetComponent<Collider>().gameObject.GetComponent<Triggers>().InteractWithDrawer();
+                            }
+                            else
+                            {
+                                StartCoroutine(gameController.ShowPopupMessage(noKeyFoundString, 2));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ClearHighlighted();
+                    }
+                    break;
+                case "LaundryWindow":
+                    if(gameController.currentCheckpoint == 8)
+                    {
+                        var windowProgress = hitObj.gameObject.GetComponent<ProgressBar>();
+                        var triggerRef = hitObj.gameObject.GetComponent<Triggers>();
+                        if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 5f)
+                        {
+                            if(triggerRef.canCloseWindow)
+                            {
+                                HighlightObject(hitObj, true);
+                                if(Input.GetKeyDown(KeyCode.E))
+                                {
+                                    triggerRef.CloseLaundryWindow();
+                                }
+                            }
+                            else
+                            {
+                                HighlightObject(hitObj, true);
+                                if(Input.GetKey(KeyCode.E))
+                                {
+                                    if(!toolAudioSource.isPlaying)
+                                    {
+                                        toolAudioSource.Play();
+                                    }
+                                    windowProgressImage.enabled = true;
+                                    windowProgress.UpdateWindowFill();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            toolAudioSource.Pause();
+                            windowProgressImage.enabled = false;
+                            ClearHighlighted();
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
 
+                case "SinkLeak":
+                    if(gameController.currentCheckpoint == 2)
+                    {
+                        var sinkProgress = hitObj.gameObject.GetComponent<ProgressBar>();
+                        if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
+                        {
+                            HighlightObject(hitObj, false);
+                            if(Input.GetKey(KeyCode.E))
+                            {
+                                if(!toolAudioSource.isPlaying)
+                                {
+                                    toolAudioSource.Play();
+                                }
+                                sinkProgressImage.enabled = true;
+                                sinkProgress.UpdateSinkFill();
+                            }
+                        }
+                        else
+                        {
+                            toolAudioSource.Pause();
+                            sinkProgressImage.enabled = false;
+                            ClearHighlighted();
+                        }
+                        break;                        
+                    }
+                    else
+                    {
+                        break;
+                    }
+                case "FixableVendMachine":
+                    if(gameController.currentCheckpoint == 3)
+                    {
+                        var vendMachineProgress = hitObj.gameObject.GetComponent<ProgressBar>();
+                        if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 4f)
+                        {
+                            HighlightObject(hitObj, false);
+                            if(Input.GetKey(KeyCode.E))
+                            {
+                                if(!toolAudioSource.isPlaying)
+                                {
+                                    toolAudioSource.Play();
+                                }
+                                vendMachineProgressImage.enabled = true;
+                                vendMachineProgress.UpdateVendMachineFill();
+                            }
+                        }
+                        else
+                        {
+                            toolAudioSource.Pause();
+                            vendMachineProgressImage.enabled = true;
+                            ClearHighlighted();
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                //Default runs if no values matched, aka "Else"
+                default:
+                    sinkProgressImage.enabled = false;
+                    ClearHighlighted();
+                    break;
             }
+        }
+    }
+        /*
 
             if(hitObj.GetComponent<Collider>().gameObject.tag == "Lightswitch")
             {
-                /*
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
                     HighlightObject(hitObj, true);
@@ -106,11 +458,9 @@ public class Highlights : MonoBehaviour
                 {
                     ClearHighlighted();
                 }
-                */
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "LockedDoor")
             {
-                /*
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
                     HighlightObject(hitObj, true);
@@ -123,7 +473,6 @@ public class Highlights : MonoBehaviour
                 {
                     ClearHighlighted();
                 }
-                */
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "OpenableDoor")
             {
@@ -181,37 +530,37 @@ public class Highlights : MonoBehaviour
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "SinkLeak")
             {
-                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                var progressRef = hitObj.gameObject.GetComponent<ProgressBar>();
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
                     HighlightObject(hitObj, false);
-                    radialRef.canUpdateSink = true;
+                    progressRef.canUpdateSink = true;
                     Debug.Log("true");
                 }
                 else
                 {
-                    radialRef.canUpdateSink = false;
+                    progressRef.canUpdateSink = false;
                     Debug.Log("false");
                     ClearHighlighted();
                 }                                
             }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "FixableVendMachine")
             {
-                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                var progressRef = hitObj.gameObject.GetComponent<ProgressBar>();
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
                     HighlightObject(hitObj, false);
-                    radialRef.canUpdateVendMachine = true;
+                    progressRef.canUpdateVendMachine = true;
                 }
                 else
                 {
-                    radialRef.canUpdateVendMachine = false;
+                    progressRef.canUpdateVendMachine = false;
                     ClearHighlighted();
                 }                                
             }    
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "LaundryWindow")
             {
-                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
+                var progressRef = hitObj.gameObject.GetComponent<ProgressBar>();
                 var triggerRef = hitObj.gameObject.GetComponent<Triggers>();
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 5f)
                 {
@@ -225,18 +574,17 @@ public class Highlights : MonoBehaviour
                     }
                     else
                     {
-                        radialRef.canUpdateWindow = true;
+                        progressRef.canUpdateWindow = true;
                         Debug.Log("window-true");
                     }
                 }
                 else
                 {
-                    radialRef.canUpdateWindow = false;
+                    progressRef.canUpdateWindow = false;
                     Debug.Log("window-false");
                     ClearHighlighted();
                 }                                
-            }       
-
+            }
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "ToolBox")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
@@ -255,17 +603,19 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                
             }
-            
             else if(hitObj.GetComponent<Collider>().gameObject.tag == "PickUpBox")
             {
                 if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                 {
-                    if(!gameController.playerHasPickUpBox)
+                    if(gameController.currentCheckpoint == 4)
                     {
-                        HighlightObject(hitObj, true);
-                        if(Input.GetKeyDown(KeyCode.E))
+                        if(!gameController.playerHasPickUpBox)
                         {
-                            hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpCardboardBox();
+                            HighlightObject(hitObj, true);
+                            if(Input.GetKeyDown(KeyCode.E))
+                            {
+                                hitObj.GetComponent<Collider>().gameObject.GetComponent<MainTriggers>().PickUpCardboardBox();
+                            }
                         }
                     }
                 }
@@ -440,27 +790,10 @@ public class Highlights : MonoBehaviour
                     ClearHighlighted();
                 }                
             }
-            else
-            {
-                if(hitObj.GetComponent<Collider>().gameObject.tag == "SinkLeak")
-                {
-                    var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
-                    radialRef.canUpdateSink = false;
-                    Debug.Log("adsfasdf");
-                }
-                ClearHighlighted();
-            }
         }
         else
         {
-            /*
-            if(hitObj.GetComponent<Collider>().gameObject.tag == "SinkLeak")
-            {
-                var radialRef = hitObj.gameObject.GetComponent<RadialProgressBar>();
-                radialRef.canUpdateSink = false;
-            }
-            */
             ClearHighlighted();
         }
-    }
+        */
 }

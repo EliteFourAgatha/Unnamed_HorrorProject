@@ -24,6 +24,7 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private GameObject cardboardBoxOnTable;
     [SerializeField] private GameObject blownFuseTrigger;
     [SerializeField] private GameObject shadowBlurTrigger;
+    [SerializeField] private GameObject coffeeTableObject;    
     private bool blownFuseTriggerActive = true;
     private string cardboardBoxString = "'Put the box in the head office'";
     private string coffeeTableString = "Find an extra fuse for the fuse box";
@@ -65,6 +66,7 @@ public class MainTriggers : MonoBehaviour
     [SerializeField] private AudioSource closetCreakAudioSource;
     [SerializeField] private AudioClip closetCreakAudio;
     [SerializeField] private GameObject topOfStairsDoor;
+    private string hideString = "Hide!";
 
     private string keyString = "There's a small key hidden in the book.";
     private string fuseboxString = "'Nail the laundry window shut until I can find a better solution'";
@@ -145,6 +147,7 @@ public class MainTriggers : MonoBehaviour
         StartCoroutine(gameController.ShowPopupMessage(coffeeTableString, 2));
         heldCardboardBox.SetActive(false);
         cardboardBoxOnTable.SetActive(true);
+        coffeeTableObject.tag = "Untagged";
     }
 
     public void InteractWithFuseBox()
@@ -213,8 +216,8 @@ public class MainTriggers : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(objectSFX, gameObject.transform.position);
         gameController.currentCheckpoint = nextCheckpoint;
-        StartCoroutine(gameController.ShowPopupMessage(textMessage, 2f));
-        yield return new WaitForSeconds(2f);
+        StartCoroutine(gameController.ShowPopupMessage(textMessage, 1f));
+        yield return new WaitForSeconds(1f);
         disabledObj.SetActive(false);
     }
 
@@ -234,8 +237,6 @@ public class MainTriggers : MonoBehaviour
             obj.SetActive(false);
         }
         StartCoroutine(OpenClosetAfterDelay(2f));
-
-        gameController.currentCheckpoint = 8;
         
         closetTriggerActive = false; //single use, deactivate after
     }
@@ -251,10 +252,12 @@ public class MainTriggers : MonoBehaviour
         closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
+        StartCoroutine(gameController.ShowPopupMessage(hideString, 2f));
         yield return new WaitForSeconds(2f);
         aiMonster.SetActive(true);
         aiMonsterTwo.SetActive(true);
         aiMonsterThree.SetActive(true);
+
     }
     // Trigger on ladder in sewer, win condition
     public void TriggerEscape()

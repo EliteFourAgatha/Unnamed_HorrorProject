@@ -12,6 +12,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject journalUITwo;
     [SerializeField] private GameObject quitGameOptionUI;
     [SerializeField] private LevelController levelController;
+    [SerializeField] private GameObject popUpText;
 
     [Header ("Main Menu Only")]
     [SerializeField] private GameObject mainMenuUI;
@@ -115,6 +116,7 @@ public class MenuController : MonoBehaviour
     {
         pauseMenuUI.SetActive(false);
         cursorUI.SetActive(true);
+        popUpText.SetActive(true);
         AudioListener.volume = 1f;
         Cursor.lockState = CursorLockMode.Locked; //Lock cursor to center of window
         Time.timeScale = 1f;
@@ -124,6 +126,7 @@ public class MenuController : MonoBehaviour
     {
         pauseMenuUI.SetActive(true);
         cursorUI.SetActive(false);
+        popUpText.SetActive(false);
         AudioListener.volume = 0;
         Cursor.lockState = CursorLockMode.None; //Unlock cursor
         Time.timeScale = 0f;

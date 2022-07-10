@@ -38,9 +38,7 @@ public class Triggers : MonoBehaviour
                                                 SewerWater, InhaleScare}
     [SerializeField] private TriggerType triggerType;
 
-
-    private bool canInteractWithObject = false;
-    private bool canInteractWithInhaleTrigger = true;
+    //private bool inhaleTriggerActive = true;
 
     void Start()
     {
