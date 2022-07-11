@@ -26,7 +26,6 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject playGameButton;
     [SerializeField] private float textDelayTimer;
     public static bool gamePaused = false;
-    private bool canPauseGame = false;
     private bool canClickToContinue = false;
     private int currentText;
 
@@ -47,19 +46,11 @@ public class MenuController : MonoBehaviour
         {
             invisibleFullscreenButton.SetActive(true);
         }
-        Scene currentScene = SceneManager.GetActiveScene();
-        int buildIndex = currentScene.buildIndex;
-        if(buildIndex == 0)
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
-            canPauseGame = false;
-        }
-        else
-        {
-            canPauseGame = true;
-        }
-        if(canPauseGame)
-        {
-            if(Input.GetKeyDown(KeyCode.Escape))
+            Scene currentScene = SceneManager.GetActiveScene();
+            int buildIndex = currentScene.buildIndex;
+            if(buildIndex == 1)
             {
                 if(gamePaused)
                 {
