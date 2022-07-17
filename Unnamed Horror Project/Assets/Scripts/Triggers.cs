@@ -35,7 +35,7 @@ public class Triggers : MonoBehaviour
     [SerializeField] private GameObject expositionUIOne;
 
     [SerializeField] private enum TriggerType {NormalObject, LockerHide, ExpositionJournal,
-                                                SewerWater, InhaleScare}
+                                                InhaleScare}
     [SerializeField] private TriggerType triggerType;
 
     //private bool inhaleTriggerActive = true;
@@ -67,10 +67,6 @@ public class Triggers : MonoBehaviour
                     }
                 }
             }
-            else if(triggerType == TriggerType.SewerWater)
-            {
-                playerController.playerInWater = true;
-            }
             else if(triggerType == TriggerType.InhaleScare)
             {
 
@@ -85,10 +81,6 @@ public class Triggers : MonoBehaviour
             {
                 monsterAI.playerIsHiding = false;
             }
-        }
-        else if(triggerType == TriggerType.SewerWater)
-        {
-            playerController.playerInWater = false;
         }
     }
     public void TriggerAudioOnly() //Interact with objects + sfx only (locked door)

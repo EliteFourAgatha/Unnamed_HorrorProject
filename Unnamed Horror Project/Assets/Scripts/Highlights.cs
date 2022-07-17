@@ -9,6 +9,7 @@ public class Highlights : MonoBehaviour
 
     [SerializeField] private Image cursorUI;
     [SerializeField] private AudioSource toolAudioSource;
+    [SerializeField] private GameObject toolAudioObj;
     [SerializeField] private Sprite normalCursor;
     [SerializeField] private Sprite interactCursor;
     [SerializeField] private Image sinkProgressImage;
@@ -378,10 +379,11 @@ public class Highlights : MonoBehaviour
                 case "SinkLeak":
                     if(gameController.currentCheckpoint == 2)
                     {
+                        toolAudioObj.SetActive(true);
                         var sinkProgress = hitObj.gameObject.GetComponent<ProgressBar>();
                         if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 3f)
                         {
-                            HighlightObject(hitObj, false);
+                            HighlightObject(hitObj, true);
                             if(Input.GetKey(KeyCode.E))
                             {
                                 if(!toolAudioSource.isPlaying)
@@ -402,6 +404,7 @@ public class Highlights : MonoBehaviour
                     }
                     else
                     {
+                        toolAudioObj.SetActive(false);
                         break;
                     }
                 case "FixableVendMachine":
@@ -410,7 +413,7 @@ public class Highlights : MonoBehaviour
                         var vendMachineProgress = hitObj.gameObject.GetComponent<ProgressBar>();
                         if(Vector3.Distance(gameObject.transform.position, hitObj.transform.position) < 4f)
                         {
-                            HighlightObject(hitObj, false);
+                            HighlightObject(hitObj, true);
                             if(Input.GetKey(KeyCode.E))
                             {
                                 if(!toolAudioSource.isPlaying)
@@ -437,6 +440,10 @@ public class Highlights : MonoBehaviour
                 //Default runs if no values matched, aka "Else"
                 default:
                     sinkProgressImage.enabled = false;
+                    if(toolAudioObj.activeInHierarchy)
+                    {
+                        toolAudioSource.Pause();
+                    }
                     ClearHighlighted();
                     break;
             }

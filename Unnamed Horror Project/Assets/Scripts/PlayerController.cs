@@ -8,8 +8,6 @@ public class PlayerController : MonoBehaviour
     private AudioSource footstepAudioSource;
     [SerializeField] private AudioClip concreteWalkSFX;
     [SerializeField] private AudioClip concreteSprintSFX;
-    [SerializeField] private AudioClip waterWalkSFX;
-    [SerializeField] private AudioClip waterSprintSFX;
     [SerializeField] private CharacterController controller;
     [SerializeField] private Camera mainCamera;
 
@@ -26,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private bool canRun = true;
 
     [Header("Stamina")]
-    [SerializeField, Range(1, 20)] private float maxStamina = 10f;
+    [SerializeField, Range(1, 20)] private float maxStamina = 15f;
     [SerializeField] private AudioSource windedAudioSource;
     float currentStamina;
     
@@ -112,14 +110,7 @@ public class PlayerController : MonoBehaviour
     {
         if(currentSpeed == sprintSpeed)
         {
-            if(playerInWater)
-            {
-                footstepAudioSource.clip = waterSprintSFX;
-            }
-            else
-            {
-                footstepAudioSource.clip = concreteSprintSFX;
-            }
+            footstepAudioSource.clip = concreteSprintSFX;
 
             if(!footstepAudioSource.isPlaying)
             {
@@ -128,14 +119,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if(playerInWater)
-            {
-                footstepAudioSource.clip = waterWalkSFX;
-            }
-            else
-            {
-                footstepAudioSource.clip = concreteWalkSFX;
-            }
+            footstepAudioSource.clip = concreteWalkSFX;
 
             if(!footstepAudioSource.isPlaying)
             {

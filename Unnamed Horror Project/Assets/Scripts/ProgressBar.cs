@@ -21,9 +21,11 @@ public class ProgressBar : MonoBehaviour
     public Image sinkProgressBar;
     [SerializeField] private GameObject sinkObj;
     [SerializeField] private GameObject sinkLeakObject;
+    [SerializeField] private AudioSource sinkScareAudioSource;
     public bool canUpdateSink = false;
+    private bool sinkScareTwoActive = true;
     private float sinkTimer = 0.01f;
-    [SerializeField] private float sinkDelayValue = 4f;
+    [SerializeField] private float sinkDelayValue = 20f;
     private string sinkMessage = "'Fix the broken vending machine in the lobby'";
 
     [Header("Laundry Window")]
@@ -31,16 +33,18 @@ public class ProgressBar : MonoBehaviour
     [SerializeField] private GameObject windowObj;
     public bool canUpdateWindow = false;
     private float windowTimer = 0.01f;
-    [SerializeField] private float windowDelayValue = 4f;
+    [SerializeField] private float windowDelayValue = 20f;
     private string windowMessage = "'Turn off lights / lock up before you leave'";
 
 
     [Header("VendMachine")]
     public Image vendMachineProgressBar;
     [SerializeField] private GameObject VendMachineObj;
+    [SerializeField] private AudioSource vendScareAudioSource;
     public bool canUpdateVendMachine = false;
-    private float VendMachineTimer = 0.01f;
-    [SerializeField] private float vendMachineDelayValue = 5f;
+    private bool vendScareOneActive = true;
+    private float vendMachineTimer = 0.01f;
+    [SerializeField] private float vendMachineDelayValue = 30f;
     private string vendMachineMessage = "'Take the box in storage and put it in my office'";
 
     void Update()
@@ -118,6 +122,19 @@ public class ProgressBar : MonoBehaviour
         sinkProgressBar.fillAmount = sinkTimer;
         toolAudioSource.clip = ratchetClip;
 
+        Debug.Log(sinkTimer);
+
+        if(sinkTimer >= 0.5f && sinkTimer <= 0.75f)
+        {
+            Debug.Log("scare 2");
+            if(sinkScareTwoActive)
+            {
+                //sinkScareAudioSource.clip = vendscare1 (footsteps run past?)
+                sinkScareAudioSource.Play();
+                sinkScareTwoActive = false;
+            }
+        }
+
         if(sinkTimer >= 1)
         {
             sinkTimer = 0f;
@@ -162,12 +179,22 @@ public class ProgressBar : MonoBehaviour
     public void UpdateVendMachineFill()
     {
         toolAudioSource.clip = ratchetClip;
-        VendMachineTimer += Time.deltaTime / vendMachineDelayValue;
-        vendMachineProgressBar.fillAmount = VendMachineTimer;
+        vendMachineTimer += Time.deltaTime / vendMachineDelayValue;
+        vendMachineProgressBar.fillAmount = vendMachineTimer;
 
-        if(VendMachineTimer >= 1)
+        if(vendMachineTimer >= 0.25f && vendMachineTimer <= 0.4f)
         {
-            VendMachineTimer = 0f;
+            if(vendScareOneActive)
+            {
+                //vendScareAudioSource.clip = vendscare1 (footsteps run past?)
+                vendScareAudioSource.Play();
+                vendScareOneActive = false;
+            }
+        }
+
+        if(vendMachineTimer >= 1)
+        {
+            vendMachineTimer = 0f;
             vendMachineProgressBar.fillAmount = 0f;
             vendMachineProgressBar.enabled = false;
             progressDoneAudioSource.Play();

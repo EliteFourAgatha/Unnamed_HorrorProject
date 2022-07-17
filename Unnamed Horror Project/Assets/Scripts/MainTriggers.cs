@@ -53,7 +53,7 @@ public class MainTriggers : MonoBehaviour
 
     [Header("Final Closet")]
     [SerializeField] private GameObject[] disabledObjects;
-    [SerializeField] private GameObject sewerMasterObject;
+    [SerializeField] private GameObject maintenanceTunnelObject;
     [SerializeField] private GameObject aiMonster;
     [SerializeField] private GameObject aiMonsterTwo;
     [SerializeField] private GameObject aiMonsterThree;
@@ -228,7 +228,7 @@ public class MainTriggers : MonoBehaviour
         //  --Forces them to hide / confront the monster--
         topOfStairsDoor.SetActive(true);
 
-        sewerMasterObject.SetActive(true);
+        maintenanceTunnelObject.SetActive(true);
 
 
         //Disable exterior objects that clip with sewer area
