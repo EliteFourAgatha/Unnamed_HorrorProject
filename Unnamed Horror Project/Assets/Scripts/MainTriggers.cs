@@ -120,31 +120,31 @@ public class MainTriggers : MonoBehaviour
     }
     public void PickUpMainPaper()
     {
-        StartCoroutine(PickUpKeyItem(1, mainPaper, mainPaperSFX, mainPaperString));
+        PickUpKeyItem(1, mainPaper, mainPaperSFX, mainPaperString);
     }    
     public void PickUpToolBox()
     {
         gameController.playerHasToolBox = true;
-        StartCoroutine(PickUpKeyItem(2, toolBox, collectedSFX, toolBoxString));
+        PickUpKeyItem(2, toolBox, collectedSFX, toolBoxString);
     }
     public void PickUpCardboardBox()
     {
         gameController.playerHasPickUpBox = true;
-        StartCoroutine(PickUpKeyItem(5, pickUpBox, collectedSFX, cardboardBoxString));
+        PickUpKeyItem(5, pickUpBox, collectedSFX, cardboardBoxString);
         heldCardboardBox.SetActive(true);
-        blownFuseTrigger.SetActive(true);        
+        blownFuseTrigger.SetActive(true);
     }
     public void PickUpFuse()
     {
         gameController.playerHasFuse = true;
-        StartCoroutine(PickUpKeyItem(7, fuse, collectedSFX, useFuseString));
+        PickUpKeyItem(7, fuse, collectedSFX, useFuseString);
     }
 
     //Coffee table where you place box
     public void InteractWithCoffeeTable()
     {
         gameController.currentCheckpoint = 6;
-        StartCoroutine(gameController.ShowPopupMessage(coffeeTableString, 2));
+        gameController.ShowPopupMessage(coffeeTableString, 2);
         heldCardboardBox.SetActive(false);
         cardboardBoxOnTable.SetActive(true);
         coffeeTableObject.tag = "Untagged";
@@ -157,7 +157,7 @@ public class MainTriggers : MonoBehaviour
             triggerAudio.Play();
         }
         gameController.currentCheckpoint = 8;
-        StartCoroutine(gameController.ShowPopupMessage(fuseboxString, 2));
+        gameController.ShowPopupMessage(fuseboxString, 2);
         gameController.breakerOn = true;
         foreach(Light light in breakerLights)
         {
@@ -206,18 +206,17 @@ public class MainTriggers : MonoBehaviour
         {
             triggerAudio.Play();
         }
-        StartCoroutine(gameController.ShowPopupMessage(keyString, 3f));
+        gameController.ShowPopupMessage(keyString, 3f);
         gameController.playerNeedsKey = false;
         //Reset object tag to disable interactions
         gameObject.tag = "Untagged";
     }
    
-    IEnumerator PickUpKeyItem(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
+    private void PickUpKeyItem(int nextCheckpoint, GameObject disabledObj, AudioClip objectSFX, string textMessage)
     {
         AudioSource.PlayClipAtPoint(objectSFX, gameObject.transform.position);
         gameController.currentCheckpoint = nextCheckpoint;
-        StartCoroutine(gameController.ShowPopupMessage(textMessage, 1f));
-        yield return new WaitForSeconds(1f);
+        gameController.ShowPopupMessage(textMessage, 1f);
         disabledObj.SetActive(false);
     }
 
@@ -252,7 +251,7 @@ public class MainTriggers : MonoBehaviour
         closetCreakAudioSource.clip = closetCreakAudio;
         closetCreakAudioSource.Play();
         closetDoorAnim.Play("ClosetCreakOpen");
-        StartCoroutine(gameController.ShowPopupMessage(hideString, 2f));
+        gameController.ShowPopupMessage(hideString, 2f);
         yield return new WaitForSeconds(2f);
         aiMonster.SetActive(true);
         aiMonsterTwo.SetActive(true);

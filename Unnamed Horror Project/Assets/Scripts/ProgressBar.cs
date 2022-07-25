@@ -147,7 +147,7 @@ public class ProgressBar : MonoBehaviour
             toolAudioSource.Stop();
             sinkObj.tag = "Untagged";
             
-            StartCoroutine(gameController.ShowPopupMessage(sinkMessage, 2f));
+            gameController.ShowPopupMessage(sinkMessage, 2f);
 
             gameController.currentCheckpoint = 3;
         }
@@ -169,7 +169,7 @@ public class ProgressBar : MonoBehaviour
             toolAudioSource.Stop();
             windowObj.tag = "Untagged";
 
-            StartCoroutine(gameController.ShowPopupMessage(windowMessage, 2f));
+            gameController.ShowPopupMessage(windowMessage, 2f);
 
             gameController.currentCheckpoint = 9;
             finalClosetTrigger.SetActive(true);
@@ -202,7 +202,7 @@ public class ProgressBar : MonoBehaviour
             toolAudioSource.Stop();
             VendMachineObj.tag = "Untagged";
 
-            StartCoroutine(gameController.ShowPopupMessage(vendMachineMessage, 2f));
+            gameController.ShowPopupMessage(vendMachineMessage, 2f);
 
             gameController.currentCheckpoint = 4;
         }

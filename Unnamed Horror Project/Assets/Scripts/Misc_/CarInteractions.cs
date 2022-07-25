@@ -25,7 +25,7 @@ public class CarInteractions : MonoBehaviour
         }
         if(gameController.currentCheckpoint <= 1)
         {
-            StartCoroutine(gameController.ShowPopupMessage(cantLeaveYetString, 2));
+            gameController.ShowPopupMessage(cantLeaveYetString, 2);
         }
         else if(gameController.currentCheckpoint == 7)
         {
@@ -33,7 +33,7 @@ public class CarInteractions : MonoBehaviour
         }
         else
         {
-            StartCoroutine(gameController.ShowPopupMessage(betterOffHereString, 2));  
+            gameController.ShowPopupMessage(betterOffHereString, 2);  
         }
     }
     

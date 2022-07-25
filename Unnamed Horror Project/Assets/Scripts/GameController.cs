@@ -101,7 +101,11 @@ public class GameController : MonoBehaviour
             objectiveText.text = "Turn off breaker and lock up before you leave";
         }
     }
-    public IEnumerator ShowPopupMessage(string message, float delay)
+    public void ShowPopupMessage(string message, float delay)
+    {
+        StartCoroutine(DisplayMessage(message, delay));
+    }
+    private IEnumerator DisplayMessage(string message, float delay)
     {
         popupText.text = message;
         popupText.enabled = true;

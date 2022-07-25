@@ -17,7 +17,7 @@ public class StreetColliders : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            StartCoroutine(gameController.ShowPopupMessage(stopTravelString, 2));
+            gameController.ShowPopupMessage(stopTravelString, 2);
         }
     }
 }

@@ -325,7 +325,7 @@ public class Highlights : MonoBehaviour
                             }
                             else
                             {
-                                StartCoroutine(gameController.ShowPopupMessage(noKeyFoundString, 2));
+                                gameController.ShowPopupMessage(noKeyFoundString, 2);
                             }
                         }
                     }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SoundOnTimer : MonoBehaviour
 {
-    [SerializeField] private AudioClip thunderAudioClip;
     [SerializeField] private AudioClip[] woodCreakClips;
     [SerializeField] private AudioClip[] buildingGroanClips;
+    [SerializeField] private AudioClip[] thunderClips;
     [SerializeField] private AudioClip[] monsterWheezeClips;
     [SerializeField] private AudioSource audioSource;
     
@@ -43,7 +43,8 @@ public class SoundOnTimer : MonoBehaviour
 
         if(soundType == SoundType.Thunder)
         {
-            audioSource.clip = thunderAudioClip;
+            clipIndex = Random.Range(0, thunderClips.Length);
+            audioSource.clip = thunderClips[clipIndex];
 
             timerIndex = Random.Range(0, thunderWaitTimes.Length);
             waitTime = thunderWaitTimes[timerIndex];
